@@ -1,3 +1,5 @@
+import lejos.hardware.BrickFinder;
+import lejos.hardware.BrickInfo;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.remote.ev3.RMISampleProvider;
 import lejos.remote.ev3.RemoteEV3;
@@ -7,7 +9,13 @@ import java.rmi.RemoteException;
 
 public class Program {
     public static void main(String[] args) throws Exception {
-        RemoteEV3 ev3 = new RemoteEV3("192.168.2.6");
+        BrickInfo[] bricks = BrickFinder.discover();
+
+        if (bricks.length == 0) {
+            throw new RuntimeException("No bricks on network");
+        }
+
+        RemoteEV3 ev3 = new RemoteEV3(bricks[0].getIPAddress());
 
         RMIRegulatedMotor m1 = null;
         RMIRegulatedMotor m2 = null;
