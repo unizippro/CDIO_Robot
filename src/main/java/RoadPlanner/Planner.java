@@ -12,7 +12,7 @@ public class Planner {
 
     public Planner() {
         this.robot = new Robot(new Coordinate(7,8),new Coordinate(9,8));
-        this.board = new Board(new Coordinate(0,0),new Coordinate(0,0),new Coordinate(0,0),new Coordinate(0,0));
+        this.board = new Board(new Coordinate(0,0),new Coordinate(20,0),new Coordinate(20,10),new Coordinate(0,10));
         this.balls = new ArrayList<Ball>();
         this.currentClosetBall = new Vector();
         System.out.println("Robot in pos: " + robot.mid);
@@ -20,6 +20,8 @@ public class Planner {
             this.balls.add(new Ball(new Coordinate(6 + i, 10)));
             System.out.println("Ball: " + i + " with pos: " + balls.get(i).pos);
         }
+
+        //TODO align robot first!
 
         findClosetBall();
         Vector toBall = calcVector(robot.mid,closetBall.pos);
