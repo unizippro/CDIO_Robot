@@ -2,6 +2,7 @@ package robot;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.RegulatedMotor;
+import robot.rmi_interfaces.IMovement;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -24,7 +25,7 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     private final float maxSpeedRight;
 
 
-    public Movement(EV3LargeRegulatedMotor motorLeft, EV3LargeRegulatedMotor motorRight) throws RemoteException {
+    Movement(EV3LargeRegulatedMotor motorLeft, EV3LargeRegulatedMotor motorRight) throws RemoteException {
         this.motorLeft = motorLeft;
         this.motorRight = motorRight;
 

@@ -4,6 +4,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3IRSensor;
+import robot.rmi_interfaces.IRobot;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -29,7 +30,7 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
     private Thread runningThread = null;
 
 
-    protected Robot() throws RemoteException { }
+    public Robot() throws RemoteException { }
 
     public Movement getMovement() {
         return this.movement;

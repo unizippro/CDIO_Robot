@@ -1,6 +1,6 @@
 import lejos.hardware.BrickFinder;
 import lejos.hardware.BrickInfo;
-import robot.IRobot;
+import robot.rmi_interfaces.IRobot;
 
 import java.rmi.Naming;
 

@@ -37,7 +37,7 @@ jar {
         attributes(
                 "Implementation-Title": project.name,
                 "Implementation-Version": version,
-                "Main-Class": "robot.Program",
+                "Main-Class": "Program",
         )
     }
 }

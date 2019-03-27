@@ -1,10 +1,10 @@
 package robot;
 
-import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3IRSensor;
 import lejos.robotics.RangeFinder;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.AbstractFilter;
+import robot.rmi_interfaces.ISensors;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -15,7 +15,7 @@ public class Sensors extends UnicastRemoteObject implements ISensors {
     private RangeFinder irRangeFinder;
 
 
-    protected Sensors(EV3IRSensor irSensor) throws RemoteException {
+    Sensors(EV3IRSensor irSensor) throws RemoteException {
         this.irSensor = irSensor;
         this.irRangeFinder = new RangeFinderRaw(this.irSensor.getDistanceMode());
     }
