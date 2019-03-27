@@ -1,6 +1,7 @@
 package robot;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.robotics.RegulatedMotor;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -9,6 +10,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Movement extends UnicastRemoteObject implements IMovement {
+
+    private static final int DEFAULT_SPEED = 75;
 
     // All values below are in mm
     private static final double MARGIN_OF_ERROR = 8;
@@ -28,10 +31,12 @@ public class Movement extends UnicastRemoteObject implements IMovement {
         this.motorLeft = motorLeft;
         this.motorRight = motorRight;
 
+        this.motorLeft.synchronizeWith(new RegulatedMotor[]{this.motorRight});
+
         this.maxSpeedLeft = this.motorLeft.getMaxSpeed();
         this.maxSpeedRight = this.motorRight.getMaxSpeed();
 
-        this.setSpeedPercentage(100);
+        this.setSpeedPercentage(DEFAULT_SPEED);
     }
 
     @Override
@@ -42,35 +47,45 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
     @Override
     public void forward() {
-        this.stop();
+        this.motorLeft.startSynchronization();
         this.motorLeft.forward();
         this.motorRight.forward();
+        this.motorLeft.endSynchronization();
     }
 
     @Override
     public void backward() {
-        this.stop();
+        this.motorLeft.startSynchronization();
         this.motorLeft.backward();
         this.motorRight.backward();
+        this.motorLeft.endSynchronization();
     }
 
     @Override
     public void stop() {
-        this.motorLeft.stop(true);
-        this.motorRight.stop(true);
+        this.motorLeft.startSynchronization();
+        this.motorLeft.stop();
+        this.motorRight.stop();
+        this.motorLeft.endSynchronization();
     }
 
     @Override
     public void turn(int degree) {
         double deg = ((((ROBOT_DIAMETER * Math.PI) + MARGIN_OF_ERROR) / (WHEEL_DIAMETER * Math.PI)) * 360) * ((double) degree / 360);
 
+        this.setSpeedPercentage(25);
+
         this.motorLeft.rotate((int) deg, true);
         this.motorRight.rotate((int) -deg, true);
+
+        while (this.motorLeft.isMoving() || this.motorRight.isMoving()) {}
+
+        this.setSpeedPercentage(DEFAULT_SPEED);
     }
 
     @Override
     public void shutdown() {
-        int secondsDelay = 5;
+        int secondsDelay = 2;
         this.timer.schedule(this.exitApp, new Date(System.currentTimeMillis() + 1000 * secondsDelay));
     }
 
