@@ -5,9 +5,6 @@ import lejos.robotics.RegulatedMotor;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Movement extends UnicastRemoteObject implements IMovement {
 
@@ -82,18 +79,4 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
         this.setSpeedPercentage(DEFAULT_SPEED);
     }
-
-    @Override
-    public void shutdown() {
-        int secondsDelay = 2;
-        this.timer.schedule(this.exitApp, new Date(System.currentTimeMillis() + 1000 * secondsDelay));
-    }
-
-
-    private Timer timer = new Timer();
-    private TimerTask exitApp = new TimerTask() {
-        public void run() {
-            System.exit(0);
-        }
-    };
 }

@@ -1,8 +1,6 @@
 package robot;
 
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.port.MotorPort;
-
+import java.net.InetAddress;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -11,16 +9,23 @@ import java.rmi.registry.LocateRegistry;
 public class Program {
     public static void main(String[] args) throws Exception {
         System.out.println("Robot starting");
-        Movement movement = new Movement(new EV3LargeRegulatedMotor(MotorPort.A), new EV3LargeRegulatedMotor(MotorPort.B));
+        new Program();
+        System.out.println("Robot ready for remote connection");
+    }
+
+    private Program() throws Exception {
+        String ipAddress = InetAddress.getLocalHost().getHostAddress();
+
+        Robot robot = new Robot();
 
         try {
             LocateRegistry.createRegistry(1199);
-            Naming.rebind("rmi://192.168.2.6:1199/movement", movement);
+            Naming.rebind("rmi://" + ipAddress + ":1199/robot", robot);
+            Naming.rebind("rmi://" + ipAddress + ":1199/movement", robot.getMovement());
+            Naming.rebind("rmi://" + ipAddress + ":1199/sensors", robot.getSensors());
         } catch (RemoteException exception) {
             exception.printStackTrace();
             System.exit(1);
         }
-
-        System.out.println("Robot ready for remote connection");
     }
 }

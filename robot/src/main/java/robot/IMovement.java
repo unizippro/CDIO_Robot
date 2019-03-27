@@ -10,6 +10,4 @@ public interface IMovement extends Remote {
     void stop() throws RemoteException;
     void turn(int degree) throws RemoteException;
     void setSpeedPercentage(double percent) throws RemoteException;
-
-    void shutdown() throws RemoteException;
 }

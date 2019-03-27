@@ -1,6 +1,6 @@
 import lejos.hardware.BrickFinder;
 import lejos.hardware.BrickInfo;
-import robot.IMovement;
+import robot.IRobot;
 
 import java.rmi.Naming;
 
@@ -11,8 +11,8 @@ public class Shutdown {
             throw new RuntimeException("No bricks on network");
         }
 
-        IMovement movement = (IMovement) Naming.lookup("rmi://" + bricks[0].getIPAddress() + ":1199/movement");
+        IRobot robot = (IRobot) Naming.lookup("rmi://" + bricks[0].getIPAddress() + ":1199/robot");
 
-        movement.shutdown();
+        robot.shutdown();
     }
 }
