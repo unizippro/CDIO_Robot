@@ -24,11 +24,11 @@ public class Program {
         }
 
         this.movement = (IMovement) Naming.lookup("rmi://" + bricks[0].getIPAddress() + ":1199/movement");
-
+//        this.movement.backward(300);
+//        this.movement.turn(180);
         MovementQueue<Runnable> queue = new MovementQueue<>();
+        queue.add(getAction(Directions.BACKWARD, 300));
         queue.add(getAction(Directions.TURN, 180));
-        queue.add(getAction(Directions.TURN, 180));
-
         while (!queue.isEmpty()){
             queue.dequeue().run();
         }
@@ -44,24 +44,28 @@ public class Program {
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
+                    break;
                 case BACKWARD:
                     try {
                         movement.backward(parameter[0]);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
+                    break;
                 case TURN:
                     try {
-                        movement.turn((int)parameter[0]);
+                        movement.turn((int) parameter[0]);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
+                    break;
                 case STOP:
                     try {
                         movement.stop();
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
+                    break;
             }
         };
     }
