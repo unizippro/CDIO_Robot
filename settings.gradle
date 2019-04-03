@@ -1,2 +1,4 @@
 rootProject.name = 'cdio'
 
+include 'robot'
+

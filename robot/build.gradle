@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'org.hidetake.ssh' version '2.9.0'
+}
+
+group 'cdio'
+version '1.0-SNAPSHOT'
+
+configurations {
+    sshAntTask
+}
+
+ext {
+    ev3host = "192.168.2.6"
+    ev3user = "root"
+    ev3pass = ""
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("com.github.bdeneuter:lejos-ev3-api:0.9.1-beta")
+
+    sshAntTask 'org.apache.ant:ant-jsch:1.10.5', 'jsch:jsch:0.1.29'
+}
+
+compileJava {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+    options.encoding = "UTF-8"
+}
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": version,
+                "Main-Class": "Program",
+        )
+    }
+}
+
+task deploy(dependsOn: jar) {
+    ant.taskdef(name: "scp", classname: "org.apache.tools.ant.taskdefs.optional.ssh.Scp", classpath: configurations.sshAntTask.asPath)
+
+    doLast {
+        ant.scp(todir: "${ev3user}@${ev3host}:/home/lejos/programs", password: ev3user, trust: true) {
+            fileset(dir: buildDir.path + "/libs") {
+                include(name: "*.jar")
+            }
+        }
+    }
+}
+
+task deployAndRun(dependsOn: deploy) {
+    ant.taskdef(name: "ssh", classname: "org.apache.tools.ant.taskdefs.optional.ssh.SSHExec", classpath: configurations.sshAntTask.asPath)
+
+    doLast {
+        ant.ssh(host: ev3host, username: ev3user, password: ev3pass, command: "/home/root/lejos/ejre1.7.0_60/bin/java -cp /home/lejos/programs/robot-1.0-SNAPSHOT.jar:/home/root/lejos/lib/ev3classes.jar:/home/root/lejos/lib/dbusjava.jar:/home/root/lejos/lib/opencv-2411.jar:/home/root/lejos/libjna/usr/share/java/jna.jar:. -jar /home/lejos/programs/${jar.archiveName}")
+//        ant.ssh(host: ev3host, username: ev3user, password: ev3pass, command: "jrun -jar /home/lejos/programs/${jar.archiveName}")
+    }
+}
