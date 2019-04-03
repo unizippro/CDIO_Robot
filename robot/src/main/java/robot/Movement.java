@@ -51,12 +51,38 @@ public class Movement extends UnicastRemoteObject implements IMovement {
         this.motorLeft.endSynchronization();
     }
 
+    /**
+     * calculates required degrees to rotate to move the required distance
+     * @param distance as mm
+     */
+    @Override
+    public void forward(double distance){
+        double deg = 360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR;
+        this.motorLeft.rotate((int)deg, true);
+        this.motorRight.rotate((int)deg, true);
+
+        while (this.motorLeft.isMoving() || this.motorRight.isMoving()) {}
+    }
+
     @Override
     public void backward() {
         this.motorLeft.startSynchronization();
         this.motorLeft.backward();
         this.motorRight.backward();
         this.motorLeft.endSynchronization();
+    }
+
+    /**
+     *
+     * @param distance as mm
+     */
+    @Override
+    public void backward(double distance) {
+        double deg = -(360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR);
+        this.motorLeft.rotate((int)deg, true);
+        this.motorRight.rotate((int)deg, true);
+
+        while (this.motorLeft.isMoving() || this.motorRight.isMoving()) {}
     }
 
     @Override
@@ -69,8 +95,8 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
     @Override
     public void turn(int degree) {
-        double deg = ((((ROBOT_DIAMETER * Math.PI) + MARGIN_OF_ERROR) / (WHEEL_DIAMETER * Math.PI)) * 360) * ((double) degree / 360);
-
+        double deg = ((((ROBOT_DIAMETER * Math.PI)+0.5*MARGIN_OF_ERROR) / (WHEEL_DIAMETER * Math.PI)) * 360) * ((double) degree / 360);
+        int tempSpeed = this.motorLeft.getSpeed();
         this.setSpeedPercentage(25);
 
         this.motorLeft.rotate((int) deg, true);
@@ -78,6 +104,7 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
         while (this.motorLeft.isMoving() || this.motorRight.isMoving()) {}
 
-        this.setSpeedPercentage(DEFAULT_SPEED);
+        this.motorLeft.setSpeed(tempSpeed);
+        this.motorRight.setSpeed(tempSpeed);
     }
 }
