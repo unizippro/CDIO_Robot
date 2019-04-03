@@ -1,17 +1,37 @@
 package RoadPlanner;
 
-import static java.lang.Math.*;
-
 public class Robot {
+
+
+    enum Sector{
+        UPPER,
+        LOWER,
+        RIGHT,
+        LEFT
+    }
+
+    enum Compas{
+        UP,
+        DOWN,
+        RIGHT,
+        LEFT
+    }
+
     Coordinate front;
     Coordinate rear;
     Coordinate mid;
-    Vector direction;
+    Vector vector;
+    Sector sector;
+    Compas compas;
 
+    public Robot() {
+        //For Planner constructor
+    }
 
     public Robot(Coordinate front, Coordinate rear) {
         this.front = front;
         this.rear = rear;
+        sector = Sector.UPPER;
         calcMid();
         calcVector();
 
@@ -24,10 +44,15 @@ public class Robot {
         this.rear = c;
     }
 
-    public void update(Coordinate c1, Coordinate c2) {
-        setFront(c1);
-        setRear(c2);
+    /**
+     * @param front
+     * @param back
+     */
+    public void update(Coordinate front, Coordinate back) {
+        setFront(front);
+        setRear(back);
         calcMid();
+        calcVector();
 
     }
 
@@ -37,12 +62,9 @@ public class Robot {
 
     /**
      *  Calculate the vector from 2 Coordinates c1 to c2.
-     * @param c1
-     * @param c2
-     * @return
      */
     public void calcVector() {
-        direction = new Vector(front.x - mid.x, front.y - mid.y);
+        vector = new Vector(front.x - mid.x, front.y - mid.y);
     }
 
 

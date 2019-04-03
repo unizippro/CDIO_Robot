@@ -1,25 +1,28 @@
 package RoadPlanner;
 
         import java.util.ArrayList;
+        import java.util.List;
+
         import static java.lang.Math.*;
 
 public class Planner {
-    Robot robot;
+    public Robot robot;
     Board board;
     ArrayList<Ball> balls;
     Ball closetBall;
     Vector currentClosetBall;
 
-    public Planner() {
-        this.robot = new Robot(new Coordinate(7,8),new Coordinate(9,8));
-        this.board = new Board(new Coordinate(0,0),new Coordinate(20,0),new Coordinate(20,10),new Coordinate(0,10));
+    public Planner(List<Coordinate> coorList) {
+        int i = 0;
+        this.robot = new Robot();
+        this.board = new Board();
         this.balls = new ArrayList<Ball>();
         this.currentClosetBall = new Vector();
+
+        updatePlanner(coorList);
+
         System.out.println("Robot in pos: " + robot.mid);
-        for(int i = 0; i < 10; i++) {
-            this.balls.add(new Ball(new Coordinate(6 + i, 10)));
-            System.out.println("Ball: " + i + " with pos: " + balls.get(i).pos);
-        }
+
 
         //TODO align robot first!
 
@@ -53,7 +56,26 @@ public class Planner {
 
     public Instruction nextInstruction() {
         findClosetBall();
-        return new Instruction( calcAngle(robot.direction, currentClosetBall), currentClosetBall.lenght);
+        return new Instruction( calcAngle(robot.vector, currentClosetBall), currentClosetBall.lenght);
+    }
+
+    public Instruction nextInstructionv2() {
+        findClosetBall();
+
+        //1 degree delta, the robot should turn 90 and drive forward
+        if(abs((abs(calcAngle(robot.vector, currentClosetBall))-90))<= 1 && (abs(calcAngle(robot.vector, currentClosetBall))-90) < 0 ){
+            ////If the robot should do a 90 turn to run in the negativ x-axis
+            return new Instruction( calcAngle(robot.vector, currentClosetBall), currentClosetBall.lenght);
+        }else if((abs(calcAngle(robot.vector, currentClosetBall))-90) > 0 ){
+            //If the robot should do a 180 turn to run in the positiv x-axis
+            return new Instruction( 180, 0);
+        }else{
+            System.out.println("**********"+(abs(calcAngle(robot.vector, currentClosetBall))-90));
+            // If not, we should do the tour in two parts.
+            System.out.println("x:"+currentClosetBall.x+" y:"+currentClosetBall.y);
+            return new Instruction( 0, abs(currentClosetBall.x));
+        }
+
     }
 
     /**
@@ -76,17 +98,41 @@ public class Planner {
     public double calcAngle(Vector v1, Vector v2) {
         // http://www.euclideanspace.com/maths/algebra/vectors/angleBetween/
         double angle = toDegrees(atan2(v1.y,v1.x) - atan2(v2.y,v2.x));
-        System.out.println("Before manipulation: " + angle);
+        //System.out.println("Before manipulation: " + angle);
         if(angle < (-180)) {
-            System.out.println(angle + 360);
+            //System.out.println(angle + 360);
             return angle + 360;
         } else if( angle > 180) {
-            System.out.println(angle - 360);
+            //System.out.println(angle - 360);
             return angle - 360;
         } else {
-            System.out.println(angle);
+            //System.out.println(angle);
             return angle;
         }
     }
 
+    public void updatePlanner(List<Coordinate> coorList) {
+        int i = 0;
+        this.robot.update(coorList.get(i++),coorList.get(i++));
+        this.board.update(coorList.get(i++),coorList.get(i++),coorList.get(i++),coorList.get(i++));
+        this.balls = new ArrayList<Ball>();
+
+        for (int j = i; j < coorList.size(); j++) {
+            this.balls.add(new Ball(coorList.get(j)));
+        }
+
+        this.currentClosetBall = new Vector();
+
+        double temp = calcAngle(robot.vector,board.xAxis);
+        if(temp <= 45 && temp >= 315){
+            this.robot.compas = Robot.Compas.RIGHT;
+        }else if(temp < 135 && temp > 45){
+            this.robot.compas = Robot.Compas.UP;
+        }else if(temp <= 225 && temp >= 135){
+            this.robot.compas = Robot.Compas.LEFT;
+        }else if(temp < 315 && temp > 225){
+            this.robot.compas = Robot.Compas.DOWN;
+        }
+        this.robot.compas
+    }
 }
