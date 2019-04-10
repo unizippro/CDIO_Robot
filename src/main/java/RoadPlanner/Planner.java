@@ -11,6 +11,7 @@ public class Planner {
     ArrayList<Ball> balls;
     Ball closetBall;
     Vector currentClosetBall;
+    int deltaAngle = 2;
 
     public Planner(List<Coordinate> coorList) {
         int i = 0;
@@ -26,13 +27,12 @@ public class Planner {
 
         //TODO align robot first!
 
-        findClosetBall();
-        Vector toBall = calcVector(robot.mid,closetBall.pos);
-        Vector robotv = calcVector(robot.mid,robot.front);
-        System.out.println("toBall: " + toBall);
-        System.out.println("Robot: " + robotv);
-
-        System.out.println("Angle = " + calcAngle(robotv,toBall));
+        //findClosetBall();
+        //Vector toBall = calcVector(robot.mid,closetBall.pos);
+        //Vector robotv = calcVector(robot.mid,robot.front);
+        //System.out.println("toBall: " + toBall);
+        //System.out.println("Robot: " + robotv);
+        //System.out.println("AngleToBall = " + calcAngle(robotv,toBall));
     }
 
     public void findClosetBall(){
@@ -76,6 +76,80 @@ public class Planner {
             return new Instruction( 0, abs(currentClosetBall.x));
         }
 
+    }
+    public Instruction nextInstructionv3() {
+        findClosetBall();
+        double angleToBall = calcAngle(robot.vector, currentClosetBall);
+        try {
+            System.out.println("Robot compas: " + robot.compas.toString());
+            System.out.println("AngleToBall : " + angleToBall);
+            switch (robot.compas) {
+                case UP:
+                    // Tests if the ball is +- 90 degrees from the robot.
+                    if( (abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle )) {
+                        // The ball is in front of us
+                        if(abs((abs(angleToBall)-90))<= deltaAngle ){ // Test if the route is in one part or two parts
+                            //System.out.println("The ball is in a 90 deg direction.");
+                            return new Instruction( angleToBall, currentClosetBall.lenght);
+                        } else { // The route is spitted up in 2 parts.
+                            //System.out.println("The route is spitted up");
+                            return new Instruction( 0, abs(currentClosetBall.y));
+                        }
+                    } else {
+                        // The ball is behind us
+                        return new Instruction(180 , 0 );  // turn 180 deg.
+                    }
+                case DOWN:
+                    // Tests if the ball is +- 90 degrees from the robot.
+                    if( (abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle )) {
+                        // The ball is in front of us
+                        if(abs((abs(angleToBall)-90))<= deltaAngle ){ // Test if the route is in one part or two parts
+                            //System.out.println("The ball is in a 90 deg direction.");
+                            return new Instruction( angleToBall, currentClosetBall.lenght);
+                        } else { // The route is spitted up in 2 parts.
+                            //System.out.println("The route is spitted up");
+                            return new Instruction( 0, abs(currentClosetBall.y));
+                        }
+                    } else {
+                        // The ball is behind us
+                        return new Instruction(180 , 0 );  // turn 180 deg.
+                    }
+                case LEFT:
+                    // Tests if the ball is +- 90 degrees from the robot.
+                    if( (abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle )) {
+                        // The ball is in front of us
+                        if(abs((abs(angleToBall)-90))<= deltaAngle ){ // Test if the route is in one part or two parts
+                            //System.out.println("The ball is in a 90 deg direction.");
+                            return new Instruction( angleToBall, currentClosetBall.lenght);
+                        } else { // The route is spitted up in 2 parts.
+                            //System.out.println("The route is spitted up");
+                            return new Instruction( 0, abs(currentClosetBall.x));
+                        }
+                    } else {
+                        // The ball is behind us
+                        return new Instruction(180 , 0 );  // turn 180 deg.
+                    }
+                case RIGHT:
+                    // Tests if the ball is +- 90 degrees from the robot.
+                    if( ((abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle ))) {// &&( angleToBall != -180)) {
+                        // The ball is in front of us
+                        if(abs((abs(angleToBall)-90))<= deltaAngle ){ // Test if the route is in one part or two parts
+                            //System.out.println("The ball is in a 90 deg direction.");
+                            return new Instruction( angleToBall, currentClosetBall.lenght);
+                        } else { // The route is spitted up in 2 parts.
+                            //System.out.println("The route is spitted up");
+                            return new Instruction( 0, abs(currentClosetBall.x));
+                        }
+                    } else {
+                        // The ball is behind us
+                        return new Instruction(180, 0);  // turn 180 deg.
+                    }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.err.println("ERROR: COMPAS WAS NOT SET??");
+        return new Instruction( 1337, 1337);
     }
 
     /**
@@ -123,7 +197,22 @@ public class Planner {
 
         this.currentClosetBall = new Vector();
 
-        double temp = calcAngle(robot.vector,board.xAxis);
+        double temp = calcAngle(robot.vector , board.xAxis);
+        System.out.println("The robot's direction is " + temp);
+
+        if(temp <= 45 && temp >= -45){
+            this.robot.compas = Robot.Compas.RIGHT;
+        }else if(temp < 135 && temp > 45){
+            this.robot.compas = Robot.Compas.UP;
+        }else if(temp <= -135 || temp >= 135){
+            this.robot.compas = Robot.Compas.LEFT;
+        }else if(temp < -45 && temp > -135) {
+            this.robot.compas = Robot.Compas.DOWN;
+        } else {
+            System.err.println("ERROR robot's direction is is not coverd: " + temp);
+        }
+/*
+
         if(temp <= 45 && temp >= 315){
             this.robot.compas = Robot.Compas.RIGHT;
         }else if(temp < 135 && temp > 45){
@@ -132,7 +221,10 @@ public class Planner {
             this.robot.compas = Robot.Compas.LEFT;
         }else if(temp < 315 && temp > 225){
             this.robot.compas = Robot.Compas.DOWN;
+        } else {
+            System.err.println("ERROR COMPASS WAS NOT SET!!");
         }
-        this.robot.compas
+        // Robot, board and balls are updated now!
+        */
     }
 }
