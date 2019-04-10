@@ -1,5 +1,6 @@
 package movement_queue;
 
+import RoadPlanner.Instruction;
 import network.RobotFinder;
 import robot.rmi_interfaces.IMovement;
 
@@ -16,7 +17,7 @@ public class MovementController {
         }
     }
 
-    public void addMovement(Directions directions, double ... parameter) {
+    private void generateMovement(Directions directions, double ... parameter) {
         queue.add(getAction(directions, parameter));
     }
 
@@ -59,5 +60,15 @@ public class MovementController {
                     break;
             }
         };
+    }
+
+    public void addMovement(Instruction inst) {
+        if (inst.angle > 0 ) {
+            generateMovement(Directions.TURN, inst.angle);
+
+        }
+        else {
+            generateMovement(Directions.FORWARD, inst.distance);
+        }
     }
 }

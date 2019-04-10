@@ -1,18 +1,44 @@
+import RoadPlanner.Coordinate;
+import RoadPlanner.Instruction;
+import RoadPlanner.Planner;
 import movement_queue.Directions;
 import movement_queue.MovementController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //TODO: When the robot have completed an instruction, the virual world should be updated accordingly. To test the GUI an instruction queue
 
 public class Program {
+    private MovementController movementController = new MovementController();
+
     public static void main(String[] args) {
         new Program().doAction();
     }
 
     private void doAction() {
-        MovementController movementController = new MovementController();
-        movementController.addMovement(Directions.FORWARD, 20);
 
-        movementController.run();
+        List<Coordinate> coorList = new ArrayList<>();
+
+        coorList.add(new Coordinate(7,8));
+        //Robot back
+        coorList.add(new Coordinate(9,8));
+        //Cornors
+        coorList.add(new Coordinate(0,0));
+        coorList.add(new Coordinate(100,0));
+        coorList.add(new Coordinate(100,100));
+        coorList.add(new Coordinate(0,100));
+        //balls
+        coorList.add(new Coordinate(7,5));
+        coorList.add(new Coordinate(6,4));
+        coorList.add(new Coordinate(8,2));
+
+        Planner t = new Planner(coorList);
+        Instruction instruction = t.nextInstructionv2();
+        System.out.println(instruction);
+
+        this.movementController.addMovement(instruction);
+        //movementController.run();
     }
 
     static void  testInstructionv3() {
