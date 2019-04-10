@@ -1,73 +1,18 @@
-import lejos.hardware.BrickFinder;
-import lejos.hardware.BrickInfo;
 import movement_queue.Directions;
-import movement_queue.MovementQueue;
-import robot.rmi_interfaces.IMovement;
-
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
+import movement_queue.MovementController;
 
 //TODO: When the robot have completed an instruction, the virual world should be updated accordingly. To test the GUI an instruction queue
 
 public class Program {
-    private IMovement movement;
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new Program().doAction();
     }
 
-    private void doAction() throws RemoteException, NotBoundException, MalformedURLException {
-        BrickInfo[] bricks = BrickFinder.discover();
-        if (bricks.length == 0) {
-            throw new RuntimeException("No bricks on network");
-        }
+    private void doAction() {
+        MovementController movementController = new MovementController();
+        movementController.addMovement(Directions.FORWARD, 20);
 
-        this.movement = (IMovement) Naming.lookup("rmi://" + bricks[0].getIPAddress() + ":1199/movement");
-//        this.movement.backward(300);
-//        this.movement.turn(180);
-        MovementQueue<Runnable> queue = new MovementQueue<>();
-        queue.add(getAction(Directions.BACKWARD, 300));
-        queue.add(getAction(Directions.TURN, 180));
-        while (!queue.isEmpty()){
-            queue.dequeue().run();
-        }
-    }
-
-
-    private Runnable getAction(Directions direction, double ... parameter) {
-        return () -> {
-            switch (direction) {
-                case FORWARD:
-                    try {
-                        movement.forward(parameter[0]);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case BACKWARD:
-                    try {
-                        movement.backward(parameter[0]);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case TURN:
-                    try {
-                        movement.turn((int) parameter[0]);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case STOP:
-                    try {
-                        movement.stop();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
-        };
+        movementController.run();
     }
 
     static void  testInstructionv3() {
