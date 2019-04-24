@@ -21,3 +21,22 @@ compileJava {
     options.encoding = "UTF-8"
 }
 
+
+subprojects {
+    apply plugin: 'java'
+
+    compileJava {
+        sourceCompatibility = 1.7
+        targetCompatibility = 1.7
+        options.encoding = "UTF-8"
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation("com.github.bdeneuter:lejos-ev3-api:0.9.1-beta")
+    }
+}
+
