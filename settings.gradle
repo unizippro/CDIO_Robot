@@ -2,3 +2,8 @@ rootProject.name = 'cdio'
 
 include 'robot'
 
+include 'forward'
+project(":forward").projectDir = new File("robot/forward")
+
+include 'backward'
+project(":backward").projectDir = new File("robot/backward")
