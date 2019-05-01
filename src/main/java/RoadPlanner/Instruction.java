@@ -1,8 +1,8 @@
 package RoadPlanner;
 
 public class Instruction {
-    double angle;
-    double distance;
+    public double angle;
+    public double distance;
 
     public Instruction(double angle, double distance) {
         this.angle = angle;

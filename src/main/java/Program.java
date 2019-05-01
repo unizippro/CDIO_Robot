@@ -39,6 +39,7 @@ public class Program {
 
         this.movementController.addMovement(instruction);
         //movementController.run();
+
     }
 
     static void  testInstructionv3() {

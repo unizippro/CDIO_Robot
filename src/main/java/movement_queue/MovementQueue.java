@@ -6,15 +6,15 @@ import java.util.LinkedList;
 public class MovementQueue<T> {
         private LinkedList<T> data = new LinkedList<>();
 
-        public void add(T item) {
+        void add(T item) {
             this.data.add(item);
         }
 
-        public T dequeue() {
+        T dequeue() {
             return this.data.pollFirst();
         }
 
-        public boolean isEmpty() {
+        boolean isEmpty() {
             return this.data.isEmpty();
         }
 

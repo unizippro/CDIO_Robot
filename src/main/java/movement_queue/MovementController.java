@@ -21,6 +21,9 @@ public class MovementController {
         queue.add(getAction(directions, parameter));
     }
 
+    /**
+     * Increments through the queue - executing every runnable added to MovementQueue
+     */
     public void run() {
         while (!queue.isEmpty()) {
             queue.dequeue().run();
@@ -62,6 +65,10 @@ public class MovementController {
         };
     }
 
+    /**
+     * Takes Instruction as argument, translates instructions to movements
+     * @param inst
+     */
     public void addMovement(Instruction inst) {
         if (inst.angle > 0 ) {
             generateMovement(Directions.TURN, inst.angle);
