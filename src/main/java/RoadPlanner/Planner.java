@@ -85,53 +85,13 @@ public class Planner {
             System.out.println("AngleToBall : " + angleToBall);
             switch (robot.compas) {
                 case UP:
-                    // Tests if the ball is +- 90 degrees from the robot.
-                    if( (abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle )) {
-                        // The ball is in front of us
-                        if(abs((abs(angleToBall)-90))<= deltaAngle ){ // Test if the route is in one part or two parts
-                            //System.out.println("The ball is in a 90 deg direction.");
-                            return new Instruction( angleToBall, currentClosetBall.lenght);
-                        } else { // The route is spitted up in 2 parts.
-                            //System.out.println("The route is spitted up");
-                            return new Instruction( 0, abs(currentClosetBall.y));
-                        }
-                    } else {
-                        // The ball is behind us
-                        return new Instruction(180 , 0 );  // turn 180 deg.
-                    }
                 case DOWN:
                     // Tests if the ball is +- 90 degrees from the robot.
-                    if( (abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle )) {
-                        // The ball is in front of us
-                        if(abs((abs(angleToBall)-90))<= deltaAngle ){ // Test if the route is in one part or two parts
-                            //System.out.println("The ball is in a 90 deg direction.");
-                            return new Instruction( angleToBall, currentClosetBall.lenght);
-                        } else { // The route is spitted up in 2 parts.
-                            //System.out.println("The route is spitted up");
-                            return new Instruction( 0, abs(currentClosetBall.y));
-                        }
-                    } else {
-                        // The ball is behind us
-                        return new Instruction(180 , 0 );  // turn 180 deg.
-                    }
+                    return getInstruction(angleToBall);
                 case LEFT:
-                    // Tests if the ball is +- 90 degrees from the robot.
-                    if( (abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle )) {
-                        // The ball is in front of us
-                        if(abs((abs(angleToBall)-90))<= deltaAngle ){ // Test if the route is in one part or two parts
-                            //System.out.println("The ball is in a 90 deg direction.");
-                            return new Instruction( angleToBall, currentClosetBall.lenght);
-                        } else { // The route is spitted up in 2 parts.
-                            //System.out.println("The route is spitted up");
-                            return new Instruction( 0, abs(currentClosetBall.x));
-                        }
-                    } else {
-                        // The ball is behind us
-                        return new Instruction(180 , 0 );  // turn 180 deg.
-                    }
                 case RIGHT:
                     // Tests if the ball is +- 90 degrees from the robot.
-                    if( ((abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle ))) {// &&( angleToBall != -180)) {
+                    if( (abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle )) {
                         // The ball is in front of us
                         if(abs((abs(angleToBall)-90))<= deltaAngle ){ // Test if the route is in one part or two parts
                             //System.out.println("The ball is in a 90 deg direction.");
@@ -142,14 +102,30 @@ public class Planner {
                         }
                     } else {
                         // The ball is behind us
-                        return new Instruction(180, 0);  // turn 180 deg.
-                    }
+                        return new Instruction(180 , 0 );  // turn 180 deg.
+                    }// &&( angleToBall != -180)) {
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.err.println("ERROR: COMPAS WAS NOT SET??");
         return new Instruction( 1337, 1337);
+    }
+
+    private Instruction getInstruction(double angleToBall) {
+        if( (abs(angleToBall) < 90 + deltaAngle) || (abs(angleToBall) > 270 - deltaAngle )) {
+            // The ball is in front of us
+            if(abs((abs(angleToBall)-90))<= deltaAngle ){ // Test if the route is in one part or two parts
+                //System.out.println("The ball is in a 90 deg direction.");
+                return new Instruction( angleToBall, currentClosetBall.lenght);
+            } else { // The route is spitted up in 2 parts.
+                //System.out.println("The route is spitted up");
+                return new Instruction( 0, abs(currentClosetBall.y));
+            }
+        } else {
+            // The ball is behind us
+            return new Instruction(180 , 0 );  // turn 180 deg.
+        }
     }
 
     /**

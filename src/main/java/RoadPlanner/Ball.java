@@ -1,14 +1,24 @@
 package RoadPlanner;
 
-public class Ball {
-    List<>
+import java.util.ArrayList;
+import java.util.List;
 
-    public Ball(Coordinate pos) {
-        this.pos = pos;
+public class Ball {
+    List<Coordinate> ballList = new ArrayList<>();
+
+    public Ball() {
     }
 
-    public void setPos(Coordinate pos) {
-        this.pos = pos;
+    public void setPos(Coordinate pos, int index) {
+        this.ballList.set(index, pos);
+    }
+
+    public void addBall(Coordinate coordinates) {
+        this.ballList.add(coordinates);
+    }
+
+    public void removeBall(int index) {
+        this.ballList.remove(index);
     }
 
 }

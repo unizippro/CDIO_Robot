@@ -70,12 +70,16 @@ public class MovementController {
      * @param inst
      */
     public void addMovement(Instruction inst) {
-        if (inst.angle > 0 ) {
+        if (inst.angle != 0) {
             generateMovement(Directions.TURN, inst.angle);
+
+            if (inst.distance > 0 ){
+                generateMovement(Directions.FORWARD, inst.distance*10);
+            }
 
         }
         else {
-            generateMovement(Directions.FORWARD, inst.distance);
+            generateMovement(Directions.FORWARD, inst.distance*10);
         }
     }
 }
