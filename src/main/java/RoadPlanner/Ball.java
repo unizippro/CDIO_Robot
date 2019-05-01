@@ -1,7 +1,7 @@
 package RoadPlanner;
 
 public class Ball {
-    Coordinate pos;
+    List<>
 
     public Ball(Coordinate pos) {
         this.pos = pos;
