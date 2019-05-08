@@ -1,5 +1,7 @@
 package RoadPlanner;
 
+import java.awt.*;
+
 public class Robot {
 
 
@@ -17,9 +19,9 @@ public class Robot {
         LEFT
     }
 
-    Coordinate front;
-    Coordinate rear;
-    Coordinate mid;
+    Point front;
+    Point rear;
+    Point mid;
     Vector vector;
     Sector sector;
     Compas compas;
@@ -28,7 +30,7 @@ public class Robot {
         //For Planner constructor
     }
 
-    public Robot(Coordinate front, Coordinate rear) {
+    public Robot(Point front, Point rear) {
         this.front = front;
         this.rear = rear;
         sector = Sector.UPPER;
@@ -37,10 +39,10 @@ public class Robot {
 
     }
 
-    public void setFront(Coordinate c) {
+    public void setFront(Point c) {
         this.front = c;
     }
-    public void setRear(Coordinate c) {
+    public void setRear(Point c) {
         this.rear = c;
     }
 
@@ -48,7 +50,7 @@ public class Robot {
      * @param front
      * @param back
      */
-    public void update(Coordinate front, Coordinate back) {
+    public void update(Point front, Point back) {
         setFront(front);
         setRear(back);
         calcMid();
@@ -57,11 +59,11 @@ public class Robot {
     }
 
     public void calcMid() {
-        this.mid = new Coordinate((front.x + rear.x)/2,(front.y + rear.y)/2);
+        this.mid = new Point((front.x + rear.x)/2,(front.y + rear.y)/2);
     }
 
     /**
-     *  Calculate the vector from 2 Coordinates c1 to c2.
+     *  Calculate the vector from 2 Points c1 to c2.
      */
     public void calcVector() {
         vector = new Vector(front.x - mid.x, front.y - mid.y);

@@ -14,7 +14,7 @@ public class Vector {
         this.y = y;
         getLenght();
     }
-    public Vector(Coordinate c1, Coordinate c2) {
+    public Vector(Point c1, Point c2) {
         this.x = c2.x - c1.x;
         this.y = c2.y - c1.y;
         getLenght();
@@ -30,7 +30,7 @@ public class Vector {
         return "Vector = ( x = " + x + ", y = " + y + ", length = " + String.format("%.2f",lenght)+ " )";
     }
 
-    public void update(Coordinate c1, Coordinate c2) {
+    public void update(Point c1, Point c2) {
         this.x = c2.x - c1.x;
         this.y = c2.y - c1.y;
         getLenght();
