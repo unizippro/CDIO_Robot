@@ -5,22 +5,22 @@ import java.awt.*;
 public class SmartConverter {
     private double longBoard = 167;
     private double shortBoard = 122;
-    private double pixelToLength = 0;
+    private static double pixelsPerCm = 0;
 
-    public double getLength() {
-        return pixelToLength;
+    public static double getPixelsPerCm() {
+        return pixelsPerCm;
     }
 
     public void calculateBoard(Point upperLeft,
                                Point upperRight,
                                Point lowerLeft,
                                Point lowerRight) {
-        pixelToLength = 0;
+        pixelsPerCm = 0;
         for (int i = 0; i < 4; i++) {
             double toAdd = (i % 2 == 0) ? calcXPixelLength(lowerLeft, lowerRight) : calcYPixelLength(upperLeft, lowerLeft);
-            pixelToLength = pixelToLength + toAdd;
+            pixelsPerCm = pixelsPerCm + toAdd;
         }
-        pixelToLength = pixelToLength / 4;
+        pixelsPerCm = pixelsPerCm / 4;
     }
 
     private double calcXPixelLength(Point p1, Point p2) {

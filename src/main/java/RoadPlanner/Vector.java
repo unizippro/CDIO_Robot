@@ -11,12 +11,12 @@ public class Vector {
     public Vector(int x, int y) {
         this.x = x;
         this.y = y;
-//        getLength();
+//        getPixelsPerCm();
     }
     public Vector(Point c1, Point c2) {
         this.x = c2.x - c1.x;
         this.y = c2.y - c1.y;
-//        getLength();
+//        getPixelsPerCm();
     }
 
     public Vector() {
@@ -42,7 +42,7 @@ public class Vector {
     public void update(Point c1, Point c2) {
         this.x = c2.x - c1.x;
         this.y = c2.y - c1.y;
-//        getLength();
+//        getPixelsPerCm();
         this.calculateLenght();
     }
 }
