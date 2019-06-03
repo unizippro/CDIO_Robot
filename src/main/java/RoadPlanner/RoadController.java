@@ -10,6 +10,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains needed info about the robot, board and balls' positions.
+ * The class is passed as a reference when creating new planner.
+ *
+ */
 public class RoadController {
     private List<Ball> balls = new ArrayList<>();
     private Board board = new Board();
@@ -19,7 +24,7 @@ public class RoadController {
     public RoadController() {
     }
 
-    public void initalizeBoard(List<Point> points) {
+    public void initializeBoard(List<Point> points) {
         this.board.update(points);
     }
 
@@ -59,6 +64,10 @@ public class RoadController {
         this.robot = robot;
     }
 
+    /**
+     * This is the facade to execute instructions in Planner
+     * @return instruction to be executed by MovementController
+     */
     public Instruction getNextInstruction() {
         return this.planner.nextInstruction();
     }

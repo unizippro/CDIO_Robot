@@ -33,13 +33,13 @@ public class Planner {
 
     private void findClosestBall() {
         if (this.roadController.getBalls().size() > 0) {
-            currentClosetBall = calcVector(this.roadController.getRobot().mid, this.roadController.getBalls().get(0).getPos());
+            currentClosetBall = calcVector(this.roadController.getRobot().getMid(), this.roadController.getBalls().get(0).getPos());
             closestBall = this.roadController.getBalls().get(0);
         } else {
             throw new IllegalArgumentException("There where no Balls in the balls array.");
         }
         for (int i = 1; i < this.roadController.getBalls().size(); i++) {
-            Vector tempVector = calcVector(this.roadController.getRobot().mid, this.roadController.getBalls().get(i).getPos());
+            Vector tempVector = calcVector(this.roadController.getRobot().getMid(), this.roadController.getBalls().get(i).getPos());
             if (tempVector.length < currentClosetBall.length) {
                 currentClosetBall = tempVector;
                 closestBall = this.roadController.getBalls().get(i);
@@ -51,21 +51,21 @@ public class Planner {
 
     public Instruction nextInstruction() {
         findClosestBall();
-        return new Instruction(calcAngle(this.roadController.getRobot().vector, currentClosetBall), currentClosetBall.length);
+        return new Instruction(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall), currentClosetBall.length);
     }
 
     public Instruction nextInstructionv2() {
         findClosestBall();
 
         //1 degree delta, the robot should turn 90 and drive forward
-        if (abs((abs(calcAngle(this.roadController.getRobot().vector, currentClosetBall)) - 90)) <= 1 && (abs(calcAngle(this.roadController.getRobot().vector, currentClosetBall)) - 90) < 0) {
+        if (abs((abs(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall)) - 90)) <= 1 && (abs(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall)) - 90) < 0) {
             ////If the robot should do a 90 turn to run in the negativ x-axis
-            return new Instruction(calcAngle(this.roadController.getRobot().vector, currentClosetBall), currentClosetBall.length);
-        } else if ((abs(calcAngle(this.roadController.getRobot().vector, currentClosetBall)) - 90) > 0) {
+            return new Instruction(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall), currentClosetBall.length);
+        } else if ((abs(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall)) - 90) > 0) {
             //If the robot should do a 180 turn to run in the positiv x-axis
             return new Instruction(180, 0);
         } else {
-            System.out.println("**********" + (abs(calcAngle(this.roadController.getRobot().vector, currentClosetBall)) - 90));
+            System.out.println("**********" + (abs(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall)) - 90));
             // If not, we should do the tour in two parts.
             System.out.println("x:" + currentClosetBall.x + " y:" + currentClosetBall.y);
             return new Instruction(0, abs(currentClosetBall.x));
@@ -75,11 +75,11 @@ public class Planner {
 
     public Instruction nextInstructionv3() {
         findClosestBall();
-        double angleToBall = calcAngle(this.roadController.getRobot().vector, currentClosetBall);
+        double angleToBall = calcAngle(this.roadController.getRobot().getVector(), currentClosetBall);
         try {
-            System.out.println("Robot compas: " + this.roadController.getRobot().compas.toString());
+            System.out.println("Robot compas: " + this.roadController.getRobot().getCompas().toString());
             System.out.println("AngleToBall : " + angleToBall);
-            switch (this.roadController.getRobot().compas) {
+            switch (this.roadController.getRobot().getCompas()) {
                 case UP:
                 case DOWN:
                     // Tests if the ball is +- 90 degrees from the robot.
@@ -171,17 +171,17 @@ public class Planner {
 
         this.currentClosetBall = new Vector();
 
-        double temp = calcAngle(this.roadController.getRobot().vector, this.roadController.getBoard().getxAxis());
+        double temp = calcAngle(this.roadController.getRobot().getVector(), this.roadController.getBoard().getxAxis());
         System.out.println("The robot's direction is " + temp);
 
         if (temp <= 45 && temp >= -45) {
-            this.roadController.getRobot().compas = Robot.Compas.RIGHT;
+            this.roadController.getRobot().setCompas(Robot.Compas.RIGHT);
         } else if (temp < 135 && temp > 45) {
-            this.roadController.getRobot().compas = Robot.Compas.UP;
+            this.roadController.getRobot().setCompas(Robot.Compas.UP);
         } else if (temp <= -135 || temp >= 135) {
-            this.roadController.getRobot().compas = Robot.Compas.LEFT;
+            this.roadController.getRobot().setCompas(Robot.Compas.LEFT);
         } else if (temp < -45 && temp > -135) {
-            this.roadController.getRobot().compas = Robot.Compas.DOWN;
+            this.roadController.getRobot().setCompas(Robot.Compas.DOWN);
         } else {
             System.err.println("ERROR robot's direction is is not coverd: " + temp);
         }

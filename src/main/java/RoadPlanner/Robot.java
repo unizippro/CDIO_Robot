@@ -4,7 +4,6 @@ import java.awt.*;
 
 public class Robot {
 
-
     enum Sector{
         UPPER,
         LOWER,
@@ -19,12 +18,12 @@ public class Robot {
         LEFT
     }
 
-    Point front;
-    Point rear;
-    Point mid;
-    Vector vector;
-    Sector sector;
-    Compas compas;
+    private Point front;
+    private Point rear;
+    private Point mid;
+    private Vector vector;
+    private Sector sector;
+    private Compas compas;
 
     public Robot(Point front, Point rear) {
         this.front = front;
@@ -35,13 +34,47 @@ public class Robot {
 
     }
 
+    public Compas getCompas() {
+        return compas;
+    }
+
+    public Sector getSector() {
+        return sector;
+    }
+
+    public Vector getVector() {
+        return vector;
+    }
+
+    public Point getFront() {
+        return front;
+    }
+
+    public Point getRear() {
+        return rear;
+    }
+
+    public Point getMid() {
+        return mid;
+    }
+
     public void setFront(Point c) {
         this.front = c;
     }
     public void setRear(Point c) {
         this.rear = c;
     }
+    public void setCompas(Compas compas) {
+        this.compas = compas;
+    }
 
+    public void setMid(Point mid) {
+        this.mid = mid;
+    }
+
+    private void setVector(Vector vector) {
+        this.vector = vector;
+    }
     /**
      * @param front
      * @param back
@@ -55,14 +88,14 @@ public class Robot {
     }
 
     private void calcMid() {
-        this.mid = new Point((front.x + rear.x)/2,(front.y + rear.y)/2);
+        this.setMid(new Point((front.x + rear.x)/2,(front.y + rear.y)/2));
     }
 
     /**
      *  Calculate the vector from 2 Points c1 to c2.
      */
     private void calcVector() {
-        vector = new Vector(front.x - mid.x, front.y - mid.y);
+        this.setVector(new Vector(front.x - mid.x, front.y - mid.y));
     }
 
 
