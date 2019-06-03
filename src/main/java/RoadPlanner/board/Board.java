@@ -7,16 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    private Point lowerLeft;
-    private Point lowerRight;
-    private Point upperRight;
-    private Point upperLeft;
-
+    /**
+     * List consisting of corners of data type point
+     * 0 = upperleft
+     * 1 = upperright
+     * 2 = lowerleft
+     * 3 = lowerright
+     */
+    private List<Point> corners = new ArrayList<>();
     private Vector xAxis;
 
-    public Board(List<Integer> boardList) {
-        this.assignPoints(boardList);
-        xAxis = new Vector(lowerLeft, lowerRight);
+    public Board(List<Point> boardList) {
+        this.update(boardList);
     }
 
     public Board() {
@@ -24,33 +26,34 @@ public class Board {
         xAxis = new Vector(0, 0);
     }
 
-    public void update(Point lowerLeft, Point lowerRight, Point upperRight, Point upperLeft) {
-        this.lowerLeft = lowerLeft;
-        this.lowerRight = lowerRight;
-        this.upperRight = upperRight;
-        this.upperLeft = upperLeft;
-        this.xAxis.update(lowerLeft, lowerRight);
+    /**
+     * assigns new points and updates xAxis' vectors
+     * @param boardList
+     */
+    public void update(List<Point> boardList) {
+        this.assignPoints(boardList);
+        this.xAxis.update(this.corners.get(2), this.corners.get(3));
     }
-    private void assignPoints(List<Integer> boardList) {
-        this.upperLeft = new Point(boardList.get(0), boardList.get(1));
-        this.upperRight = new Point(boardList.get(2), boardList.get(3));
-        this.lowerLeft = new Point(boardList.get(4), boardList.get(5));
-        this.lowerRight = new Point(boardList.get(6), boardList.get(7));
+    private void assignPoints(List<Point> boardList) {
+        this.corners.add(boardList.get(0));
+        this.corners.add(boardList.get(0));
+        this.corners.add(boardList.get(0));
+        this.corners.add(boardList.get(0));
     }
 
     public Point getLowerLeft() {
-        return lowerLeft;
+        return this.corners.get(2);
     }
 
     public Point getLowerRight() {
-        return lowerRight;
+        return this.corners.get(3);
     }
 
     public Point getUpperLeft() {
-        return upperLeft;
+        return this.corners.get(0);
     }
 
     public Point getUpperRight() {
-        return upperRight;
+        return this.corners.get(1);
     }
 }
