@@ -26,10 +26,6 @@ public class Robot {
     Sector sector;
     Compas compas;
 
-    public Robot() {
-        //For Planner constructor
-    }
-
     public Robot(Point front, Point rear) {
         this.front = front;
         this.rear = rear;

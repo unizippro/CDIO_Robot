@@ -1,3 +1,5 @@
+package RoadPlanner;
+
 import RoadPlanner.ball.Ball;
 import RoadPlanner.board.Board;
 import RoadPlanner.Robot;
@@ -8,20 +10,20 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoadPlanner {
+public class RoadController {
     private List<Ball> balls = new ArrayList<>();
     private Board board = new Board();
-    private Robot robot = new Robot();
-    private Planner planner = new Planner();
+    private Robot robot;
+    private Planner planner = new Planner(this);
 
-    public RoadPlanner() {
+    public RoadController() {
     }
 
     public void initalizeBoard(List<Point> points) {
         this.board.update(points);
     }
 
-    public void intializeBalls(List<Point> balls) {
+    public void initializeBalls(List<Point> balls) {
         List<Ball> newBallList = new ArrayList<>();
         for (Point point : balls) {
             newBallList.add(new Ball(point));
@@ -30,7 +32,7 @@ public class RoadPlanner {
     }
 
     public void initializeRobot(Point pointFront, Point pointBack) {
-        this.robot.update(pointFront, pointBack);
+        this.robot = new Robot(pointFront, pointBack);
     }
 
     public List<Ball> getBalls() {
