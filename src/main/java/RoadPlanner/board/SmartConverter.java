@@ -11,14 +11,14 @@ public class SmartConverter {
         return pixelToLength;
     }
 
-    public void calculateBoard(Point lowerLeft,
-                               Point lowerRight,
-                               Point upperLeft,
-                               Point upperRight) {
+    public void calculateBoard(Point upperLeft,
+                               Point upperRight,
+                               Point lowerLeft,
+                               Point lowerRight) {
         pixelToLength = 0;
         for (int i = 0; i < 4; i++) {
-            double toAdd = (i % 2 == 0) ? calcXPixelLength(lowerLeft, lowerRight) : calcYPixelLength(upperLeft, upperRight);
-            pixelToLength = +toAdd;
+            double toAdd = (i % 2 == 0) ? calcXPixelLength(lowerLeft, lowerRight) : calcYPixelLength(upperLeft, lowerLeft);
+            pixelToLength = pixelToLength + toAdd;
         }
         pixelToLength = pixelToLength / 4;
     }
