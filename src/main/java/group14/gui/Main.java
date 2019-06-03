@@ -1,23 +1,37 @@
 package group14.gui;
 
-import group14.Application;
+import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
+import robot.rmi_interfaces.IMovement;
+import robot.rmi_interfaces.IRobot;
+import robot.rmi_interfaces.ISensors;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main {
 
+    private IRobot robot;
+    private ISensors sensors;
+    private IMovement movement;
+
+    @Inject
+    public Main(IRobot robot, ISensors sensors, IMovement movement) {
+        this.robot = robot;
+        this.sensors = sensors;
+        this.movement = movement;
+    }
+
     private Timer timer = new Timer();
     private TimerTask updateDistance = new TimerTask() {
         public void run() {
             try {
-                double percentage = Application.getSensors().getRange();
+                double percentage = sensors.getRange();
                 if (Double.isInfinite(percentage)) {
                     Platform.runLater(() -> distanceLabel.setText("∞"));
                 } else {
@@ -60,36 +74,36 @@ public class Main {
         this.speedSlider.setValue(value);
         this.currentSpeedValue.setText(value + "%");
 
-        Application.getMovement().setSpeedPercentage(value);
+        this.movement.setSpeedPercentage(value);
     }
 
 
     @FXML
     public void onForwardClick() throws Exception {
-        Application.getMovement().forward();
+        this.movement.forward();
     }
 
 
     @FXML
     public void onBackwardClick() throws Exception {
-        Application.getMovement().backward();
+        this.movement.backward();
     }
     @FXML
     public void onLeftClick() throws Exception {
-        Application.getMovement().turn(-15);
+        this.movement.turn(-15);
     }
     @FXML
     public void onRightClick() throws Exception {
-        Application.getMovement().turn(15);
+        this.movement.turn(15);
     }
     @FXML
     public void onStopClick() throws Exception {
-        Application.getMovement().stop();
+        this.movement.stop();
     }
 
     @FXML
     public void onShutdownClick() throws Exception {
-        Application.getRobot().shutdown();
+        this.robot.shutdown();
     }
 
 

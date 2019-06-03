@@ -1,5 +1,7 @@
 package group14;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,6 +12,8 @@ import robot.rmi_interfaces.IMovement;
 import robot.rmi_interfaces.IRobot;
 import robot.rmi_interfaces.ISensors;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.Naming;
 
 
@@ -19,51 +23,30 @@ public class Application extends javafx.application.Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("CDIO Robot GUI");
+    public void start(Stage primaryStage) {
+        Injector injector = Guice.createInjector(new Container());
 
-        setUserAgentStylesheet(STYLESHEET_MODENA);
+        FXMLLoader fxmlLoader = new FXMLLoader();
 
-        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("gui/main.fxml"));
-        Parent root = loader.load();
+        fxmlLoader.setControllerFactory(injector::getInstance);
 
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
-    }
+        try (InputStream main = ClassLoader.getSystemResourceAsStream("group14/gui/main.fxml")) {
+            assert main != null;
+            Parent root = fxmlLoader.load(main);
 
+            setUserAgentStylesheet(STYLESHEET_MODENA);
 
-    private static ISensors sensors;
-    private static IMovement movement;
-    private static IRobot robot;
-
-    public static ISensors getSensors() throws Exception {
-        if (sensors == null) {
-            sensors = (ISensors) Naming.lookup("rmi://" + getBrickAddress() + ":1199/sensors");
+            primaryStage.setScene(new Scene(root));
+            primaryStage.setTitle("CDIO Robot GUI");
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
-
-        return sensors;
     }
 
 
-    public static IMovement getMovement() throws Exception {
-        if (movement == null) {
-            movement = (IMovement) Naming.lookup("rmi://" + getBrickAddress() + ":1199/movement");
-        }
-
-        return movement;
-    }
-
-
-    public static IRobot getRobot() throws Exception {
-        if (robot == null) {
-            robot = (IRobot) Naming.lookup("rmi://" + getBrickAddress() + ":1199/robot");
-        }
-
-        return robot;
-    }
-
-
-    private static String getBrickAddress() throws RuntimeException {
+    public static String getBrickAddress() throws RuntimeException {
         BrickInfo[] bricks = BrickFinder.discover();
         if (bricks.length == 0) {
             throw new RuntimeException("No bricks on network");
