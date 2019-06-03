@@ -44,14 +44,4 @@ public class Application extends javafx.application.Application {
             System.exit(1);
         }
     }
-
-
-    public static String getBrickAddress() throws RuntimeException {
-        BrickInfo[] bricks = BrickFinder.discover();
-        if (bricks.length == 0) {
-            throw new RuntimeException("No bricks on network");
-        }
-
-        return bricks[0].getIPAddress();
-    }
 }
