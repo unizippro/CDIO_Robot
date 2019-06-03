@@ -20,7 +20,7 @@ public class Planner {
     public Planner(List<Point> coorList) {
         int i = 0;
         this.robot = new Robot();
-//        this.board = new Board()
+        this.board = new Board();
         this.balls = new BallList().getBallList();
         this.currentClosetBall = new Vector();
 
@@ -167,35 +167,31 @@ public class Planner {
         }
     }
 
-    public Instruction getNextInstruction() {
-        
-    }
 
-//    public void updatePlanner(List<Point> coorList) {
-//        int i = 0;
-//        this.robot.update(coorList.get(i++), coorList.get(i++));
-////        this.board.update(coorList.get(i++), coorList.get(i++), coorList.get(i++), coorList.get(i++));
-//        this.balls = new ArrayList<Ball>();
-//
-//        for (int j = i; j < coorList.size(); j++) {
-//            this.balls.add(new Ball(coorList.get(j)));
-//        }
-//
-//        this.currentClosetBall = new Vector();
-//
-//        double temp = calcAngle(robot.vector, board.xAxis);
-//        System.out.println("The robot's direction is " + temp);
-//
-//        if (temp <= 45 && temp >= -45) {
-//            this.robot.compas = Robot.Compas.RIGHT;
-//        } else if (temp < 135 && temp > 45) {
-//            this.robot.compas = Robot.Compas.UP;
-//        } else if (temp <= -135 || temp >= 135) {
-//            this.robot.compas = Robot.Compas.LEFT;
-//        } else if (temp < -45 && temp > -135) {
-//            this.robot.compas = Robot.Compas.DOWN;
-//        } else {
-//            System.err.println("ERROR robot's direction is is not coverd: " + temp);
-//        }
-//    }
+    public void updatePlanner(List<Point> coorList) {
+        int i = 0;
+        this.robot.update(coorList.get(i++), coorList.get(i++));
+//        this.board.update(coorList.get(i++), coorList.get(i++), coorList.get(i++), coorList.get(i++));
+
+        for (int j = i; j < coorList.size(); j++) {
+            this.balls.add(new Ball(coorList.get(j)));
+        }
+
+        this.currentClosetBall = new Vector();
+
+        double temp = calcAngle(robot.vector, board.getxAxis());
+        System.out.println("The robot's direction is " + temp);
+
+        if (temp <= 45 && temp >= -45) {
+            this.robot.compas = Robot.Compas.RIGHT;
+        } else if (temp < 135 && temp > 45) {
+            this.robot.compas = Robot.Compas.UP;
+        } else if (temp <= -135 || temp >= 135) {
+            this.robot.compas = Robot.Compas.LEFT;
+        } else if (temp < -45 && temp > -135) {
+            this.robot.compas = Robot.Compas.DOWN;
+        } else {
+            System.err.println("ERROR robot's direction is is not coverd: " + temp);
+        }
+    }
 }

@@ -56,4 +56,8 @@ public class Board {
     public Point getUpperRight() {
         return this.corners.get(1);
     }
+
+    public Vector getxAxis() {
+        return this.xAxis;
+    }
 }
