@@ -1,11 +1,5 @@
-import RoadPlanner.Instruction;
-import RoadPlanner.Planner;
-import RoadPlanner.board.SmartConverter;
-import movement_queue.MovementController;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import RoadPlanner.ball.BallList;
+import RoadPlanner.board.Board;
 
 //TODO: When the robot have completed an instruction, the virual world should be updated accordingly. To test the GUI an instruction queue
 
@@ -17,21 +11,22 @@ public class Program {
     }
 
     private void doAction() {
-        Point p1 = new Point();
-        p1.setLocation(136,356);
 
-        Point p2 = new Point();
-        p2.setLocation(3676, 443);
-
-        Point p3 = new Point();
-        p3.setLocation(366,2886);
-
-        Point p4 = new Point();
-        p4.setLocation(3570,2838);
-
-        SmartConverter sc = new SmartConverter();
-        sc.calculateBoard(p1,p2,p3,p4);
-        System.out.println(sc.getLength());
+//        Point p1 = new Point();
+//        p1.setLocation(136,356);
+//
+//        Point p2 = new Point();
+//        p2.setLocation(3676, 443);
+//
+//        Point p3 = new Point();
+//        p3.setLocation(366,2886);
+//
+//        Point p4 = new Point();
+//        p4.setLocation(3570,2838);
+//
+//        SmartConverter sc = new SmartConverter();
+//        sc.calculateBoard(p1,p2,p3,p4);
+//        System.out.println(sc.getLength());
     }
 /*
     void testInstructionv4() {

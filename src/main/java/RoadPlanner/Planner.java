@@ -17,11 +17,8 @@ public class Planner {
     private Vector currentClosetBall;
     private int deltaAngle = 2;
 
-    public Planner(List<Point> coorList) {
+    public Planner() {
         int i = 0;
-        this.robot = new Robot();
-        this.board = new Board();
-        this.balls = new BallList().getBallList();
         this.currentClosetBall = new Vector();
 
 //        updatePlanner(coorList);
@@ -37,6 +34,22 @@ public class Planner {
         //System.out.println("toBall: " + toBall);
         //System.out.println("Robot: " + robotv);
         //System.out.println("AngleToBall = " + calcAngle(robotv,toBall));
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public void setBalls(List<Ball> balls) {
+        this.balls = balls;
+    }
+
+    public void setRobot(Robot robot) {
+        this.robot = robot;
+    }
+
+    public void setClosestBall(Ball closestBall) {
+        this.closestBall = closestBall;
     }
 
     private void findClosestBall() {
