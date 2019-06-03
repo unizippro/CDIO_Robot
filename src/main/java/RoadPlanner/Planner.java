@@ -5,7 +5,6 @@ import RoadPlanner.ball.BallList;
 import RoadPlanner.board.Board;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.*;
@@ -14,7 +13,7 @@ public class Planner {
     private Robot robot;
     private Board board;
     private List<Ball> balls;
-    private Ball closetBall;
+    private Ball closestBall;
     private Vector currentClosetBall;
     private int deltaAngle = 2;
 
@@ -32,44 +31,44 @@ public class Planner {
 
         //TODO align robot first!
 
-        //findClosetBall();
-        //Vector toBall = calcVector(robot.mid,closetBall.pos);
+        //findClosestBall();
+        //Vector toBall = calcVector(robot.mid,closestBall.pos);
         //Vector robotv = calcVector(robot.mid,robot.front);
         //System.out.println("toBall: " + toBall);
         //System.out.println("Robot: " + robotv);
         //System.out.println("AngleToBall = " + calcAngle(robotv,toBall));
     }
 
-    private void findClosetBall() {
+    private void findClosestBall() {
         if (balls.size() > 0) {
             currentClosetBall = calcVector(robot.mid, balls.get(0).getPos());
-            closetBall = balls.get(0);
+            closestBall = balls.get(0);
         } else {
             throw new IllegalArgumentException("There where no Balls in the balls array.");
         }
         for (int i = 1; i < balls.size(); i++) {
             Vector tempVector = calcVector(robot.mid, balls.get(i).getPos());
-            if (tempVector.lenght < currentClosetBall.lenght) {
+            if (tempVector.length < currentClosetBall.length) {
                 currentClosetBall = tempVector;
-                closetBall = balls.get(i);
+                closestBall = balls.get(i);
             }
         }
-        System.out.println("Current closest ball: " + closetBall.getPos());
+        System.out.println("Current closest ball: " + closestBall.getPos());
     }
 
 
     public Instruction nextInstruction() {
-        findClosetBall();
-        return new Instruction(calcAngle(robot.vector, currentClosetBall), currentClosetBall.lenght);
+        findClosestBall();
+        return new Instruction(calcAngle(robot.vector, currentClosetBall), currentClosetBall.length);
     }
 
     public Instruction nextInstructionv2() {
-        findClosetBall();
+        findClosestBall();
 
         //1 degree delta, the robot should turn 90 and drive forward
         if (abs((abs(calcAngle(robot.vector, currentClosetBall)) - 90)) <= 1 && (abs(calcAngle(robot.vector, currentClosetBall)) - 90) < 0) {
             ////If the robot should do a 90 turn to run in the negativ x-axis
-            return new Instruction(calcAngle(robot.vector, currentClosetBall), currentClosetBall.lenght);
+            return new Instruction(calcAngle(robot.vector, currentClosetBall), currentClosetBall.length);
         } else if ((abs(calcAngle(robot.vector, currentClosetBall)) - 90) > 0) {
             //If the robot should do a 180 turn to run in the positiv x-axis
             return new Instruction(180, 0);
@@ -83,7 +82,7 @@ public class Planner {
     }
 
     public Instruction nextInstructionv3() {
-        findClosetBall();
+        findClosestBall();
         double angleToBall = calcAngle(robot.vector, currentClosetBall);
         try {
             System.out.println("Robot compas: " + robot.compas.toString());
@@ -100,7 +99,7 @@ public class Planner {
                         // The ball is in front of us
                         if (abs((abs(angleToBall) - 90)) <= deltaAngle) { // Test if the route is in one part or two parts
                             //System.out.println("The ball is in a 90 deg direction.");
-                            return new Instruction(angleToBall, currentClosetBall.lenght);
+                            return new Instruction(angleToBall, currentClosetBall.length);
                         } else { // The route is spitted up in 2 parts.
                             //System.out.println("The route is spitted up");
                             return new Instruction(0, abs(currentClosetBall.x));
@@ -122,7 +121,7 @@ public class Planner {
             // The ball is in front of us
             if (abs((abs(angleToBall) - 90)) <= deltaAngle) { // Test if the route is in one part or two parts
                 //System.out.println("The ball is in a 90 deg direction.");
-                return new Instruction(angleToBall, currentClosetBall.lenght);
+                return new Instruction(angleToBall, currentClosetBall.length);
             } else { // The route is spitted up in 2 parts.
                 //System.out.println("The route is spitted up");
                 return new Instruction(0, abs(currentClosetBall.y));
@@ -166,6 +165,10 @@ public class Planner {
             //System.out.println(angle);
             return angle;
         }
+    }
+
+    public Instruction getNextInstruction() {
+        
     }
 
 //    public void updatePlanner(List<Point> coorList) {

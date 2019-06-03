@@ -58,14 +58,14 @@ public class Robot {
 
     }
 
-    public void calcMid() {
+    private void calcMid() {
         this.mid = new Point((front.x + rear.x)/2,(front.y + rear.y)/2);
     }
 
     /**
      *  Calculate the vector from 2 Points c1 to c2.
      */
-    public void calcVector() {
+    private void calcVector() {
         vector = new Vector(front.x - mid.x, front.y - mid.y);
     }
 

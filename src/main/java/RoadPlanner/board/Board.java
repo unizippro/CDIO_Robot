@@ -2,6 +2,7 @@ package RoadPlanner.board;
 
 import RoadPlanner.Vector;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class Board {
     private Point upperRight;
     private Point upperLeft;
 
-    Vector xAxis;
+    private Vector xAxis;
 
     public Board(List<Integer> boardList) {
         this.assignPoints(boardList);
