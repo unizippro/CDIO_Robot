@@ -1,20 +1,9 @@
 package group14;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-import lejos.hardware.BrickFinder;
-import lejos.hardware.BrickInfo;
-import robot.rmi_interfaces.IMovement;
-import robot.rmi_interfaces.IRobot;
-import robot.rmi_interfaces.ISensors;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.rmi.Naming;
 
 
 public class Application extends javafx.application.Application {
@@ -24,20 +13,17 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Injector injector = Guice.createInjector(new Container());
-
-        FXMLLoader fxmlLoader = new FXMLLoader();
-
-        fxmlLoader.setControllerFactory(injector::getInstance);
-
         try (InputStream main = ClassLoader.getSystemResourceAsStream("group14/gui/main.fxml")) {
             assert main != null;
-            Parent root = fxmlLoader.load(main);
+            SceneManager.getInstance().setRoot(main);
 
             setUserAgentStylesheet(STYLESHEET_MODENA);
 
-            primaryStage.setScene(new Scene(root));
+            primaryStage.setScene(SceneManager.getInstance().getScene());
             primaryStage.setTitle("CDIO Robot GUI");
+            primaryStage.setHeight(740);
+            primaryStage.setWidth(968);
+            primaryStage.setResizable(false);
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
