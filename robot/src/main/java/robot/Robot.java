@@ -1,6 +1,10 @@
 package robot;
 
+import lejos.hardware.motor.BasicMotor;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
+import lejos.hardware.motor.UnregulatedMotor;
+import lejos.hardware.port.BasicMotorPort;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3IRSensor;
@@ -24,7 +28,8 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
     };
 
     private Movement movement = new Movement(new EV3LargeRegulatedMotor(MotorPort.A), new EV3LargeRegulatedMotor(MotorPort.B));
-    private Sensors sensors = new Sensors(new EV3IRSensor(SensorPort.S1));
+    //private Sensors sensors = new Sensors(new EV3IRSensor(SensorPort.S1));
+    private Controller controller = new Controller( new UnregulatedMotor(MotorPort.C));//, new UnregulatedMotor(MotorPort.C));
 
     private AtomicBoolean running = new AtomicBoolean(false);
     private Thread runningThread = null;
@@ -36,9 +41,11 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
         return this.movement;
     }
 
-    public Sensors getSensors() {
+    /*public Sensors getSensors() {
         return this.sensors;
-    }
+    }*/
+
+    public Controller getController() { return this.controller; }
 
     @Override
     public void start() {
@@ -66,9 +73,9 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
         this.running.set(true);
 
         while (this.running.get()) {
-            if (this.sensors.isWithinRange(25)) {
+           /* if (this.sensors.isWithinRange(25)) {
                 this.movement.stop();
-            }
+            }*/
         }
     }
 }
