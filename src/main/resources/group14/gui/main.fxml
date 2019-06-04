@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import group14.gui.components.CoordinateSystem?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="968.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="group14.gui.Main">
+    <children>
+        <TabPane layoutX="0.0" layoutY="290.0" prefHeight="450.0" prefWidth="968.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Plot">
+                    <content>
+                        <AnchorPane id="Content">
+                            <children>
+                                <CoordinateSystem fx:id="plot"
+                                                  style="-fx-background-color: rgb(0,41,52);"
+                                                  XBound="40"
+                                                  YBound="20"
+                                                  AnchorPane.bottomAnchor="35.0"
+                                                  AnchorPane.leftAnchor="35.0"
+                                                  AnchorPane.rightAnchor="35.0"
+                                                  AnchorPane.topAnchor="35.0"
+                                />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Color">
+                    <content>
+                        <AnchorPane id="Content" />
+                    </content>
+                </Tab>
+                <Tab text="Dummy">
+                    <content>
+                        <AnchorPane id="Content" />
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <SplitPane dividerPositions="0.6014492753623188" focusTraversable="true" layoutX="0.0" layoutY="0.0" prefHeight="290.0" prefWidth="968.0">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="303.0" prefWidth="578.0">
+                    <children>
+                        <Label layoutX="45.0" layoutY="73.0" text="Collected balls">
+                     <font>
+                        <Font size="15.0" fx:id="x12" />
+                     </font></Label>
+                        <Label layoutX="180.0" layoutY="74.0" prefHeight="17.0" prefWidth="54.0" text="0 / 10" />
+                        <Label layoutX="26.0" layoutY="41.0" text="Distance (sensor)">
+                     <font>
+                        <Font size="15.0" fx:id="x14" />
+                     </font></Label>
+                        <Button layoutX="26.0" layoutY="249.0" mnemonicParsing="false" text="Start">
+                     <font>
+                        <Font size="15.0" fx:id="x15" />
+                     </font></Button>
+                        <Button layoutX="97.0" layoutY="249.0" mnemonicParsing="false" text="Stop">
+                     <font>
+                        <Font size="15.0" fx:id="x16" />
+                     </font></Button>
+                        <Button layoutX="165.0" layoutY="249.0" mnemonicParsing="false" onAction="#onShutdownClick" text="Shutdown">
+                            <font>
+                                <Font size="15.0" fx:id="x11" />
+                            </font>
+                        </Button>
+                        <Label layoutX="26.0" layoutY="223.0" text="Robot">
+                     <font>
+                        <Font size="15.0" fx:id="x17" />
+                     </font></Label>
+                  <Label fx:id="distanceLabel" layoutX="180.0" layoutY="42.0" text="0cm" />
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <Button layoutX="139.0" layoutY="71.0" mnemonicParsing="false" onAction="#onStopClick" prefHeight="36.0" prefWidth="100.0" text="Brake">
+                     <font>
+                        <Font size="15.0" fx:id="x18" />
+                     </font></Button>
+                        <Button layoutX="139.0" layoutY="26.0" mnemonicParsing="false" onAction="#onForwardClick" prefHeight="36.0" prefWidth="100.0" text="Forward">
+                     <font>
+                        <Font size="15.0" fx:id="x19" />
+                     </font></Button>
+                        <Button layoutX="139.0" layoutY="119.0" mnemonicParsing="false" onAction="#onBackwardClick" prefHeight="36.0" prefWidth="100.0" text="Backward">
+                     <font>
+                        <Font size="15.0" fx:id="x20" />
+                     </font></Button>
+                        <Button layoutX="249.0" layoutY="71.0" mnemonicParsing="false" onAction="#onRightClick" prefHeight="37.0" prefWidth="100.0" text="Right">
+                     <font>
+                        <Font size="15.0" fx:id="x21" />
+                     </font></Button>
+                        <Button layoutX="32.0" layoutY="71.0" mnemonicParsing="false" onAction="#onLeftClick" prefHeight="36.0" prefWidth="100.0" text="Left">
+                     <font>
+                        <Font size="15.0" fx:id="x22" />
+                     </font></Button>
+                  <ToggleButton layoutX="139.0" layoutY="165.0" mnemonicParsing="false" onAction="#onFanToggled" prefHeight="27.0" prefWidth="100.0" text="Fan off" />
+                        <Slider fx:id="speedSlider" layoutX="169.0" layoutY="218.0" onMouseReleased="#updateSpeedSlider" prefHeight="16.0" prefWidth="180.0" />
+                        <Label layoutX="41.0" layoutY="216.0" text="Speed">
+                            <font>
+                                <Font size="15.0" fx:id="x1" />
+                            </font>
+                        </Label>
+                  <Label layoutX="41.0" layoutY="246.0" text="Current speed">
+                     <font>
+                        <Font size="15.0" fx:id="x13" />
+                     </font>
+                  </Label>
+                  <Label fx:id="currentSpeedValue" layoutX="169.0" layoutY="247.0" text="0%" />
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>
