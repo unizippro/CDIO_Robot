@@ -1,3 +1,6 @@
+package group14.gui;
+
+import group14.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

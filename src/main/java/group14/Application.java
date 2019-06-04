@@ -1,3 +1,5 @@
+package group14;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,7 +24,7 @@ public class Application extends javafx.application.Application {
 
         setUserAgentStylesheet(STYLESHEET_MODENA);
 
-        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("main.fxml"));
+        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("gui/main.fxml"));
         Parent root = loader.load();
 
         primaryStage.setScene(new Scene(root));

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="968.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="968.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="group14.gui.Main">
     <children>
         <TabPane layoutX="0.0" layoutY="290.0" prefHeight="450.0" prefWidth="968.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
@@ -56,7 +56,7 @@
                         <Label font="$x1" layoutX="26.0" layoutY="41.0" text="Distance (sensor)" />
                         <Button font="$x1" layoutX="26.0" layoutY="249.0" mnemonicParsing="false" text="Start" />
                         <Button font="$x1" layoutX="97.0" layoutY="249.0" mnemonicParsing="false" text="Stop" />
-                        <Button layoutX="165.0" layoutY="249.0" mnemonicParsing="false" onAction="#onShutdownClick" text="Shutdown">
+                        <Button layoutX="165.0" layoutY="249.0" mnemonicParsing="false" onAction="#onShutdownClick" text="group14.Shutdown">
                             <font>
                                 <Font size="15.0" fx:id="x11" />
                             </font>
