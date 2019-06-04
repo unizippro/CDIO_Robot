@@ -18,7 +18,7 @@ public class Application extends javafx.application.Application {
 
         SceneManager.initialize(new Container(isDemo));
 
-        try (InputStream main = ClassLoader.getSystemResourceAsStream("group14/gui/main.fxml")) {
+        try (InputStream main = ClassLoader.getSystemResourceAsStream("group14/gui/BrickSelector.fxml")) {
             assert main != null;
             SceneManager.getInstance().setRoot(main);
 
