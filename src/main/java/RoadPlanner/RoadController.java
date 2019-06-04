@@ -7,6 +7,7 @@ import RoadPlanner.Instruction;
 import RoadPlanner.Planner;
 import RoadPlanner.board.Cross;
 import RoadPlanner.board.Quadrant;
+import math.Calculator;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class RoadController {
     }
 
     private void calcCompas() {
-        double temp = this.planner.calcAngle(this.robot.getVector(), this.board.getxAxis());
+        double temp = Calculator.CALCULATE_ANGLE(this.robot.getVector(), this.board.getxAxis());
         System.out.println("The robot's direction is " + temp);
 
         if (temp <= 45 && temp >= -45) {

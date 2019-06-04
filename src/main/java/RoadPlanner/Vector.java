@@ -6,7 +6,8 @@ import static java.lang.Math.*;
 
 public class Vector {
     double length;
-    int x,y;
+    private int x;
+    private int y;
 
     public Vector(int x, int y) {
         this.x = x;
@@ -31,7 +32,7 @@ public class Vector {
     /**
      * Calculates the length
      */
-    private void calculateLenght() {
+    private void calculateLength() {
         this.length = sqrt(pow(x,2)+ pow(y,2));
     }
 
@@ -43,6 +44,13 @@ public class Vector {
         this.x = c2.x - c1.x;
         this.y = c2.y - c1.y;
 //        getPixelsPerCm();
-        this.calculateLenght();
+        this.calculateLength();
+    }
+
+    public int getX() {
+        return this.x;
+    }
+    public int getY() {
+        return this.y;
     }
 }

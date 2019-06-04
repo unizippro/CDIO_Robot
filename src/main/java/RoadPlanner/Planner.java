@@ -3,6 +3,8 @@ package RoadPlanner;
 import RoadPlanner.ball.Ball;
 import RoadPlanner.ball.BallList;
 import RoadPlanner.board.Board;
+import math.Calculator;
+
 import java.awt.*;
 import java.util.List;
 
@@ -33,13 +35,13 @@ public class Planner {
 
     private void findClosestBall() {
         if (this.roadController.getBalls().size() > 0) {
-            currentClosetBall = calcVector(this.roadController.getRobot().getMid(), this.roadController.getBalls().get(0).getPos());
+            currentClosetBall = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(), this.roadController.getBalls().get(0).getPos());
             closestBall = this.roadController.getBalls().get(0);
         } else {
             throw new IllegalArgumentException("There where no Balls in the balls array.");
         }
         for (int i = 1; i < this.roadController.getBalls().size(); i++) {
-            Vector tempVector = calcVector(this.roadController.getRobot().getMid(), this.roadController.getBalls().get(i).getPos());
+            Vector tempVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(), this.roadController.getBalls().get(i).getPos());
             if (tempVector.length < currentClosetBall.length) {
                 currentClosetBall = tempVector;
                 closestBall = this.roadController.getBalls().get(i);
@@ -51,31 +53,31 @@ public class Planner {
     //TODO
     public Instruction nextInstruction() {
         findClosestBall();
-        return new Instruction(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall), currentClosetBall.length);
+        return new Instruction(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall), currentClosetBall.length);
     }
 
     public Instruction nextInstructionv2() {
         findClosestBall();
 
         //1 degree delta, the robot should turn 90 and drive forward
-        if (abs((abs(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall)) - 90)) <= 1 && (abs(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall)) - 90) < 0) {
+        if (abs((abs(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall)) - 90)) <= 1 && (abs(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall)) - 90) < 0) {
             ////If the robot should do a 90 turn to run in the negativ x-axis
-            return new Instruction(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall), currentClosetBall.length);
-        } else if ((abs(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall)) - 90) > 0) {
+            return new Instruction(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall), currentClosetBall.length);
+        } else if ((abs(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall)) - 90) > 0) {
             //If the robot should do a 180 turn to run in the positiv x-axis
             return new Instruction(180, 0);
         } else {
-            System.out.println("**********" + (abs(calcAngle(this.roadController.getRobot().getVector(), currentClosetBall)) - 90));
+            System.out.println("**********" + (abs(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall)) - 90));
             // If not, we should do the tour in two parts.
-            System.out.println("x:" + currentClosetBall.x + " y:" + currentClosetBall.y);
-            return new Instruction(0, abs(currentClosetBall.x));
+            System.out.println("x:" + currentClosetBall.getX() + " y:" + currentClosetBall.getY());
+            return new Instruction(0, abs(currentClosetBall.getX()));
         }
 
     }
 
     public Instruction nextInstructionv3() {
         findClosestBall();
-        double angleToBall = calcAngle(this.roadController.getRobot().getVector(), currentClosetBall);
+        double angleToBall = Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall);
         try {
             System.out.println("Robot compas: " + this.roadController.getRobot().getCompas().toString());
             System.out.println("AngleToBall : " + angleToBall);
@@ -94,7 +96,7 @@ public class Planner {
                             return new Instruction(angleToBall, currentClosetBall.length);
                         } else { // The route is spitted up in 2 parts.
                             //System.out.println("The route is spitted up");
-                            return new Instruction(0, abs(currentClosetBall.x));
+                            return new Instruction(0, abs(currentClosetBall.getX()));
                         }
                     } else {
                         // The ball is behind us
@@ -116,7 +118,7 @@ public class Planner {
                 return new Instruction(angleToBall, currentClosetBall.length);
             } else { // The route is spitted up in 2 parts.
                 //System.out.println("The route is spitted up");
-                return new Instruction(0, abs(currentClosetBall.y));
+                return new Instruction(0, abs(currentClosetBall.getY()));
             }
         } else {
             // The ball is behind us
@@ -124,38 +126,5 @@ public class Planner {
         }
     }
 
-    /**
-     * Calculate the vector from 2 Points c1 to c2.
-     *
-     * @param c1
-     * @param c2
-     * @return
-     */
-    public Vector calcVector(Point c1, Point c2) {
-        return new Vector(c2.x - c1.x, c2.y - c1.y);
-    }
 
-
-    /**
-     * Calculate the delta angle from v1 to v2
-     *
-     * @param v1
-     * @param v2
-     * @return value between -180 to 180.
-     */
-    public double calcAngle(Vector v1, Vector v2) {
-        // http://www.euclideanspace.com/maths/algebra/vectors/angleBetween/
-        double angle = toDegrees(atan2(v1.y, v1.x) - atan2(v2.y, v2.x));
-        //System.out.println("Before manipulation: " + angle);
-        if (angle < (-180)) {
-            //System.out.println(angle + 360);
-            return angle + 360;
-        } else if (angle > 180) {
-            //System.out.println(angle - 360);
-            return angle - 360;
-        } else {
-            //System.out.println(angle);
-            return angle;
-        }
-    }
 }
