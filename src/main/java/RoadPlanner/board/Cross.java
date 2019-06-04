@@ -48,4 +48,19 @@ public class Cross {
         System.out.println("down" + this.down);
     }
 
+    public Point getLeft() {
+        return this.left;
+    }
+
+    public Point getUp() {
+        return this.up;
+    }
+
+    public Point getDown() {
+        return this.down;
+    }
+
+    public Point getRight() {
+        return this.right;
+    }
 }

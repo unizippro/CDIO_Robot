@@ -1,7 +1,4 @@
 import RoadPlanner.*;
-import RoadPlanner.board.Cross;
-import RoadPlanner.board.SmartConverter;
-import movement_queue.MovementController;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -41,8 +38,18 @@ public class Program {
         pointList.add(new Point(200,50));
         pointList.add(new Point(250,100));
         pointList.add(new Point(200,150));
-        Cross cross = new Cross(pointList);
-        cross.printPoints();
+
+        List<Point> boardPoints = new ArrayList<>();
+        boardPoints.add(new Point(0,0));
+        boardPoints.add(new Point(300,0));
+        boardPoints.add(new Point(0,200));
+        boardPoints.add(new Point(300,200));
+        RoadController roadController = new RoadController();
+        roadController.initializeBoard(boardPoints);
+        roadController.initializeCross(pointList);
+        roadController.initializeQuadrants();
+        System.out.println(roadController.getQuadrants());
+
     }
 
 //    void testInstructionv4() {
