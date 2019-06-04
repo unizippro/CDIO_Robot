@@ -92,8 +92,8 @@ public class RoadController {
         return robot;
     }
 
-    public void setRobot(Robot robot) {
-        this.robot = robot;
+    public void updateRobot(Point pointFront, Point pointBack) {
+        this.robot.update(pointFront, pointBack);
     }
 
     /**
