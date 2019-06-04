@@ -36,9 +36,9 @@ public class Board {
     }
     private void assignPoints(List<Point> boardList) {
         this.corners.add(boardList.get(0));
-        this.corners.add(boardList.get(0));
-        this.corners.add(boardList.get(0));
-        this.corners.add(boardList.get(0));
+        this.corners.add(boardList.get(1));
+        this.corners.add(boardList.get(2));
+        this.corners.add(boardList.get(3));
     }
 
     public Point getLowerLeft() {
