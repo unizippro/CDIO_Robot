@@ -51,6 +51,7 @@ public class Main {
     @FXML
     private Label distanceLabel;
 
+    @FXML
     public void initialize() {
         this.timer.schedule(this.updateDistance, 0, 1000);
     }

@@ -56,7 +56,7 @@
                         <Label font="$x1" layoutX="26.0" layoutY="41.0" text="Distance (sensor)" />
                         <Button font="$x1" layoutX="26.0" layoutY="249.0" mnemonicParsing="false" text="Start" />
                         <Button font="$x1" layoutX="97.0" layoutY="249.0" mnemonicParsing="false" text="Stop" />
-                        <Button layoutX="165.0" layoutY="249.0" mnemonicParsing="false" onAction="#onShutdownClick" text="group14.Shutdown">
+                        <Button layoutX="165.0" layoutY="249.0" mnemonicParsing="false" onAction="#onShutdownClick" text="Shutdown">
                             <font>
                                 <Font size="15.0" fx:id="x11" />
                             </font>
