@@ -16,10 +16,14 @@ public class Main {
 
     private IRobotManager robotManager;
 
-    @Inject
-    public Main(IRobotManager robotManager) {
-        this.robotManager = robotManager;
-    }
+
+    @FXML
+    private Slider speedSlider;
+    @FXML
+    private Label currentSpeedValue;
+    @FXML
+    private Label distanceLabel;
+
 
     private Timer timer = new Timer();
     private TimerTask updateDistance = new TimerTask() {
@@ -39,27 +43,16 @@ public class Main {
         }
     };
 
-    @FXML
-    private ToggleButton toggleStartStop;
 
-    @FXML
-    private Slider speedSlider;
-
-    @FXML
-    private Label currentSpeedValue;
-
-    @FXML
-    private Label distanceLabel;
-
-    @FXML
-    public void initialize() {
-        this.timer.schedule(this.updateDistance, 0, 1000);
+    @Inject
+    public Main(IRobotManager robotManager) {
+        this.robotManager = robotManager;
     }
 
 
     @FXML
-    public void toggleButton(ActionEvent event) {
-        toggleStartStop.setText("Foo");
+    public void initialize() {
+        this.timer.schedule(this.updateDistance, 0, 1000);
     }
 
 
@@ -101,5 +94,10 @@ public class Main {
         this.robotManager.shutdown();
     }
 
+    @FXML
+    public void onFanToggled(ActionEvent actionEvent) {
+        ToggleButton button = (ToggleButton) actionEvent.getTarget();
 
+        button.setText(button.isSelected() ? "Fan on" : "Fan off");
+    }
 }
