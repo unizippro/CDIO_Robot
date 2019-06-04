@@ -64,13 +64,11 @@ public class Program {
         roadController.initializeQuadrants();
         System.out.println(roadController.getQuadrants());
 
-
-
         roadController.getNextInstruction();
 
+        roadController.updateRobot(new Point(61,0), new Point(59,0));
 
-
-
+        roadController.getNextInstruction();
     }
 
 //    void testInstructionv4() {

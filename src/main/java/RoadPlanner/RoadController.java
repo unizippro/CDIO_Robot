@@ -103,7 +103,9 @@ public class RoadController {
      * @return instruction to be executed by MovementController
      */
     public Instruction getNextInstruction() {
-        return this.planner.nextInstructionv3();
+        Instruction inst = this.planner.nextInstructionv3();
+        System.out.println(inst);
+        return inst;
     }
 
     private void calcCompas() {
