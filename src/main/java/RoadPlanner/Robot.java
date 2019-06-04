@@ -84,8 +84,7 @@ public class Robot {
         setRear(back);
         calcMid();
         calcVector();
-
-    }
+     }
 
     private void calcMid() {
         this.setMid(new Point((front.x + rear.x)/2,(front.y + rear.y)/2));

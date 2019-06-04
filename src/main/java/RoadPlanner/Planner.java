@@ -158,32 +158,4 @@ public class Planner {
             return angle;
         }
     }
-
-
-    public void updatePlanner(List<Point> coorList) {
-        int i = 0;
-        this.roadController.getRobot().update(coorList.get(i++), coorList.get(i++));
-//        this.board.update(coorList.get(i++), coorList.get(i++), coorList.get(i++), coorList.get(i++));
-
-        for (int j = i; j < coorList.size(); j++) {
-            this.roadController.getBalls().add(new Ball(coorList.get(j)));
-        }
-
-        this.currentClosetBall = new Vector();
-
-        double temp = calcAngle(this.roadController.getRobot().getVector(), this.roadController.getBoard().getxAxis());
-        System.out.println("The robot's direction is " + temp);
-
-        if (temp <= 45 && temp >= -45) {
-            this.roadController.getRobot().setCompas(Robot.Compas.RIGHT);
-        } else if (temp < 135 && temp > 45) {
-            this.roadController.getRobot().setCompas(Robot.Compas.UP);
-        } else if (temp <= -135 || temp >= 135) {
-            this.roadController.getRobot().setCompas(Robot.Compas.LEFT);
-        } else if (temp < -45 && temp > -135) {
-            this.roadController.getRobot().setCompas(Robot.Compas.DOWN);
-        } else {
-            System.err.println("ERROR robot's direction is is not coverd: " + temp);
-        }
-    }
 }

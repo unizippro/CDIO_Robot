@@ -58,6 +58,7 @@ public class RoadController {
 
     public void initializeRobot(Point pointFront, Point pointBack) {
         this.robot = new Robot(pointFront, pointBack);
+        this.calcCompas();
     }
 
     public void initializeQuadrants() {
@@ -94,6 +95,7 @@ public class RoadController {
 
     public void updateRobot(Point pointFront, Point pointBack) {
         this.robot.update(pointFront, pointBack);
+        this.calcCompas();
     }
 
     /**
@@ -102,5 +104,20 @@ public class RoadController {
      */
     public Instruction getNextInstruction() {
         return this.planner.nextInstructionv3();
+    }
+
+    private void calcCompas() {
+        double temp = this.planner.calcAngle(this.robot.getVector(), this.board.getxAxis());
+        System.out.println("The robot's direction is " + temp);
+
+        if (temp <= 45 && temp >= -45) {
+            this.robot.setCompas(Robot.Compas.RIGHT);
+        } else if (temp < 135 && temp > 45) {
+            this.robot.setCompas(Robot.Compas.UP);
+        } else if (temp <= -135 || temp >= 135) {
+            this.robot.setCompas(Robot.Compas.LEFT);
+        } else if (temp < -45 && temp > -135) {
+            this.robot.setCompas(Robot.Compas.DOWN);
+        }
     }
 }
