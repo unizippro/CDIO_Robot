@@ -2,6 +2,7 @@ package group14;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,8 +21,12 @@ public class SceneManager {
         return instance;
     }
 
+    public static void initialize(Module... modules) {
+        getInstance().injector = Guice.createInjector(modules);
+    }
 
-    private Injector injector = Guice.createInjector(new Container());
+
+    private Injector injector;
     private Scene scene;
 
     private SceneManager() { }

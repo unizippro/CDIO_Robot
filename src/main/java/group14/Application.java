@@ -13,6 +13,11 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) {
+        Parameters parameters = this.getParameters();
+        boolean isDemo = parameters.getRaw().contains("demo");
+
+        SceneManager.initialize(new Container(isDemo));
+
         try (InputStream main = ClassLoader.getSystemResourceAsStream("group14/gui/main.fxml")) {
             assert main != null;
             SceneManager.getInstance().setRoot(main);
