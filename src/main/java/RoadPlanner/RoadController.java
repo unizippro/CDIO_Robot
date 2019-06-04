@@ -101,6 +101,6 @@ public class RoadController {
      * @return instruction to be executed by MovementController
      */
     public Instruction getNextInstruction() {
-        return this.planner.nextInstruction();
+        return this.planner.nextInstructionv3();
     }
 }

@@ -33,22 +33,43 @@ public class Program {
 //        SmartConverter sc = new SmartConverter();
 //        sc.calculateBoard(p1,p2,p3,p4);
 //        this.testInstructionv4();
+
+
+        //balls
+        ArrayList<Point> ballList = new ArrayList<>();
+        ballList.add(new Point(60, 60));
+        ballList.add(new Point(200, 0));
+
+        //Board
+        List<Point> boardList = new ArrayList<>();
+        boardList.add(new Point(0,0));
+        boardList.add(new Point(300,0));
+        boardList.add(new Point(0,200));
+        boardList.add(new Point(300,200));
+
+        //Hardcoded positions
+        RoadController roadController = new RoadController();
+        roadController.initializeRobot(new Point(2, 0), new Point(0, 0));
+        roadController.initializeBoard(boardList);
+        roadController.initializeBalls(ballList);
+
         List<Point> pointList = new ArrayList<>();
         pointList.add(new Point(150,100));
         pointList.add(new Point(200,50));
         pointList.add(new Point(250,100));
         pointList.add(new Point(200,150));
 
-        List<Point> boardPoints = new ArrayList<>();
-        boardPoints.add(new Point(0,0));
-        boardPoints.add(new Point(300,0));
-        boardPoints.add(new Point(0,200));
-        boardPoints.add(new Point(300,200));
-        RoadController roadController = new RoadController();
-        roadController.initializeBoard(boardPoints);
+
         roadController.initializeCross(pointList);
         roadController.initializeQuadrants();
         System.out.println(roadController.getQuadrants());
+
+
+
+        roadController.getNextInstruction();
+
+
+
 
     }
 
