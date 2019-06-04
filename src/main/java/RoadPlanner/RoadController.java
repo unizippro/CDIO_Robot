@@ -25,7 +25,7 @@ public class RoadController {
     private Cross cross;
     /**
      * Index
-     * 0 = upperleft, 1 = upperright, 2 = lowerleft, 3 = lowerright
+     * 0 = Left, 1 = Up, 2 = Right, 3 = Left
      */
     private List<Quadrant> quadrants = new ArrayList<>();
 
@@ -62,15 +62,11 @@ public class RoadController {
     }
 
     public void initializeQuadrants() {
-        Quadrant quadrant = new Quadrant();
-        quadrant.setUpperLeft(this.board.getUpperLeft());
-        quadrant.setLowerLeft(this.board.getLowerLeft());
-        Point point = new Point(this.cross.getLeft().x, this.board.getUpperLeft().y);
-        quadrant.setUpperRight(point);
-
-        Point point1 = new Point(this.cross.getLeft().x, this.board.getLowerRight().y);
-        quadrant.setLowerRight(point1);
-        this.quadrants.add(quadrant);
+        try {
+            this.quadrants = this.board.calculateQuadrant(this.board, this.cross);
+        } catch (NullPointerException e) {
+            System.out.println("Board eller cross eksisterer ikke");
+        }
     }
 
     public List<Ball> getBalls() {
