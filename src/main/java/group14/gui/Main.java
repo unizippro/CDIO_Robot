@@ -1,16 +1,17 @@
 package group14.gui;
 
 import com.google.inject.Inject;
+import group14.gui.components.CoordinateSystem;
 import group14.robot.IRobotManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class Main {
 
@@ -23,6 +24,8 @@ public class Main {
     private Label currentSpeedValue;
     @FXML
     private Label distanceLabel;
+    @FXML
+    public CoordinateSystem plot;
 
 
     private Timer timer = new Timer();
@@ -53,6 +56,11 @@ public class Main {
     @FXML
     public void initialize() {
         this.timer.schedule(this.updateDistance, 0, 1000);
+
+        this.setPoints(this.generateCoordinates());
+
+        this.plot.setRobot(new Point2D(5, 16));
+        this.plot.setCross(new Point2D(20, 10));
     }
 
 
@@ -99,5 +107,22 @@ public class Main {
         ToggleButton button = (ToggleButton) actionEvent.getTarget();
 
         button.setText(button.isSelected() ? "Fan on" : "Fan off");
+    }
+
+    public void setPoints(List<Point2D> points) {
+        this.plot.clearPoints();
+        points.forEach(coordinate -> this.plot.setPoint(coordinate));
+    }
+
+
+    private List<Point2D> generateCoordinates() {
+        Random random = new Random();
+        List<Point2D> coordinates = new ArrayList<>();
+
+        for (int i = 0; i <= 20; i++) {
+            coordinates.add(new Point2D(random.nextInt(40), random.nextInt(20)));
+        }
+
+        return coordinates;
     }
 }

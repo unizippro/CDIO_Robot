@@ -9,24 +9,37 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import group14.gui.components.CoordinateSystem?>
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="968.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="group14.gui.Main">
     <children>
         <TabPane layoutX="0.0" layoutY="290.0" prefHeight="450.0" prefWidth="968.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
-                <Tab text="Greyscale">
+                <Tab text="Plot">
                     <content>
-                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <AnchorPane id="Content">
+                            <children>
+                                <CoordinateSystem fx:id="plot"
+                                                  style="-fx-background-color: rgb(0,41,52);"
+                                                  XBound="40"
+                                                  YBound="20"
+                                                  AnchorPane.bottomAnchor="35.0"
+                                                  AnchorPane.leftAnchor="35.0"
+                                                  AnchorPane.rightAnchor="35.0"
+                                                  AnchorPane.topAnchor="35.0"
+                                />
+                            </children>
+                        </AnchorPane>
                     </content>
                 </Tab>
                 <Tab text="Color">
                     <content>
-                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <AnchorPane id="Content" />
                     </content>
                 </Tab>
                 <Tab text="Dummy">
                     <content>
-                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <AnchorPane id="Content" />
                     </content>
                 </Tab>
             </tabs>
