@@ -78,6 +78,10 @@ public class RoadController {
         this.balls = balls;
     }
 
+    public void removeBall(int index) {
+        this.balls.remove(index);
+    }
+
     public Board getBoard() {
         return board;
     }

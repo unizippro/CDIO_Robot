@@ -59,7 +59,6 @@ public class Program {
         pointList.add(new Point(250,100));
         pointList.add(new Point(200,150));
 
-
         roadController.initializeCross(pointList);
         roadController.initializeQuadrants();
         System.out.println(roadController.getQuadrants());
