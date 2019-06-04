@@ -1,5 +1,6 @@
 package robot;
 
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.motor.UnregulatedMotor;
 import robot.rmi_interfaces.IController;
@@ -12,10 +13,11 @@ public class Controller extends UnicastRemoteObject implements IController {
 
     private AtomicBoolean fanRunning = new AtomicBoolean(false);
     private AtomicBoolean vibRunning = new AtomicBoolean(false);
-    private UnregulatedMotor controllerMotor;
-    private UnregulatedMotor gateMotor;
+    //private UnregulatedMotor controllerMotor;
+    private EV3LargeRegulatedMotor controllerMotor;
+    //private UnregulatedMotor gateMotor;
 
-    Controller(UnregulatedMotor controllerMotor) throws RemoteException {//, UnregulatedMotor gateMotor){
+    Controller(EV3LargeRegulatedMotor controllerMotor) throws RemoteException {//, UnregulatedMotor gateMotor){
         this.controllerMotor = controllerMotor;
         //this.gateMotor = gateMotor;
 
@@ -31,6 +33,7 @@ public class Controller extends UnicastRemoteObject implements IController {
     @Override
     public void fanOff() {
         controllerMotor.stop();
+        controllerMotor.suspendRegulation();
         vibRunning.set(false);
         fanRunning.set(false);
     }
@@ -44,6 +47,7 @@ public class Controller extends UnicastRemoteObject implements IController {
     @Override
     public void vibOff() {
         controllerMotor.stop();
+        controllerMotor.suspendRegulation();
         vibRunning.set(false);
         fanRunning.set(false);
     }
