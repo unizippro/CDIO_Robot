@@ -1,10 +1,14 @@
 plugins {
     id 'java'
+    id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.7'
 }
 
 group 'cdio'
 version '1.0-SNAPSHOT'
+
+def opencvProperties = new Properties()
+opencvProperties.load(new FileInputStream(rootProject.file("opencv.properties")))
 
 repositories {
     mavenCentral()
@@ -15,6 +19,9 @@ dependencies {
     implementation("commons-collections:commons-collections:3.2")
     implementation("com.github.bdeneuter:lejos-ev3-api:0.9.1-beta")
     implementation("com.google.inject:guice:4.0")
+
+    // OpenCV
+    implementation(fileTree(dir: opencvProperties["libDir"], includes: ["*.jar"]))
 }
 
 compileJava {
@@ -28,6 +35,10 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
+run {
+    mainClassName = "group14.Application"
+    systemProperty "java.library.path", opencvProperties["libDir"]
+}
 
 subprojects {
     apply plugin: 'java'
