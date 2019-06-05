@@ -21,6 +21,13 @@ dependencies {
 }
 
 
+compileJava {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+    options.encoding = "UTF-8"
+}
+
+
 jar {
     manifest {
         attributes(
@@ -70,6 +77,12 @@ project(":forward") {
         }
     }
 
+    compileJava {
+        sourceCompatibility = 1.7
+        targetCompatibility = 1.7
+        options.encoding = "UTF-8"
+    }
+
     jar {
         archivesBaseName = 'forward'
         manifest {
@@ -93,6 +106,12 @@ project(":backward") {
                 srcDir 'src'
             }
         }
+    }
+
+    compileJava {
+        sourceCompatibility = 1.7
+        targetCompatibility = 1.7
+        options.encoding = "UTF-8"
     }
 
     jar {
