@@ -13,9 +13,8 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
     // All values below are in mm
     private static final double MARGIN_OF_ERROR = 8;
-    private static final double WHEEL_WIDTH = 21.85;
-    private static final double ROBOT_DIAMETER = 93 + WHEEL_WIDTH;
-    private static final double WHEEL_DIAMETER = 44.5;
+    private static final double ROBOT_DIAMETER = 125;
+    private static final double WHEEL_DIAMETER = 31;
 
 
     private final EV3LargeRegulatedMotor motorLeft;
