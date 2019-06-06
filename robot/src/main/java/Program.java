@@ -21,7 +21,8 @@ public class Program {
             LocateRegistry.createRegistry(1199);
             Naming.rebind("rmi://" + IP_ADDRESS + ":1199/robot", robot);
             Naming.rebind("rmi://" + IP_ADDRESS + ":1199/movement", robot.getMovement());
-            Naming.rebind("rmi://" + IP_ADDRESS + ":1199/sensors", robot.getSensors());
+            //Naming.rebind("rmi://" + IP_ADDRESS + ":1199/sensors", robot.getSensors());
+            Naming.rebind("rmi://" + IP_ADDRESS + ":1199/controller", robot.getController());
         } catch (RemoteException exception) {
             exception.printStackTrace();
             System.exit(1);
