@@ -10,29 +10,25 @@ import static org.opencv.imgcodecs.Imgcodecs.imread;
 class openCVCircleDetect {
 
     public void run(String[] args) {
-        String default_file = "C:\\Users\\Sebastian\\Downloads\\IMG_4838.jpg";
-        String filename = ((args.length > 0) ? args[0] : default_file);
+        Mat src = new Mat();
+        VideoCapture cap = new VideoCapture(1);
+        if(!cap.isOpened()) {
+            System.out.println("Error");
+        }
+        else {
 
-        // Load an image
-        Mat src = Imgcodecs.imread(filename, Imgcodecs.IMREAD_COLOR);
-
-        // Check if image is loaded fine
-        if( src.empty() ) {
-            System.out.println("Error opening image!");
-            System.out.println("Program Arguments: [image_name -- default "
-                    + default_file +"] \n");
-            System.exit(-1);
+            cap.read(src);
         }
 
         //Blur mat to better define objects
         Imgproc.medianBlur(src, src, 5);
         //Set threshold
         Mat thresh = new Mat();
-        Core.inRange(src, new Scalar(210, 210, 210), new Scalar(255, 255, 255), thresh);
+        Core.inRange(src, new Scalar(185, 185, 185), new Scalar(255, 255, 255), thresh);
 
         //! [houghcircles]
         Mat circles = new Mat();
-        Imgproc.HoughCircles(thresh, circles, Imgproc.HOUGH_GRADIENT, 2, 40, 100, 46, 10, 200);
+        Imgproc.HoughCircles(thresh, circles, Imgproc.HOUGH_GRADIENT, 3, 0.5, 50, 25, 0, 30);
 
         //! [draw]
         for (int x = 0; x < circles.cols(); x++) {
