@@ -45,8 +45,8 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     @Override
     public void forward() {
         this.motorLeft.startSynchronization();
-        this.motorLeft.forward();
-        this.motorRight.forward();
+        this.motorLeft.backward();
+        this.motorRight.backward();
         this.motorLeft.endSynchronization();
     }
 
@@ -56,7 +56,7 @@ public class Movement extends UnicastRemoteObject implements IMovement {
      */
     @Override
     public void forward(double distance){
-        double deg = 360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR;
+        double deg = -(360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR);
         this.motorLeft.rotate((int)deg, true);
         this.motorRight.rotate((int)deg, true);
 
@@ -66,8 +66,8 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     @Override
     public void backward() {
         this.motorLeft.startSynchronization();
-        this.motorLeft.backward();
-        this.motorRight.backward();
+        this.motorLeft.forward();
+        this.motorRight.forward();
         this.motorLeft.endSynchronization();
     }
 
@@ -77,7 +77,7 @@ public class Movement extends UnicastRemoteObject implements IMovement {
      */
     @Override
     public void backward(double distance) {
-        double deg = -(360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR);
+        double deg = (360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR);
         this.motorLeft.rotate((int)deg, true);
         this.motorRight.rotate((int)deg, true);
 
