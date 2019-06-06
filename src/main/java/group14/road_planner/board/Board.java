@@ -73,6 +73,9 @@ public class Board {
         quadrants.add(this.calculateQuadrantUp(board, cross));
         quadrants.add(this.calculateQuadrantRight(board, cross));
         quadrants.add(this.calculateQuadrantDown(board, cross));
+        for (Quadrant quadrant : quadrants) {
+            quadrant.createSafetyArea();
+        }
         return quadrants;
     }
 
@@ -82,7 +85,6 @@ public class Board {
         quadrant.setLowerLeft(board.getLowerLeft());
         quadrant.setUpperRight(new Point(cross.getLeft().x, board.getUpperLeft().y));
         quadrant.setLowerRight(new Point(cross.getLeft().x, board.getLowerRight().y));
-
         return quadrant;
     }
 

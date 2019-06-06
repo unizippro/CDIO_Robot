@@ -139,4 +139,8 @@ public class RoadController {
             this.robot.setCompas(Robot.Compas.DOWN);
         }
     }
+
+    public List<Ball> getBallsWithinArea() {
+        return this.planner.ballsWithingSafeArea(this.getQuadrants().get(this.getRobot().getCurrentQuadrant()), this.getBalls());
+    }
 }

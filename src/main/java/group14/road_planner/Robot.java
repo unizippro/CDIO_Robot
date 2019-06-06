@@ -5,6 +5,14 @@ import java.util.List;
 
 public class Robot {
 
+    public int getCurrentQuadrant() {
+        return this.currentQuadrant;
+    }
+
+    public void setCurrentQuadrant(int currentQuadrant) {
+        this.currentQuadrant = currentQuadrant;
+    }
+
     enum Sector{
         UPPER,
         LOWER,
@@ -25,6 +33,7 @@ public class Robot {
     private Vector vector;
     private Sector sector;
     private Compas compas;
+    private int currentQuadrant = 0;
 
     /**
      * index 0 = front, index 1 = back

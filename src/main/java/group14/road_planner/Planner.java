@@ -2,6 +2,10 @@ package group14.road_planner;
 
 import group14.road_planner.ball.Ball;
 import group14.math.Calculator;
+import group14.road_planner.board.Quadrant;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Math.*;
 
@@ -119,6 +123,22 @@ public class Planner {
             // The ball is behind us
             return new Instruction(180, 0);  // turn 180 deg.
         }
+    }
+
+    /**
+     *
+     * @param quadrant
+     * @param ballList
+     * @return list of balls within safetyarea
+     */
+    public List<Ball> ballsWithingSafeArea(Quadrant quadrant, List<Ball> ballList) {
+        List<Ball> newBallList = new ArrayList<>();
+        for (Ball ball : ballList) {
+            if (quadrant.isWithingSafetyArea(ball)) {
+                newBallList.add(ball);
+            }
+        }
+        return newBallList;
     }
 
 
