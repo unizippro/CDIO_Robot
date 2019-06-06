@@ -81,6 +81,7 @@ public class RoadController {
     private void initializeQuadrants() {
         try {
             this.quadrants = this.board.calculateQuadrant(this.board, this.cross);
+            this.board.createSafePoints(this.getQuadrants());
         } catch (NullPointerException e) {
             System.out.println("Board eller cross eksisterer ikke");
         }
@@ -88,6 +89,11 @@ public class RoadController {
 
     public List<Ball> getBalls() {
         return balls;
+    }
+    public void setSafetyMargins(int margin) {
+        for (Quadrant quadrant : this.getQuadrants()) {
+            quadrant.setSafetyMargin(margin);
+        }
     }
 
     public void setBalls(List<Ball> balls) {
@@ -120,7 +126,7 @@ public class RoadController {
      * @return instruction to be executed by MovementController
      */
     public Instruction getNextInstruction() {
-        Instruction inst = this.planner.nextInstructionv3();
+        Instruction inst = this.planner.nextInstruction(this.getRobot());
         System.out.println(inst);
         return inst;
     }
@@ -140,7 +146,12 @@ public class RoadController {
         }
     }
 
+    /**
+     * uses the planner to check if the quadrant on which the robot is at contains any balls
+     * @return list of balls within safetyarea
+     */
     public List<Ball> getBallsWithinArea() {
-        return this.planner.ballsWithingSafeArea(this.getQuadrants().get(this.getRobot().getCurrentQuadrant()), this.getBalls());
+
+        return this.planner.ballsWithinSafeArea(this.getQuadrants().get(this.getRobot().getCurrentQuadrant()), this.getBalls());
     }
 }

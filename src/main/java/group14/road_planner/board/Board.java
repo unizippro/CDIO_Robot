@@ -4,6 +4,7 @@ import group14.road_planner.Vector;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Board {
@@ -16,6 +17,7 @@ public class Board {
      */
     private List<Point> corners = new ArrayList<>();
     private Vector xAxis;
+    private LinkedList<Point> safePointLinkedList = new LinkedList<Point>();
 
     public Board(List<Point> boardList) {
         this.update(boardList);
@@ -39,6 +41,34 @@ public class Board {
         this.corners.add(boardList.get(1));
         this.corners.add(boardList.get(2));
         this.corners.add(boardList.get(3));
+    }
+
+    public void createSafePoints(List<Quadrant> quadrants) {
+        for (int i = 0; i < quadrants.size(); i++) {
+            if (i % 2 == 0 ) {
+                Point p1 = new Point();
+                Point p2 = new Point();
+                p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
+                p2.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
+                p1.y = quadrants.get(i).getSafetyArea().getUpperLeft().y + (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 4;
+                p2.y = quadrants.get(i).getSafetyArea().getLowerLeft().y - (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 4;
+                this.safePointLinkedList.add(p1);
+                this.safePointLinkedList.add(p2);
+
+            } else if (i == 1){
+                Point p1 = new Point();
+                p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
+                p1.y = quadrants.get(i).getSafetyArea().getUpperLeft().y + (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 2;
+                this.safePointLinkedList.add(p1);
+            } else if(i == 3) {
+                Point p1 = new Point();
+                p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
+                p1.y = quadrants.get(i).getSafetyArea().getLowerLeft().y - (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 2;
+                this.safePointLinkedList.add(p1);
+            }
+        }
+        //This null is added so we can do a check and roll around back to element 0
+        this.safePointLinkedList.add(null);
     }
 
     public Point getLowerLeft() {

@@ -11,8 +11,8 @@ public class Quadrant {
     private Point upperRight;
     private Point lowerLeft;
     private Point lowerRight;
-    private List<Point> safeArea;
-    private int SAFETY_MARGIN = 10;
+    private SafetyArea safetyArea;
+
 
 
     public Point getUpperLeft() {
@@ -48,12 +48,7 @@ public class Quadrant {
     }
 
     public void createSafetyArea() {
-        this.safeArea = new ArrayList<>();
-        this.safeArea.add(new Point(this.upperLeft.x + SAFETY_MARGIN, this.upperLeft.y + SAFETY_MARGIN));
-        this.safeArea.add(new Point(this.upperRight.x - SAFETY_MARGIN, this.upperRight.y + SAFETY_MARGIN));
-        this.safeArea.add(new Point(this.lowerLeft.x + SAFETY_MARGIN, this.lowerLeft.y - SAFETY_MARGIN));
-        this.safeArea.add(new Point(this.lowerRight.x - SAFETY_MARGIN, this.lowerRight.y - SAFETY_MARGIN));
-        System.out.println(this.safeArea);
+        this.safetyArea = new SafetyArea(this);
     }
 
     /**
@@ -62,9 +57,17 @@ public class Quadrant {
      * @return
      */
     public boolean isWithingSafetyArea(Ball ball) {
-        if (ball.getPos().x >= this.safeArea.get(0).x && ball.getPos().x <= this.safeArea.get(1).x) {
-            return ball.getPos().y >= this.safeArea.get(0).y && ball.getPos().y <= this.safeArea.get(3).y;
+        if (ball.getPos().x >= this.safetyArea.getUpperLeft().x && ball.getPos().x <= this.safetyArea.getUpperRight().x) {
+            return ball.getPos().y >= this.safetyArea.getUpperLeft().y && ball.getPos().y <= this.safetyArea.getLowerRight().y;
         }
         return false;
+    }
+
+    public void setSafetyMargin(int margin) {
+        this.safetyArea.updateSafetyMargins(margin);
+    }
+
+    public SafetyArea getSafetyArea() {
+        return this.safetyArea;
     }
 }
