@@ -1,12 +1,7 @@
-package RoadPlanner;
+package group14.RoadPlanner;
 
-import RoadPlanner.ball.Ball;
-import RoadPlanner.ball.BallList;
-import RoadPlanner.board.Board;
-import math.Calculator;
-
-import java.awt.*;
-import java.util.List;
+import group14.RoadPlanner.ball.Ball;
+import group14.math.Calculator;
 
 import static java.lang.Math.*;
 

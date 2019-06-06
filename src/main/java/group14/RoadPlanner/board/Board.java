@@ -1,6 +1,6 @@
-package RoadPlanner.board;
+package group14.RoadPlanner.board;
 
-import RoadPlanner.Vector;
+import group14.RoadPlanner.Vector;
 
 import java.awt.*;
 import java.util.ArrayList;

@@ -1,13 +1,10 @@
-package RoadPlanner;
+package group14.RoadPlanner;
 
-import RoadPlanner.ball.Ball;
-import RoadPlanner.board.Board;
-import RoadPlanner.Robot;
-import RoadPlanner.Instruction;
-import RoadPlanner.Planner;
-import RoadPlanner.board.Cross;
-import RoadPlanner.board.Quadrant;
-import math.Calculator;
+import group14.RoadPlanner.ball.Ball;
+import group14.RoadPlanner.board.Board;
+import group14.RoadPlanner.board.Cross;
+import group14.RoadPlanner.board.Quadrant;
+import group14.math.Calculator;
 
 import java.awt.*;
 import java.util.ArrayList;

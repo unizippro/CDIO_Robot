@@ -30,7 +30,7 @@ public class RobotManager implements IRobotManager {
     public BrickInfo[] getBricksOnNetwork() {
         BrickInfo[] bricks = BrickFinder.discover();
         if (bricks.length == 0) {
-            throw new RuntimeException("No bricks on network");
+            throw new RuntimeException("No bricks on group14.network");
         }
 
         return bricks;

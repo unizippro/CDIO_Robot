@@ -1,7 +1,6 @@
-package math;
+package group14.math;
 
-import RoadPlanner.Robot;
-import RoadPlanner.Vector;
+import group14.RoadPlanner.Vector;
 
 import java.awt.*;
 

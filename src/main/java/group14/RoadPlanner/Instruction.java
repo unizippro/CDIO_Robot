@@ -1,4 +1,4 @@
-package RoadPlanner;
+package group14.RoadPlanner;
 
 public class Instruction {
     public double angle;

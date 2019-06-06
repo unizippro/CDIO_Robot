@@ -1,4 +1,4 @@
-package network;
+package group14.network;
 
 import lejos.hardware.BrickFinder;
 import lejos.hardware.BrickInfo;
@@ -22,7 +22,7 @@ public class RobotFinder {
     private IMovement searchNetwork() throws RemoteException, NotBoundException, MalformedURLException {
         BrickInfo[] bricks = BrickFinder.discover();
         if (bricks.length == 0) {
-            throw new RuntimeException("No bricks on network");
+            throw new RuntimeException("No bricks on group14.network");
         }
 
         return (IMovement) Naming.lookup("rmi://" + bricks[0].getIPAddress() + ":1199/movement");
