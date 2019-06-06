@@ -2,8 +2,10 @@ package group14.road_planner;
 
 import group14.road_planner.ball.Ball;
 import group14.math.Calculator;
+import group14.road_planner.board.Board;
 import group14.road_planner.board.Quadrant;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,37 +52,13 @@ public class Planner {
     }
 
     //TODO
-    public Instruction nextInstruction() {
-        findClosestBall();
-        return new Instruction(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall), currentClosetBall.length);
-    }
+    public Instruction nextInstruction(Robot robot) {
 
-    public Instruction nextInstructionv2() {
-        findClosestBall();
-
-        //1 degree delta, the robot should turn 90 and drive forward
-        if (abs((abs(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall)) - 90)) <= 1 && (abs(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall)) - 90) < 0) {
-            ////If the robot should do a 90 turn to run in the negativ x-axis
-            return new Instruction(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall), currentClosetBall.length);
-        } else if ((abs(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall)) - 90) > 0) {
-            //If the robot should do a 180 turn to run in the positiv x-axis
-            return new Instruction(180, 0);
-        } else {
-            System.out.println("**********" + (abs(Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall)) - 90));
-            // If not, we should do the tour in two parts.
-            System.out.println("x:" + currentClosetBall.getX() + " y:" + currentClosetBall.getY());
-            return new Instruction(0, abs(currentClosetBall.getX()));
-        }
-
-    }
-
-    public Instruction nextInstructionv3() {
-        findClosestBall();
-        double angleToBall = Calculator.CALCULATE_ANGLE(this.roadController.getRobot().getVector(), currentClosetBall);
+        double angleToBall = Calculator.CALCULATE_ANGLE(robot.getVector(), currentClosetBall);
         try {
-            System.out.println("Robot compas: " + this.roadController.getRobot().getCompas().toString());
+            System.out.println("Robot compas: " + robot.getCompas().toString());
             System.out.println("AngleToBall : " + angleToBall);
-            switch (this.roadController.getRobot().getCompas()) {
+            switch (robot.getCompas()) {
                 case UP:
                 case DOWN:
                     // Tests if the ball is +- 90 degrees from the robot.
@@ -131,7 +109,7 @@ public class Planner {
      * @param ballList
      * @return list of balls within safetyarea
      */
-    public List<Ball> ballsWithingSafeArea(Quadrant quadrant, List<Ball> ballList) {
+    public List<Ball> ballsWithinSafeArea(Quadrant quadrant, List<Ball> ballList) {
         List<Ball> newBallList = new ArrayList<>();
         for (Ball ball : ballList) {
             if (quadrant.isWithingSafetyArea(ball)) {
@@ -141,5 +119,12 @@ public class Planner {
         return newBallList;
     }
 
+//    public Instruction travelBetweenSafePoints(Robot robot, Board board, Quadrant quadrantToTravel) {
+//
+//    }
+//
+//    public Instruction travelOwnSafePoint(Robot robot, Board board, Quadrant quadrantToTravel) {
+//        this.roadController.getBalls().add(new Ball())
+//    }
 
 }

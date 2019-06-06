@@ -42,6 +42,8 @@ public class Program {
         ballList.add(new Point(60, 60));
         ballList.add(new Point(15, 15));
         ballList.add(new Point(200, 0));
+        ballList.add(new Point(0, 0));
+        ballList.add(new Point(150,150));
 
         //Board
         List<Point> boardList = new ArrayList<>();
@@ -76,6 +78,7 @@ public class Program {
 
         roadController.getQuadrants().get(0).createSafetyArea();
         System.out.println("Balls withing range " + roadController.getBallsWithinArea());
+
     }
 
 //    void testInstructionv4() {
