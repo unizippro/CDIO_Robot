@@ -1,3 +1,5 @@
+package group14;
+
 import lejos.hardware.BrickFinder;
 import lejos.hardware.BrickInfo;
 import robot.rmi_interfaces.IRobot;
@@ -8,7 +10,7 @@ public class Shutdown {
     public static void main(String[] args) throws Exception {
         BrickInfo[] bricks = BrickFinder.discover();
         if (bricks.length == 0) {
-            throw new RuntimeException("No bricks on network");
+            throw new RuntimeException("No bricks on group14.network");
         }
 
         IRobot robot = (IRobot) Naming.lookup("rmi://" + bricks[0].getIPAddress() + ":1199/robot");

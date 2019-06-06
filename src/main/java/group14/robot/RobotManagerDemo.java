@@ -45,7 +45,17 @@ public class RobotManagerDemo implements IRobotManager {
             }
 
             @Override
+            public void forward(double distance) throws RemoteException {
+
+            }
+
+            @Override
             public void backward() throws RemoteException {
+
+            }
+
+            @Override
+            public void backward(double distance) throws RemoteException {
 
             }
 

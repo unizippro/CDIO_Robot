@@ -6,7 +6,9 @@ import java.rmi.registry.LocateRegistry;
 
 
 public class Program {
+    private final String IP_ADDRESS = "192.168.2.6";
     public static void main(String[] args) throws Exception {
+
         System.out.println("Robot starting");
         new Program();
         System.out.println("Robot ready for remote connection");
@@ -17,9 +19,9 @@ public class Program {
 
         try {
             LocateRegistry.createRegistry(1199);
-            Naming.rebind("rmi://" + "192.168.2.6" + ":1199/robot", robot);
-            Naming.rebind("rmi://" + "192.168.2.6" + ":1199/movement", robot.getMovement());
-            Naming.rebind("rmi://" + "192.168.2.6" + ":1199/sensors", robot.getSensors());
+            Naming.rebind("rmi://" + IP_ADDRESS + ":1199/robot", robot);
+            Naming.rebind("rmi://" + IP_ADDRESS + ":1199/movement", robot.getMovement());
+            Naming.rebind("rmi://" + IP_ADDRESS + ":1199/sensors", robot.getSensors());
         } catch (RemoteException exception) {
             exception.printStackTrace();
             System.exit(1);
