@@ -1,12 +1,24 @@
 package group14;
 
 import javafx.stage.Stage;
+import org.opencv.core.Core;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 
 public class Application extends javafx.application.Application {
+    public static boolean openCvLoaded = false;
+
+    static {
+        try {
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            openCvLoaded = true;
+        } catch (UnsatisfiedLinkError error) {
+            System.out.println("OpenCV is not accessible");
+        }
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

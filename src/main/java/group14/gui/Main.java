@@ -1,21 +1,26 @@
 package group14.gui;
 
 import com.google.inject.Inject;
+import group14.Application;
 import group14.gui.components.CoordinateSystem;
+import group14.opencv.ICameraController;
 import group14.robot.IRobotManager;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.ImageView;
 
 import java.util.*;
 
 public class Main {
 
     private IRobotManager robotManager;
+    private ICameraController cameraController;
 
 
     @FXML
@@ -26,6 +31,8 @@ public class Main {
     private Label distanceLabel;
     @FXML
     public CoordinateSystem plot;
+    @FXML
+    public ImageView image;
 
 
 //    private Timer timer = new Timer();
@@ -48,8 +55,10 @@ public class Main {
 
 
     @Inject
-    public Main(IRobotManager robotManager) {
+    public Main(IRobotManager robotManager, ICameraController cameraController) {
         this.robotManager = robotManager;
+        this.cameraController = cameraController;
+        this.cameraController.addUpdateListener(this::cameraControllerUpdated);
     }
 
 
@@ -61,6 +70,10 @@ public class Main {
 
         this.plot.setRobot(new Point2D(5, 16));
         this.plot.setCross(new Point2D(20, 10));
+
+        if (Application.openCvLoaded) {
+            this.cameraController.start(0, 60);
+        }
     }
 
 
@@ -120,6 +133,12 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void cameraControllerUpdated() {
+        var image = SwingFXUtils.toFXImage(this.cameraController.getSourceAsBufferedImage(), null);
+
+        Platform.runLater(() -> this.image.setImage(image));
     }
 
     public void setPoints(List<Point2D> points) {
