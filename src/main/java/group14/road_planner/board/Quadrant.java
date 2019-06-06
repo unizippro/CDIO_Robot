@@ -70,4 +70,14 @@ public class Quadrant {
     public SafetyArea getSafetyArea() {
         return this.safetyArea;
     }
+
+    public List<Ball> ballsWithinArea(List<Ball> ballList) {
+        List<Ball> newBallList = new ArrayList<>();
+        for (Ball ball : ballList) {
+            if (this.isWithingSafetyArea(ball)) {
+                newBallList.add(ball);
+            }
+        }
+        return newBallList;
+    }
 }

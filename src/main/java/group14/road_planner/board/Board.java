@@ -18,6 +18,7 @@ public class Board {
     private List<Point> corners = new ArrayList<>();
     private Vector xAxis;
     private LinkedList<Point> safePointLinkedList = new LinkedList<Point>();
+    List<Quadrant> quadrants;
 
     public Board(List<Point> boardList) {
         this.update(boardList);
@@ -98,15 +99,15 @@ public class Board {
      * @return list of type quadrant
      */
     public List<Quadrant> calculateQuadrant(Board board, Cross cross) {
-        List<Quadrant> quadrants = new ArrayList<>();
-        quadrants.add(this.calculateQuadrantLeft(board, cross));
-        quadrants.add(this.calculateQuadrantUp(board, cross));
-        quadrants.add(this.calculateQuadrantRight(board, cross));
-        quadrants.add(this.calculateQuadrantDown(board, cross));
-        for (Quadrant quadrant : quadrants) {
+        this.quadrants = new ArrayList<>();
+        this.quadrants.add(this.calculateQuadrantLeft(board, cross));
+        this.quadrants.add(this.calculateQuadrantUp(board, cross));
+        this.quadrants.add(this.calculateQuadrantRight(board, cross));
+        this.quadrants.add(this.calculateQuadrantDown(board, cross));
+        for (Quadrant quadrant : this.quadrants) {
             quadrant.createSafetyArea();
         }
-        return quadrants;
+        return this.quadrants;
     }
 
     private Quadrant calculateQuadrantLeft(Board board, Cross cross) {
@@ -145,5 +146,9 @@ public class Board {
         quadrant.setLowerRight(new Point(cross.getRight().x, board.getLowerRight().y));
 
         return quadrant;
+    }
+
+    public Quadrant getCurrentQuadrant(int quadrantLocation) {
+        return this.quadrants.get(quadrantLocation);
     }
 }

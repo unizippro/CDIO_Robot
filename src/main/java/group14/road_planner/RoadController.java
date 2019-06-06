@@ -52,8 +52,8 @@ public class RoadController {
         this.initializeBoard(boardPoints);
         this.initializeBalls(ballPoints);
         this.initializeCross(crossPoints);
-        this.initializeRobot(robotPoints);
         this.initializeQuadrants();
+        this.initializeRobot(robotPoints);
 
     }
 
@@ -75,7 +75,8 @@ public class RoadController {
 
     private void initializeRobot(List<Point> robotPoints) {
         this.robot = new Robot(robotPoints);
-        this.calcCompas();
+        this.robot.setCurrentQuadrant(getQuadrants().get(0));
+        this.robot.calcCompas(this.getBoard());
     }
 
     private void initializeQuadrants() {
@@ -96,10 +97,6 @@ public class RoadController {
         }
     }
 
-    public void setBalls(List<Ball> balls) {
-        this.balls = balls;
-    }
-
     public void removeBall(int index) {
         this.balls.remove(index);
     }
@@ -108,17 +105,14 @@ public class RoadController {
         return board;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
     public Robot getRobot() {
         return robot;
     }
 
     public void updateRobot(Point pointFront, Point pointBack) {
         this.robot.update(pointFront, pointBack);
-        this.calcCompas();
+        //TODO update quadrant!
+        this.robot.calcCompas(this.getBoard());
     }
 
     /**
@@ -131,27 +125,11 @@ public class RoadController {
         return inst;
     }
 
-    private void calcCompas() {
-        double temp = Calculator.CALCULATE_ANGLE(this.robot.getVector(), this.board.getxAxis());
-        System.out.println("The robot's direction is " + temp);
-
-        if (temp <= 45 && temp >= -45) {
-            this.robot.setCompas(Robot.Compas.RIGHT);
-        } else if (temp < 135 && temp > 45) {
-            this.robot.setCompas(Robot.Compas.UP);
-        } else if (temp <= -135 || temp >= 135) {
-            this.robot.setCompas(Robot.Compas.LEFT);
-        } else if (temp < -45 && temp > -135) {
-            this.robot.setCompas(Robot.Compas.DOWN);
-        }
-    }
-
     /**
      * uses the planner to check if the quadrant on which the robot is at contains any balls
      * @return list of balls within safetyarea
      */
     public List<Ball> getBallsWithinArea() {
-
-        return this.planner.ballsWithinSafeArea(this.getQuadrants().get(this.getRobot().getCurrentQuadrant()), this.getBalls());
+        return this.robot.getCurrentQuadrant().ballsWithinArea(this.getBalls());
     }
 }

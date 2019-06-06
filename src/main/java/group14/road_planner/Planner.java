@@ -53,7 +53,7 @@ public class Planner {
 
     //TODO
     public Instruction nextInstruction(Robot robot) {
-
+        
         double angleToBall = Calculator.CALCULATE_ANGLE(robot.getVector(), currentClosetBall);
         try {
             System.out.println("Robot compas: " + robot.getCompas().toString());
