@@ -47,20 +47,22 @@ public class Program {
         boardList.add(new Point(0,200));
         boardList.add(new Point(300,200));
 
+        //Robot
+        List<Point> robotList = new ArrayList<>();
+        robotList.add(new Point(2,0));
+        robotList.add(new Point(0,0));
+
+        //Cross
+        List<Point> crossList = new ArrayList<>();
+        crossList.add(new Point(150,100));
+        crossList.add(new Point(200,50));
+        crossList.add(new Point(250,100));
+        crossList.add(new Point(200,150));
+
         //Hardcoded positions
         RoadController roadController = new RoadController();
-        roadController.initializeRobot(new Point(2, 0), new Point(0, 0));
-        roadController.initializeBoard(boardList);
-        roadController.initializeBalls(ballList);
+        roadController.initialize(boardList, ballList, crossList, robotList);
 
-        List<Point> pointList = new ArrayList<>();
-        pointList.add(new Point(150,100));
-        pointList.add(new Point(200,50));
-        pointList.add(new Point(250,100));
-        pointList.add(new Point(200,150));
-
-        roadController.initializeCross(pointList);
-        roadController.initializeQuadrants();
         System.out.println(roadController.getQuadrants());
 
         roadController.getNextInstruction();

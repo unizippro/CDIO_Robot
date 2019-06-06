@@ -1,6 +1,7 @@
 package RoadPlanner;
 
 import java.awt.*;
+import java.util.List;
 
 public class Robot {
 
@@ -25,9 +26,13 @@ public class Robot {
     private Sector sector;
     private Compas compas;
 
-    public Robot(Point front, Point rear) {
-        this.front = front;
-        this.rear = rear;
+    /**
+     * index 0 = front, index 1 = back
+     * @param robotPoints
+     */
+    public Robot(List<Point> robotPoints) {
+        this.front = robotPoints.get(0);
+        this.rear = robotPoints.get(1);
         sector = Sector.UPPER;
         calcMid();
         calcVector();

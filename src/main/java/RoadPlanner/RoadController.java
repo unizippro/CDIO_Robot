@@ -41,15 +41,34 @@ public class RoadController {
     public RoadController() {
     }
 
-    public void initializeBoard(List<Point> points) {
+    /**
+     *
+     * @param boardPoints
+     * @param ballPoints
+     * @param crossPoints
+     * @param robotPoints
+     */
+    public void initialize(List<Point> boardPoints,
+                           List<Point> ballPoints,
+                           List<Point> crossPoints,
+                           List<Point> robotPoints) {
+        this.initializeBoard(boardPoints);
+        this.initializeBalls(ballPoints);
+        this.initializeCross(crossPoints);
+        this.initializeRobot(robotPoints);
+        this.initializeQuadrants();
+
+    }
+
+    private void initializeBoard(List<Point> points) {
         this.board.update(points);
     }
 
-    public void initializeCross(List<Point> crossPoints) {
+    private void initializeCross(List<Point> crossPoints) {
         this.cross = new Cross(crossPoints);
     }
 
-    public void initializeBalls(List<Point> balls) {
+    private  void initializeBalls(List<Point> balls) {
         List<Ball> newBallList = new ArrayList<>();
         for (Point point : balls) {
             newBallList.add(new Ball(point));
@@ -57,12 +76,12 @@ public class RoadController {
         this.balls.addAll(newBallList);
     }
 
-    public void initializeRobot(Point pointFront, Point pointBack) {
-        this.robot = new Robot(pointFront, pointBack);
+    private void initializeRobot(List<Point> robotPoints) {
+        this.robot = new Robot(robotPoints);
         this.calcCompas();
     }
 
-    public void initializeQuadrants() {
+    private void initializeQuadrants() {
         try {
             this.quadrants = this.board.calculateQuadrant(this.board, this.cross);
         } catch (NullPointerException e) {
