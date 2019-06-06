@@ -1,5 +1,6 @@
 package group14;
 
+import group14.opencv.ICameraController;
 import javafx.stage.Stage;
 import org.opencv.core.Core;
 
@@ -45,5 +46,18 @@ public class Application extends javafx.application.Application {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+
+        SceneManager.getInstance()
+                .getInjector()
+                .getInstance(ICameraController.class)
+                .stop();
+
+        System.exit(0);
     }
 }

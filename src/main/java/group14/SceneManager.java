@@ -31,6 +31,10 @@ public class SceneManager {
 
     private SceneManager() { }
 
+    public Injector getInjector() {
+        return this.injector;
+    }
+
     public Scene getScene() {
         return this.scene;
     }
