@@ -13,9 +13,8 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
     // All values below are in mm
     private static final double MARGIN_OF_ERROR = 8;
-    private static final double WHEEL_WIDTH = 21.85;
-    private static final double ROBOT_DIAMETER = 93 + WHEEL_WIDTH;
-    private static final double WHEEL_DIAMETER = 44.5;
+    private static final double ROBOT_DIAMETER = 125;
+    private static final double WHEEL_DIAMETER = 31;
 
 
     private final EV3LargeRegulatedMotor motorLeft;
@@ -46,8 +45,8 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     @Override
     public void forward() {
         this.motorLeft.startSynchronization();
-        this.motorLeft.forward();
-        this.motorRight.forward();
+        this.motorLeft.backward();
+        this.motorRight.backward();
         this.motorLeft.endSynchronization();
     }
 
@@ -57,7 +56,7 @@ public class Movement extends UnicastRemoteObject implements IMovement {
      */
     @Override
     public void forward(double distance){
-        double deg = 360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR;
+        double deg = -(360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR);
         this.motorLeft.rotate((int)deg, true);
         this.motorRight.rotate((int)deg, true);
 
@@ -67,8 +66,8 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     @Override
     public void backward() {
         this.motorLeft.startSynchronization();
-        this.motorLeft.backward();
-        this.motorRight.backward();
+        this.motorLeft.forward();
+        this.motorRight.forward();
         this.motorLeft.endSynchronization();
     }
 
@@ -78,7 +77,7 @@ public class Movement extends UnicastRemoteObject implements IMovement {
      */
     @Override
     public void backward(double distance) {
-        double deg = -(360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR);
+        double deg = (360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR);
         this.motorLeft.rotate((int)deg, true);
         this.motorRight.rotate((int)deg, true);
 
