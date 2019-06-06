@@ -26,7 +26,7 @@ import org.opencv.videoio.VideoCapture;
 
 public class OpenCVRectangleDetect {
 
-    int minRed= 140;
+    int minRed= 160;
     int minGreen = 0;
     int minBlue = 0;
     int maxRed = 255;
@@ -84,7 +84,7 @@ public class OpenCVRectangleDetect {
         Mat destNorm = new Mat();
         Mat destNormScaled = new Mat();
 
-        Imgproc.cornerHarris(thresh1, dest, 9, 5, 0.1);
+        Imgproc.cornerHarris(bgrThresh, dest, 9, 5, 0.1);
         Core.normalize(dest, destNorm, 0, 255, Core.NORM_MINMAX);
         Core.convertScaleAbs(destNorm, destNormScaled);
         float[] destNormData = new float[(int) (destNorm.total() * destNorm.channels())];
@@ -115,7 +115,7 @@ public class OpenCVRectangleDetect {
         Imgproc.resize(src, reziseImg, scaleSize, 0, 0, Imgproc.INTER_AREA);
 
         // ! [display]
-        HighGui.imshow("detected circles", reziseImg);
+        HighGui.imshow("detected corners", reziseImg);
         HighGui.waitKey();
         // ! [display]
 
@@ -126,13 +126,13 @@ public class OpenCVRectangleDetect {
     public List<Point> SortPoints(List<Point> p) {
         Point firstQuarterPoint = new Point();
         Point secondQuarterPoint = new Point();
-        Point thirdQuarterPoint = new Point(4000, 4000);
+        Point thirdQuarterPoint = new Point(1000, 1000);
         Point fourthQuarterPoint = new Point();
         List<Point> correctPoints = new ArrayList<Point>();
 
         for (Point point : p) {
             System.out.println(point);
-            if (0 < point.x && point.x < 400 && 0 < point.y && point.y < 800) {
+            if (0 < point.x && point.x < 100 && 0 < point.y && point.y < 100) {
                 if (firstQuarterPoint == null) {
                     firstQuarterPoint = point;
                 } else {
@@ -144,7 +144,7 @@ public class OpenCVRectangleDetect {
                     }
                 }
             }
-            if (3000 < point.x && point.x < 3800 && 0 < point.y && point.y < 800) {
+            if (500 < point.x && point.x < 700 && 0 < point.y && point.y < 100) {
                 if (secondQuarterPoint == null) {
                     secondQuarterPoint = point;
                 } else {
@@ -156,7 +156,7 @@ public class OpenCVRectangleDetect {
                     }
                 }
             }
-            if (3000 < point.x && point.x < 4000 && 2500 < point.y && point.y < 3500) {
+            if (500 < point.x && point.x < 700 && 400 < point.y && point.y < 600) {
                 if (thirdQuarterPoint == null) {
                     thirdQuarterPoint = point;
                 } else {
@@ -168,7 +168,7 @@ public class OpenCVRectangleDetect {
                     }
                 }
             }
-            if (0 < point.x && point.x < 600 && 2500 < point.y && point.y < 3500) {
+            if (0 < point.x && point.x < 100 && 400 < point.y && point.y < 600) {
                 if (fourthQuarterPoint == null) {
                     fourthQuarterPoint = point;
                 } else {
