@@ -1,6 +1,6 @@
-package movement_queue;
+package group14.movement_queue;
 
-import network.RobotFinder;
+import group14.network.RobotFinder;
 import robot.rmi_interfaces.IController;
 
 import java.rmi.RemoteException;
