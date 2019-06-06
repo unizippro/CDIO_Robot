@@ -34,40 +34,17 @@ public class OpenCVRectangleDetect {
     int maxBlue = 120;
 
     public void run(String[] args) {
-
-		/*VideoCapture cap = new VideoCapture(1);
+        Mat src = new Mat();
+		VideoCapture cap = new VideoCapture(1);
 		if(!cap.isOpened()) {
 			System.out.println("Error");
 		}
 		else {
-			Mat videoMat = new Mat();
-			cap.read(videoMat);
-			while(true) {
-				if(cap.read(videoMat)) {
-					System.out.println("Frame obtained");
-					Imgcodecs.imwrite("C://capture/camera.jpg", videoMat);
-					break;
-				}
-			}
-		}*/
-        String default_file = "C:\\Users\\Sebastian\\Downloads\\IMG_4838.jpg";
-        String filename = ((args.length > 0) ? args[0] : default_file);
+			cap.read(src);
+		}
 
-
-        // Load an image
-        Mat src = Imgcodecs.imread(filename, Imgcodecs.IMREAD_COLOR);
-
-        // Check if image is loaded fine
-        if (src.empty()) {
-            System.out.println("Error opening image!");
-            System.out.println("Program Arguments: [image_name -- default " + default_file + "] \n");
-            System.exit(-1);
-        }
         Mat hsv = new Mat();
         Imgproc.cvtColor(src, hsv, Imgproc.COLOR_BGR2HSV);
-
-
-
 
 
         //Bgrthresh overvejes hvis hsv ikke er tilstrækkeligt
