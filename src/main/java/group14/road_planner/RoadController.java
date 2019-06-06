@@ -1,9 +1,9 @@
-package group14.RoadPlanner;
+package group14.road_planner;
 
-import group14.RoadPlanner.ball.Ball;
-import group14.RoadPlanner.board.Board;
-import group14.RoadPlanner.board.Cross;
-import group14.RoadPlanner.board.Quadrant;
+import group14.road_planner.ball.Ball;
+import group14.road_planner.board.Board;
+import group14.road_planner.board.Cross;
+import group14.road_planner.board.Quadrant;
 import group14.math.Calculator;
 
 import java.awt.*;

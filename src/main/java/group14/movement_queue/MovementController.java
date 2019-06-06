@@ -1,6 +1,6 @@
 package group14.movement_queue;
 
-import group14.RoadPlanner.Instruction;
+import group14.road_planner.Instruction;
 import group14.network.RobotFinder;
 import robot.rmi_interfaces.IMovement;
 

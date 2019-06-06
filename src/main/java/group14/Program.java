@@ -1,6 +1,6 @@
 package group14;
 
-import group14.RoadPlanner.*;
+import group14.road_planner.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public class Program {
 //
 //        ArrayList<Point> boardList = new ArrayList<>();
 //        ArrayList<Point> ballList = new ArrayList<>();
-//        //TODO: points should be added as pixels. The roadplanner can utilize group14.RoadPlanner.board.smartconverts pixeltocm to convert
+//        //TODO: points should be added as pixels. The roadplanner can utilize group14.road_planner.board.smartconverts pixeltocm to convert
 ////Cornors
 //        boardList.add(new Point(0, 0));
 //        boardList.add(new Point(100, 0));

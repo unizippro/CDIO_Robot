@@ -1,4 +1,4 @@
-package group14.RoadPlanner.board;
+package group14.road_planner.board;
 
 import java.awt.*;
 

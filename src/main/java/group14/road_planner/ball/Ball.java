@@ -1,4 +1,4 @@
-package group14.RoadPlanner.ball;
+package group14.road_planner.ball;
 
 import java.awt.*;
 

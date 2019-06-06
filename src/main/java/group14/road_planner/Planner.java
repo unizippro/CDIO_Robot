@@ -1,6 +1,6 @@
-package group14.RoadPlanner;
+package group14.road_planner;
 
-import group14.RoadPlanner.ball.Ball;
+import group14.road_planner.ball.Ball;
 import group14.math.Calculator;
 
 import static java.lang.Math.*;
