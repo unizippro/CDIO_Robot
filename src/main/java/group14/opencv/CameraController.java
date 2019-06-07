@@ -48,7 +48,10 @@ public class CameraController implements ICameraController {
     public void stop() {
         if (this.currentFuture != null) {
             System.out.println("Stopping");
+
             this.currentFuture.cancel(true);
+            this.currentFuture = null;
+
             this.camera.release();
             this.camera = null;
         }
