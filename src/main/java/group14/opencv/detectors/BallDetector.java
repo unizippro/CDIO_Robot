@@ -9,7 +9,7 @@ import org.opencv.videoio.VideoCapture;
 
 import static org.opencv.imgcodecs.Imgcodecs.imread;
 
-public class CircleDetect {
+public class BallDetector {
 
     public void run(String[] args) {
         Mat src = new Mat();

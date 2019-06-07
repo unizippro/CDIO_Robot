@@ -5,7 +5,7 @@ import org.opencv.highgui.HighGui;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
-public class RobotDetect {
+public class RobotDetector {
 
     // Color 1 - Blue
     //BGR: 199, 41, 29

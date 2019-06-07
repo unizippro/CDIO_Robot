@@ -25,7 +25,7 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.utils.Converters;
 import org.opencv.videoio.VideoCapture;
 
-public class RectangleDetect {
+public class BoardDetector {
 
     int minRed= 160;
     int minGreen = 0;
