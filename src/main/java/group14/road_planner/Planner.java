@@ -4,7 +4,7 @@ import group14.road_planner.ball.Ball;
 import group14.math.Calculator;
 import group14.road_planner.board.Board;
 import group14.road_planner.board.Quadrant;
-import group14.road_planner.board.SafePoint;
+import group14.road_planner.board.SafePointTravel;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -65,10 +65,16 @@ public class Planner {
         if(this_quadrant_balls.size() == 0){
 
             //Travel to own
-            System.out.println("Driving to safe point: " + this.roadController.getBoard().getSafePointLinkedList().get(0).toString());
-            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(), this.roadController.getBoard().getSafePointLinkedList().get(0));
+            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(), travelBetweenSafePoints(robot,this.roadController.getBoard()));
 
-            //TODO travel to next quadrant
+            if(this.travelToNextQuadrant){
+                System.out.println("Driving to safe point:");
+            }else{
+                System.out.println("Driving to safe point in next quadrant:");
+            }
+
+            double angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
+            return new Instruction(angleToDestinationPoint, destinationVector.length);
 
         }else{
             //else we should go find the next ball
@@ -151,8 +157,11 @@ public class Planner {
     private Point travelBetweenSafePoints(Robot robot, Board board) {
         //this.travelOwnSafePoint(robot, board);
         if (this.travelToNextQuadrant) {
+            System.out.println("Jeg tager nu til næste kvadrant!");
             this.travelToNextQuadrant = false;
-            return new SafePoint().getNextSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+            Point p = new SafePointTravel().getNextSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+            System.out.println("Safepoint i næste kvadrant der køres til: "+p.toString());
+            return p;
         }
 
         return this.travelOwnSafePoint(robot,board);
@@ -160,7 +169,9 @@ public class Planner {
 
     private Point travelOwnSafePoint(Robot robot, Board board) {
         this.travelToNextQuadrant = true;
-        return new SafePoint().getClosestSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+        Point p = new SafePointTravel().getClosestSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+        System.out.println("Safepoint der køres til: "+p.toString());
+        return p;
     }
 
 }

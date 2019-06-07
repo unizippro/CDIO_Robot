@@ -90,15 +90,27 @@ public class Program {
         //Remove ball
         roadController.removeBall(0);
 
+        //Drive to safe point
         roadController.getNextInstruction();
 
-        roadController.updateRobot(new Point(61+15,60), new Point(59+15,60));
+        roadController.updateRobot(new Point(74,55), new Point(76,55));
+
+        //Drive to next quadrant safe point
+        roadController.getNextInstruction();
+
+        /*
+        //15 units frem
+        roadController.updateRobot(new Point(76,60), new Point(74,60));
 
         roadController.getNextInstruction();
 
+        //90 med uret og 5 units frem
         roadController.updateRobot(new Point(75,61-5), new Point(75,59-5));
 
+        //Vi er ved safepoint
         roadController.getNextInstruction();
+        */
+
 
 
 

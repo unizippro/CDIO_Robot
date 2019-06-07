@@ -27,6 +27,8 @@ public class SafePointTravel {
         //If currentquadrant is 3, thus in the last quadrant, we wish to travel to quadrant 0 instead of a not-existing quadrant 4
         if (currentQuadrant == 3) {
             currentQuadrant = 0;
+        }else{
+            currentQuadrant++;
         }
         return getClosest(this.getSafePointsQuadrant(linkedList, currentQuadrant), robot.getMid());
     }
