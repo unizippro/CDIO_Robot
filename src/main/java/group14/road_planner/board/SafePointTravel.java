@@ -45,13 +45,14 @@ public class SafePointTravel {
         if (points.size() == 1) {
             return points.get(0);
         } else if (points.size() == 2) {
-            double distance1 = Point2D.distance(points.get(0).getX(), points.get(0).getY(), pointRobot.getX(), pointRobot.getY());
-            double distance2 = Point2D.distance(points.get(1).getX(), points.get(1).getY(), pointRobot.getX(), pointRobot.getY());
-            if (distance1 >= distance2) {
-                return points.get(1);
-            } else {
-                return points.get(0);
-            }
+//            double distance1 = Point2D.distance(points.get(0).getX(), points.get(0).getY(), pointRobot.getX(), pointRobot.getY());
+//            double distance2 = Point2D.distance(points.get(1).getX(), points.get(1).getY(), pointRobot.getX(), pointRobot.getY());
+//            if (distance1 >= distance2) {
+//                return points.get(1);
+//            } else {
+//                return points.get(0);
+//            }
+            return points.get(1);
         }
         //hopefully not gonna happen.
         return null;

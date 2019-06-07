@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="cdio.backward.main" target="1.7" />
+      <module name="cdio.backward.test" target="11" />
+      <module name="cdio.forward.main" target="1.7" />
+      <module name="cdio.forward.test" target="11" />
+      <module name="cdio.main" target="11" />
+      <module name="cdio.robot.main" target="1.7" />
+      <module name="cdio.robot.test" target="11" />
+      <module name="cdio.test" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
