@@ -17,4 +17,5 @@ public interface ICameraController {
 
     Mat getSource();
     BufferedImage getSourceAsBufferedImage();
+    BufferedImage matToBufferedImage(Mat mat);
 }

@@ -5,6 +5,7 @@ import group14.Application;
 import group14.Resources;
 import group14.gui.components.CoordinateSystem;
 import group14.opencv.ICameraController;
+import group14.opencv.detectors.BallDetector;
 import group14.robot.IRobotManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -38,6 +39,8 @@ public class Main {
     public CoordinateSystem plot;
     @FXML
     public ImageView image;
+    @FXML
+    public ImageView imageBalls;
 
 
 //    private Timer timer = new Timer();
@@ -154,9 +157,18 @@ public class Main {
     }
 
     private void cameraControllerUpdated() {
-        var image = SwingFXUtils.toFXImage(this.cameraController.getSourceAsBufferedImage(), null);
+        var imageSource = SwingFXUtils.toFXImage(this.cameraController.getSourceAsBufferedImage(), null);
 
-        Platform.runLater(() -> this.image.setImage(image));
+        var ballDetector = new BallDetector(this.cameraController.getSource());
+        ballDetector.run();
+
+        var result = ballDetector.getResult();
+        var imageBalls = SwingFXUtils.toFXImage(this.cameraController.matToBufferedImage(result.getKey()), null);
+
+        Platform.runLater(() -> {
+            this.image.setImage(imageSource);
+            this.imageBalls.setImage(imageBalls);
+        });
     }
 
     public void setPoints(List<Point2D> points) {

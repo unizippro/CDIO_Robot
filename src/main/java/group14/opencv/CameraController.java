@@ -81,13 +81,14 @@ public class CameraController implements ICameraController {
         return this.matToBufferedImage(this.getSource());
     }
 
-    private BufferedImage matToBufferedImage(Mat matBGR) {
-        var width = matBGR.width();
-        var height = matBGR.height();
-        var channels = matBGR.channels();
+    @Override
+    public BufferedImage matToBufferedImage(Mat mat) {
+        var width = mat.width();
+        var height = mat.height();
+        var channels = mat.channels();
 
         var sourcePixels = new byte[width * height * channels];
-        matBGR.get(0, 0, sourcePixels);
+        mat.get(0, 0, sourcePixels);
 
         var imageType = channels > 1 ? BufferedImage.TYPE_3BYTE_BGR : BufferedImage.TYPE_BYTE_GRAY;
         var image = new BufferedImage(width, height, imageType);
