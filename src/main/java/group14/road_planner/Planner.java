@@ -4,6 +4,7 @@ import group14.road_planner.ball.Ball;
 import group14.math.Calculator;
 import group14.road_planner.board.Board;
 import group14.road_planner.board.Quadrant;
+import group14.road_planner.board.SafePoint;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -119,12 +120,19 @@ public class Planner {
         return newBallList;
     }
 
-//    public Instruction travelBetweenSafePoints(Robot robot, Board board, Quadrant quadrantToTravel) {
-//
-//    }
-//
-//    public Instruction travelOwnSafePoint(Robot robot, Board board, Quadrant quadrantToTravel) {
-//        this.roadController.getBalls().add(new Ball())
-//    }
+    /**
+     * Travel to next quadrant
+     * @param robot
+     * @param board
+     * @return
+     */
+    private Point travelBetweenSafePoints(Robot robot, Board board) {
+        //this.travelOwnSafePoint(robot, board);
+        return new SafePoint().getNextSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+    }
+
+    private Point travelOwnSafePoint(Robot robot, Board board) {
+        return new SafePoint().getClosestSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+    }
 
 }

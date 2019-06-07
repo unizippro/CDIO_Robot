@@ -126,7 +126,7 @@ public class RoadController {
     }
 
     /**
-     * uses the planner to check if the quadrant on which the robot is at contains any balls
+     * uses the qudrant to check if the quadrant on which the robot is at contains any balls
      * @return list of balls within safetyarea
      */
     public List<Ball> getBallsWithinArea() {

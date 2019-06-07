@@ -151,4 +151,8 @@ public class Board {
     public Quadrant getCurrentQuadrant(int quadrantLocation) {
         return this.quadrants.get(quadrantLocation);
     }
+
+    public LinkedList<Point> getSafePointLinkedList() {
+        return this.safePointLinkedList;
+    }
 }
