@@ -13,8 +13,7 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Parameters parameters = this.getParameters();
-        boolean isDemo = parameters.getRaw().contains("demo");
+        boolean isDemo = Boolean.parseBoolean(System.getProperty("app.demo", "false"));
 
         SceneManager.initialize(new Container(isDemo));
 

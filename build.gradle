@@ -37,6 +37,7 @@ javafx {
 
 run {
     mainClassName = "group14.Application"
+    systemProperty "app.demo", project.property("app.demo")
     systemProperty "java.library.path", opencvProperties["libDir"]
 }
 
