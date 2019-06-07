@@ -1,5 +1,13 @@
 package group14;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class Resources {
 
     public static class TestImages {
@@ -20,6 +28,15 @@ public class Resources {
         public static final String cross2 = load("red_cross_2.png");
 
 
+        public static List<String> getAllFiles() {
+            return Resources.getAllFiles("test_images", false);
+        }
+
+        public static List<String> getAllFiles(boolean onlyFileName) {
+            return Resources.getAllFiles("test_images", onlyFileName);
+        }
+
+
         private static String load(String file) {
             return Resources.load("test_images/" + file);
         }
@@ -34,6 +51,22 @@ public class Resources {
         }
 
         return fileUrl.getFile();
+    }
+
+
+    private static List<String> getAllFiles(String dir, boolean onlyFileName) {
+        var filePath = ClassLoader.getSystemResource("group14/" + dir).getFile();
+        try (Stream<Path> walk = Files.walk(Paths.get(filePath))) {
+
+            return walk.filter(Files::isRegularFile)
+                    .map(path -> onlyFileName ? path.getFileName() : path)
+                    .map(Path::toString)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }
