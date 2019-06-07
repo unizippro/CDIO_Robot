@@ -20,6 +20,7 @@ public class Planner {
     private RoadController roadController;
     private List<Ball> this_quadrant_balls;
     private Vector destinationPoint;
+    private boolean travelToNextQuadrant = false;
 
     public Planner(RoadController roadController) {
         this.roadController = roadController;
@@ -62,6 +63,7 @@ public class Planner {
 
         //Check if there is any balls in the quadrant, if none we should go to the next quadrant
         if(this_quadrant_balls.size() == 0){
+            //TODO travel to next quadrant
             destinationPoint = null;
         }else{
             //else we should go find the next ball
@@ -143,10 +145,16 @@ public class Planner {
      */
     private Point travelBetweenSafePoints(Robot robot, Board board) {
         //this.travelOwnSafePoint(robot, board);
-        return new SafePoint().getNextSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+        if (this.travelToNextQuadrant) {
+            this.travelToNextQuadrant = false;
+            return new SafePoint().getNextSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+        }
+
+        return this.travelOwnSafePoint(robot,board);
     }
 
     private Point travelOwnSafePoint(Robot robot, Board board) {
+        this.travelToNextQuadrant = true;
         return new SafePoint().getClosestSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
     }
 
