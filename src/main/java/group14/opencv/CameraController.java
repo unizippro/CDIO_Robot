@@ -1,6 +1,7 @@
 package group14.opencv;
 
 import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
 
 import java.awt.image.BufferedImage;
@@ -56,6 +57,18 @@ public class CameraController implements ICameraController {
     @Override
     public void addUpdateListener(CameraUpdatedHandler cameraUpdatedHandler) {
         this.cameraUpdatedHandler = cameraUpdatedHandler;
+    }
+
+    @Override
+    public void updateWithImage(String filePath) {
+        new Thread(() -> {
+            Mat src = Imgcodecs.imread(filePath, Imgcodecs.IMREAD_COLOR);
+            this.source.set(src);
+
+            if (this.cameraUpdatedHandler != null) {
+                this.cameraUpdatedHandler.updated();
+            }
+        }).run();
     }
 
     @Override

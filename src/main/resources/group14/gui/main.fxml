@@ -71,6 +71,7 @@
                      <font>
                         <Font size="15.0" fx:id="x14" />
                      </font></Label>
+                        <ChoiceBox fx:id="testImages" layoutX="350.0" layoutY="37.0" prefWidth="200.0" onAction="#onTestImageChanged" />
                         <Button layoutX="26.0" layoutY="249.0" mnemonicParsing="false" text="Start">
                      <font>
                         <Font size="15.0" fx:id="x15" />

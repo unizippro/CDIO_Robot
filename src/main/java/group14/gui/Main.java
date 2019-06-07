@@ -2,14 +2,17 @@ package group14.gui;
 
 import com.google.inject.Inject;
 import group14.Application;
+import group14.Resources;
 import group14.gui.components.CoordinateSystem;
 import group14.opencv.ICameraController;
 import group14.robot.IRobotManager;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
@@ -23,6 +26,8 @@ public class Main {
     private ICameraController cameraController;
 
 
+    @FXML
+    private ChoiceBox testImages;
     @FXML
     private Slider speedSlider;
     @FXML
@@ -65,6 +70,13 @@ public class Main {
     @FXML
     public void initialize() {
 //        this.timer.schedule(this.updateDistance, 0, 1000);
+
+        var fileItems = new ArrayList<FileSelectItem>();
+        for (String file : Resources.TestImages.getAllFiles()) {
+            fileItems.add(new FileSelectItem(file));
+        }
+
+        this.testImages.setItems(FXCollections.observableArrayList(fileItems));
 
         this.setPoints(this.generateCoordinates());
 
@@ -135,6 +147,12 @@ public class Main {
         }
     }
 
+    @FXML
+    public void onTestImageChanged(ActionEvent actionEvent) {
+        this.cameraController.stop();
+        this.cameraController.updateWithImage(((FileSelectItem) this.testImages.getValue()).filePath);
+    }
+
     private void cameraControllerUpdated() {
         var image = SwingFXUtils.toFXImage(this.cameraController.getSourceAsBufferedImage(), null);
 
@@ -156,5 +174,22 @@ public class Main {
         }
 
         return coordinates;
+    }
+
+
+
+    private class FileSelectItem {
+        private String filePath;
+
+        FileSelectItem(String filePath) {
+            this.filePath = filePath;
+        }
+
+        @Override
+        public String toString() {
+            var parts = filePath.split("/");
+
+            return parts[parts.length - 1];
+        }
     }
 }

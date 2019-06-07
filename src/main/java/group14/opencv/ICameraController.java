@@ -13,6 +13,8 @@ public interface ICameraController {
     void stop();
     void addUpdateListener(CameraUpdatedHandler cameraUpdatedHandler);
 
+    void updateWithImage(String filePath);
+
     Mat getSource();
     BufferedImage getSourceAsBufferedImage();
 }
