@@ -71,12 +71,28 @@ public class Program {
 
         roadController.getNextInstruction();
 
-        roadController.updateRobot(new Point(61,0), new Point(59,0));
+        roadController.updateRobot(new Point(16,0), new Point(14,0));
 
         roadController.getNextInstruction();
 
-        roadController.getQuadrants().get(0).createSafetyArea();
-        System.out.println("Balls withing range " + roadController.getBallsWithinArea());
+        roadController.updateRobot(new Point(15,16), new Point(15,14));
+        //Remove ball
+        roadController.removeBall(1);
+
+        roadController.getNextInstruction();
+
+        roadController.updateRobot(new Point(15,61), new Point(15,59));
+
+        roadController.getNextInstruction();
+
+        roadController.updateRobot(new Point(61,60), new Point(59,60));
+
+        //Remove ball
+        roadController.removeBall(0);
+
+        roadController.getNextInstruction();
+
+
 
     }
 
