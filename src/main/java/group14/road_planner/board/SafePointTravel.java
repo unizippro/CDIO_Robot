@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SafePoint {
+public class SafePointTravel {
 
     public Point getClosestSafePoint(LinkedList<Point> linkedList, List<Quadrant> quadrants, Robot robot) {
         int currentQuadrant = calculateCurrentQuadrant(quadrants, robot);

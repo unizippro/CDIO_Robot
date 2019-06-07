@@ -31,12 +31,14 @@ public class Board {
 
     /**
      * assigns new points and updates xAxis' vectors
+     *
      * @param boardList
      */
     public void update(List<Point> boardList) {
         this.assignPoints(boardList);
         this.xAxis.update(this.corners.get(2), this.corners.get(3));
     }
+
     private void assignPoints(List<Point> boardList) {
         this.corners.add(boardList.get(0));
         this.corners.add(boardList.get(1));
@@ -46,7 +48,24 @@ public class Board {
 
     public void createSafePoints(List<Quadrant> quadrants) {
         for (int i = 0; i < quadrants.size(); i++) {
-            if (i % 2 == 0 ) {
+            if (i == 0) {
+                Point p1 = new Point();
+                Point p2 = new Point();
+                p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
+                p2.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
+                p1.y = quadrants.get(i).getSafetyArea().getUpperLeft().y + (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 4;
+                p2.y = quadrants.get(i).getSafetyArea().getLowerLeft().y - (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 4;
+                this.safePointLinkedList.add(p2);
+                this.safePointLinkedList.add(p1);
+
+            }
+            if (i == 1) {
+                Point p1 = new Point();
+                p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
+                p1.y = quadrants.get(i).getSafetyArea().getUpperLeft().y + (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 2;
+                this.safePointLinkedList.add(p1);
+            }
+            if (i == 2) {
                 Point p1 = new Point();
                 Point p2 = new Point();
                 p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
@@ -55,13 +74,8 @@ public class Board {
                 p2.y = quadrants.get(i).getSafetyArea().getLowerLeft().y - (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 4;
                 this.safePointLinkedList.add(p1);
                 this.safePointLinkedList.add(p2);
-
-            } else if (i == 1){
-                Point p1 = new Point();
-                p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
-                p1.y = quadrants.get(i).getSafetyArea().getUpperLeft().y + (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 2;
-                this.safePointLinkedList.add(p1);
-            } else if(i == 3) {
+            }
+            if (i == 3) {
                 Point p1 = new Point();
                 p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
                 p1.y = quadrants.get(i).getSafetyArea().getLowerLeft().y - (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 2;
@@ -94,6 +108,7 @@ public class Board {
 
     /**
      * Facade for creating quadrants
+     *
      * @param board
      * @param cross
      * @return list of type quadrant
@@ -129,6 +144,7 @@ public class Board {
 
         return quadrant;
     }
+
     private Quadrant calculateQuadrantRight(Board board, Cross cross) {
         Quadrant quadrant = new Quadrant();
         quadrant.setUpperLeft(new Point(cross.getRight().x, board.getUpperLeft().y));
@@ -138,6 +154,7 @@ public class Board {
 
         return quadrant;
     }
+
     private Quadrant calculateQuadrantDown(Board board, Cross cross) {
         Quadrant quadrant = new Quadrant();
         quadrant.setUpperLeft(new Point(cross.getLeft().x, cross.getDown().y));
