@@ -41,8 +41,8 @@ public class Program {
         ArrayList<Point> ballList = new ArrayList<>();
         ballList.add(new Point(60, 60));
         ballList.add(new Point(15, 15));
-        ballList.add(new Point(200, 0));
-        ballList.add(new Point(150,150));
+        ballList.add(new Point(200, 40));
+        ballList.add(new Point(280,80));
 
         //Board
         List<Point> boardList = new ArrayList<>();
@@ -93,7 +93,7 @@ public class Program {
         //Drive to safe point
         roadController.getNextInstruction();
 
-        roadController.updateRobot(new Point(74,55), new Point(76,55));
+        roadController.updateRobot(new Point(76,55), new Point(74,55));
 
         //Drive to next quadrant safe point
         roadController.getNextInstruction();
