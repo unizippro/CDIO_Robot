@@ -2,10 +2,9 @@ package OpenCV;
 
 import org.opencv.core.Core;
 
-public class HoughCircles {
+public class RobotDetectRun {
     public static void main(String[] args) {
-        // Load the native library.
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        new openCVCircleDetect().run(args);
+        new RobotDetect().run(args);
     }
 }
