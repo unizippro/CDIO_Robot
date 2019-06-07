@@ -1,4 +1,4 @@
-package OpenCV;
+package group14.opencv.detectors;
 
 import java.awt.Component;
 import java.util.ArrayList;

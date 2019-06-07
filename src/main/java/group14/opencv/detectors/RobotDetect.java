@@ -1,4 +1,4 @@
-package OpenCV;
+package group14.opencv.detectors;
 
 import org.opencv.core.*;
 import org.opencv.highgui.HighGui;

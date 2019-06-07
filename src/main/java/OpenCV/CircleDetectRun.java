@@ -1,5 +1,6 @@
 package OpenCV;
 
+import group14.opencv.detectors.CircleDetect;
 import org.opencv.core.Core;
 
 public class CircleDetectRun {

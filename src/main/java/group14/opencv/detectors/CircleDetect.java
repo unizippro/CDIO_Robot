@@ -1,4 +1,4 @@
-package OpenCV;
+package group14.opencv.detectors;
 
 import org.opencv.core.*;
 import org.opencv.core.Point;
@@ -9,7 +9,7 @@ import org.opencv.videoio.VideoCapture;
 
 import static org.opencv.imgcodecs.Imgcodecs.imread;
 
-class CircleDetect {
+public class CircleDetect {
 
     public void run(String[] args) {
         Mat src = new Mat();
