@@ -3,6 +3,7 @@ package OpenCV;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -35,27 +36,17 @@ public class RectangleDetect {
 
     public void run(String[] args) {
         Mat src = new Mat();
-		VideoCapture cap = new VideoCapture(1);
-		if(!cap.isOpened()) {
-			System.out.println("Error");
-		}
-		else {
-			cap.read(src);
-		}
-
-        Mat hsv = new Mat();
-        Imgproc.cvtColor(src, hsv, Imgproc.COLOR_BGR2HSV);
-
+        VideoCapture cap = new VideoCapture(1);
+        if(!cap.isOpened()) {
+            System.out.println("Error");
+        }
+        else {
+            cap.read(src);
+        }
 
         //Bgrthresh overvejes hvis hsv ikke er tilstrækkeligt
         Mat bgrThresh = new Mat();
         Core.inRange(src, new Scalar(minBlue, minGreen, minRed), new Scalar(maxBlue, maxGreen, maxRed), bgrThresh);
-
-        Mat thresh1 = new Mat();
-        // Til at finde banen
-        Core.inRange(hsv, new Scalar(0, 100, 200), new Scalar(255, 255, 255), thresh1);
-
-
 
         Mat dest = Mat.zeros(bgrThresh.size(), CvType.CV_8UC3);
         Mat destNorm = new Mat();
@@ -87,6 +78,21 @@ public class RectangleDetect {
             Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(0), 2, 8, 0);
         }
 
+        List<Point> possibleCrossPointList = new ArrayList<Point>();
+        for (Point point : pointlist) {
+            if(point.x>100 && point.y>100 && point.x<500 && point.y<400) {
+                possibleCrossPointList.add(point);
+            }
+        }
+        System.out.println(possibleCrossPointList);
+
+        List<Point> finalCrossPointList = new ArrayList<Point>();
+        finalCrossPointList = this.calculatePoints(possibleCrossPointList);
+        System.out.println(finalCrossPointList);
+        for(Point point: finalCrossPointList) {
+            Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(0), 2, 8, 0);
+        }
+
         Mat reziseImg = new Mat();
         Size scaleSize = new Size(1000, 680);
         Imgproc.resize(src, reziseImg, scaleSize, 0, 0, Imgproc.INTER_AREA);
@@ -99,6 +105,44 @@ public class RectangleDetect {
         System.exit(0);
 
     }
+
+
+    private List<Point> calculatePoints(List<Point> pointList) {
+        List<Point> crossPoints = new ArrayList<Point>();
+
+        List<Point> xList = this.sortX(pointList);
+        List<Point> yList = this.sortY(pointList);
+
+        Point left = new Point();
+        Point right = new Point();
+        Point up = new Point();
+        Point down = new Point();
+
+        left = xList.get(0);
+        right = xList.get(xList.size()-1);
+
+        up = yList.get(0);
+        down = yList.get(yList.size()-1);
+        crossPoints.add(left);
+        crossPoints.add(right);
+        crossPoints.add(up);
+        crossPoints.add(down);
+        return crossPoints;
+    }
+
+
+    private List<Point> sortX(List<Point> pointList) {
+        List<Point> xSortedList = new ArrayList<>(pointList);
+        xSortedList.sort(Comparator.comparingInt(o -> (int) o.x));
+        return xSortedList;
+    }
+
+    private List<Point> sortY(List<Point> pointList) {
+        List<Point> ySortedList = new ArrayList<>(pointList);
+        ySortedList.sort(Comparator.comparingInt(o -> (int) o.y));
+        return ySortedList;
+    }
+
 
     public List<Point> SortPoints(List<Point> p) {
         Point firstQuarterPoint = new Point();
