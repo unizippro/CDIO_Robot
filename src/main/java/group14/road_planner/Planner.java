@@ -19,7 +19,7 @@ public class Planner {
     private int deltaAngle = 2;
     private RoadController roadController;
     private List<Ball> this_quadrant_balls;
-    private Vector destinationPoint;
+    private Vector destinationVector;
     private boolean travelToNextQuadrant = false;
 
     public Planner(RoadController roadController) {
@@ -63,16 +63,21 @@ public class Planner {
 
         //Check if there is any balls in the quadrant, if none we should go to the next quadrant
         if(this_quadrant_balls.size() == 0){
+
+            //Travel to own
+            System.out.println("Driving to safe point: " + this.roadController.getBoard().getSafePointLinkedList().get(0).toString());
+            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(), this.roadController.getBoard().getSafePointLinkedList().get(0));
+
             //TODO travel to next quadrant
-            destinationPoint = null;
+
         }else{
             //else we should go find the next ball
             findClosestBall();
-            destinationPoint = currentClosetBall;
+            destinationVector = currentClosetBall;
         }
 
 
-        double angleToBall = Calculator.CALCULATE_ANGLE(robot.getVector(), destinationPoint);
+        double angleToBall = Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
         try {
             System.out.println("Robot compas: " + robot.getCompas().toString());
             System.out.println("AngleToBall : " + angleToBall);
@@ -88,10 +93,10 @@ public class Planner {
                         // The ball is in front of us
                         if (abs((abs(angleToBall) - 90)) <= deltaAngle) { // Test if the route is in one part or two parts
                             //System.out.println("The ball is in a 90 deg direction.");
-                            return new Instruction(angleToBall, destinationPoint.length);
+                            return new Instruction(angleToBall, destinationVector.length);
                         } else { // The route is spitted up in 2 parts.
                             //System.out.println("The route is spitted up");
-                            return new Instruction(0, abs(destinationPoint.getX()));
+                            return new Instruction(0, abs(destinationVector.getX()));
                         }
                     } else {
                         // The ball is behind us
@@ -110,10 +115,10 @@ public class Planner {
             // The ball is in front of us
             if (abs((abs(angletoPoint) - 90)) <= deltaAngle) { // Test if the route is in one part or two parts
                 //System.out.println("The ball is in a 90 deg direction.");
-                return new Instruction(angletoPoint, destinationPoint.length);
+                return new Instruction(angletoPoint, destinationVector.length);
             } else { // The route is spitted up in 2 parts.
                 //System.out.println("The route is spitted up");
-                return new Instruction(0, abs(destinationPoint.getY()));
+                return new Instruction(0, abs(destinationVector.getY()));
             }
         } else {
             // The ball is behind us

@@ -106,7 +106,8 @@ public class Robot {
 
     public void calcCompas(Board board) {
             double temp = Calculator.CALCULATE_ANGLE(this.getVector(), board.getxAxis());
-            System.out.println("The robot's direction is " + temp);
+            System.out.println("The robot's direction is " + temp+
+                    "\n-------------------------------------");
 
             if (temp <= 45 && temp >= -45) {
                 this.setCompas(Robot.Compas.RIGHT);

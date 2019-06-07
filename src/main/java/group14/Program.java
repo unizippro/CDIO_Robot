@@ -92,6 +92,15 @@ public class Program {
 
         roadController.getNextInstruction();
 
+        roadController.updateRobot(new Point(61+15,60), new Point(59+15,60));
+
+        roadController.getNextInstruction();
+
+        roadController.updateRobot(new Point(75,61-5), new Point(75,59-5));
+
+        roadController.getNextInstruction();
+
+
 
 
     }
