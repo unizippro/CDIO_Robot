@@ -23,11 +23,7 @@ public class CircleDetectRun {
 
         Mat src = Imgcodecs.imread(Resources.TestImages.board4, Imgcodecs.IMREAD_COLOR);
 
-        var ballDetector = new BallDetector(src);
-
-        ballDetector.run();
-
-        var result = ballDetector.getResult();
+        var result = new BallDetector().run(src);
 
         result.getValue().forEach(System.out::println);
 

@@ -159,10 +159,9 @@ public class Main {
     private void cameraControllerUpdated() {
         var imageSource = SwingFXUtils.toFXImage(this.cameraController.getSourceAsBufferedImage(), null);
 
-        var ballDetector = new BallDetector(this.cameraController.getSource());
-        ballDetector.run();
+        var result = new BallDetector()
+                .run(this.cameraController.getSource());
 
-        var result = ballDetector.getResult();
         var imageBalls = SwingFXUtils.toFXImage(this.cameraController.matToBufferedImage(result.getKey()), null);
 
         Platform.runLater(() -> {
