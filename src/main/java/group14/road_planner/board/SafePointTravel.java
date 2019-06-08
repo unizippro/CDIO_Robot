@@ -3,16 +3,15 @@ package group14.road_planner.board;
 import group14.road_planner.Robot;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class SafePointTravel {
 
-    public Point getClosestSafePoint(LinkedList<Point> linkedList, List<Quadrant> quadrants, Robot robot) {
+    public Point getClosestSafePoint(LinkedList<Point> linkedList, List<Quadrant> quadrants, Robot robot, boolean travelToQuadrantExitSafepoint) {
         int currentQuadrant = calculateCurrentQuadrant(quadrants, robot);
-        return getClosest(this.getSafePointsQuadrant(linkedList, currentQuadrant), robot.getMid());
+        return getClosest(this.getSafePointsQuadrant(linkedList, currentQuadrant), robot.getMid(),travelToQuadrantExitSafepoint);
     }
 
     /**
@@ -30,7 +29,7 @@ public class SafePointTravel {
         }else{
             currentQuadrant++;
         }
-        return getClosest(this.getSafePointsQuadrant(linkedList, currentQuadrant), robot.getMid());
+        return getClosest(this.getSafePointsQuadrant(linkedList, currentQuadrant), robot.getMid(), false);
     }
 
     private int calculateCurrentQuadrant(List<Quadrant> quadrants, Robot robot) {
@@ -43,7 +42,8 @@ public class SafePointTravel {
         return -1;
     }
 
-    private Point getClosest(List<Point> points, Point pointRobot) {
+
+    private Point getClosest(List<Point> points, Point pointRobot, boolean travelToQuadrantExitSafepoint) {
         if (points.size() == 1) {
             return points.get(0);
         } else if (points.size() == 2) {
@@ -54,11 +54,29 @@ public class SafePointTravel {
 //            } else {
 //                return points.get(0);
 //            }
-            return points.get(1);
+
+            //Is it the "exit" safe point of the quadrant or the "entrance" safe point?
+            if(travelToQuadrantExitSafepoint){
+                return points.get(1);
+            }else{
+                return points.get(0);
+            }
+
         }
         //hopefully not gonna happen.
         return null;
     }
+
+    private Point getPoint(List<Point> points) throws Exception {
+        if (points.size() == 1) {
+            return points.get(0);
+        } else if (points.size() == 2) {
+
+        }
+        throw new Exception("The points sent to getPoint was not of size 1 or 2");
+        //return null;
+    }
+
 
     private List<Point> getSafePointsQuadrant(LinkedList<Point> linkedList, int quadrant) {
         List<Point> pointsArray = new ArrayList<>();
@@ -72,9 +90,8 @@ public class SafePointTravel {
                 pointsArray.add(linkedList.get(2));
                 break;
             case 2:
-                //TODO OLIVER! Jeg har byttet om på 3 og 4? Håber ikke det ødelægger logikken.
-                pointsArray.add(linkedList.get(4));
                 pointsArray.add(linkedList.get(3));
+                pointsArray.add(linkedList.get(4));
                 break;
             case 3:
                 pointsArray.add(linkedList.get(5));

@@ -21,6 +21,7 @@ public class Planner {
     private List<Ball> this_quadrant_balls;
     private Vector destinationVector;
     private boolean travelToNextQuadrant = false;
+    private int phaseOneStep = 0;
 
     public Planner(RoadController roadController) {
         this.roadController = roadController;
@@ -56,7 +57,47 @@ public class Planner {
     }
 
     //TODO
-    public Instruction nextInstruction(Robot robot) {
+    public Instruction nextInstruction(Robot robot) throws Exception {
+
+        //If the robot made it all the way though the safe points
+        // it should now go drop off the balls
+        if(this.roadController.getRobot().QuadrantsVisited >= 4){
+
+            double angleToDestinationPoint;
+            switch (phaseOneStep){
+                case 0:
+                    phaseOneStep++;
+                    System.out.println("The robot is now ready to deliver all the balls it has collected from phase 1.\n" +
+                            "Step 0 - Going to drop-off point");
+                    //Go to drop-off point at hardcoded (20,100)
+
+                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(),
+                            new Point(20,100));
+
+                    angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
+                    return new Instruction(angleToDestinationPoint, destinationVector.length);
+                case 1:
+                    phaseOneStep++;
+                    System.out.println("Step 1 - The robot is driving 1 unit towards the cross, to align it self" +
+                            " for reversing");
+
+                    //Go to drop-off point at hardcoded (21,100)
+                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(),
+                            new Point(21,100));
+
+                    angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
+                    return new Instruction(angleToDestinationPoint, destinationVector.length);
+                case 2:
+                    phaseOneStep++;
+                    System.out.println("Step 2 - The robot will now reverse hardcoded amount and drop off balls");
+                    return new Instruction(0,-10);
+                default:
+                    throw new Exception("I should now start on phase 2");
+                    //TODO: This variable should be reset, when changing from phase 1->2
+                    //QuadrantsVisited = 0;
+            }
+        }
+
 
         //Make a new list with the balls in the current quadrant
         this_quadrant_balls = ballsWithinSafeArea(this.roadController.getRobot().getCurrentQuadrant(), this.roadController.getBalls());
@@ -64,10 +105,13 @@ public class Planner {
         //Check if there is any balls in the quadrant, if none we should go to the next quadrant
         if(this_quadrant_balls.size() == 0){
 
+
+
             //Travel to own point directly
             //TODO: There should be a check if the "direct" path is
             // intersecting with the cross and if so, the robot should do the "two part" tour instead
-            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(), travelBetweenSafePoints(robot,this.roadController.getBoard()));
+            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(),
+                    travelBetweenSafePoints(robot,this.roadController.getBoard(), true));
 
             if(this.travelToNextQuadrant){
                 System.out.println("Driving to safe point:");
@@ -85,6 +129,8 @@ public class Planner {
                 }else if (quadrants_temp.get(3).equals(robot.getCurrentQuadrant())) {
                     robot.setCurrentQuadrant(this.roadController.getQuadrants().get(0));
                 }
+
+                this.roadController.getRobot().QuadrantsVisited++;
 
 
             }
@@ -172,9 +218,10 @@ public class Planner {
      * Travel to next quadrant
      * @param robot
      * @param board
+     * @param travelToQuadrantExitSafepoint
      * @return
      */
-    private Point travelBetweenSafePoints(Robot robot, Board board) {
+    private Point travelBetweenSafePoints(Robot robot, Board board, boolean travelToQuadrantExitSafepoint) {
         //this.travelOwnSafePoint(robot, board);
         if (this.travelToNextQuadrant) {
             System.out.println("Jeg tager nu til næste kvadrant!");
@@ -184,12 +231,12 @@ public class Planner {
             return p;
         }
 
-        return this.travelOwnSafePoint(robot,board);
+        return this.travelOwnSafePoint(robot,board,travelToQuadrantExitSafepoint);
     }
 
-    private Point travelOwnSafePoint(Robot robot, Board board) {
+    private Point travelOwnSafePoint(Robot robot, Board board, boolean travelToQuadrantExitSafepoint) {
         this.travelToNextQuadrant = true;
-        Point p = new SafePointTravel().getClosestSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+        Point p = new SafePointTravel().getClosestSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot, travelToQuadrantExitSafepoint);
         System.out.println("Safepoint der køres til: "+p.toString());
         return p;
     }

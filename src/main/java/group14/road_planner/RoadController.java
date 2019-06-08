@@ -120,7 +120,12 @@ public class RoadController {
      * @return instruction to be executed by MovementController
      */
     public Instruction getNextInstruction() {
-        Instruction inst = this.planner.nextInstruction(this.getRobot());
+        Instruction inst = null;
+        try {
+            inst = this.planner.nextInstruction(this.getRobot());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println(inst);
         return inst;
     }

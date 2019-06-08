@@ -9,6 +9,9 @@ import java.util.List;
 
 public class Robot {
 
+    //TODO: This variable should be reset, when changing from phase 1->2
+    public int QuadrantsVisited = 0;
+
     public Quadrant getCurrentQuadrant() {
         return this.currentQuadrant;
     }
