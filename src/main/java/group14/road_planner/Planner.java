@@ -64,13 +64,29 @@ public class Planner {
         //Check if there is any balls in the quadrant, if none we should go to the next quadrant
         if(this_quadrant_balls.size() == 0){
 
-            //Travel to own
+            //Travel to own point directly
+            //TODO: There should be a check if the "direct" path is
+            // intersecting with the cross and if so, the robot should do the "two part" tour instead
             destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(), travelBetweenSafePoints(robot,this.roadController.getBoard()));
 
             if(this.travelToNextQuadrant){
                 System.out.println("Driving to safe point:");
             }else{
                 System.out.println("Driving to safe point in next quadrant:");
+                //TODO Here the next quadrant should be picked? But I'm not sure how
+                // so for now it is just hardcoded
+                List<Quadrant> quadrants_temp = this.roadController.getQuadrants();
+                if (quadrants_temp.get(0).equals(robot.getCurrentQuadrant())) {
+                    robot.setCurrentQuadrant(this.roadController.getQuadrants().get(1));
+                }else if (quadrants_temp.get(1).equals(robot.getCurrentQuadrant())) {
+                    robot.setCurrentQuadrant(this.roadController.getQuadrants().get(2));
+                }else if (quadrants_temp.get(2).equals(robot.getCurrentQuadrant())) {
+                    robot.setCurrentQuadrant(this.roadController.getQuadrants().get(3));
+                }else if (quadrants_temp.get(3).equals(robot.getCurrentQuadrant())) {
+                    robot.setCurrentQuadrant(this.roadController.getQuadrants().get(0));
+                }
+
+
             }
 
             double angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
@@ -82,6 +98,10 @@ public class Planner {
             destinationVector = currentClosetBall;
         }
 
+
+        //TODO: There should be a check if the first instruction of the "two part" tour path is
+        // intersecting with the cross and if so, the robot should start with the second instruction
+        // and if that doesnt intersect the robot should take the tour in the opposite order.
 
         double angleToBall = Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
         try {

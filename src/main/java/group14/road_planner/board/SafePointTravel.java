@@ -72,8 +72,9 @@ public class SafePointTravel {
                 pointsArray.add(linkedList.get(2));
                 break;
             case 2:
-                pointsArray.add(linkedList.get(3));
+                //TODO OLIVER! Jeg har byttet om på 3 og 4? Håber ikke det ødelægger logikken.
                 pointsArray.add(linkedList.get(4));
+                pointsArray.add(linkedList.get(3));
                 break;
             case 3:
                 pointsArray.add(linkedList.get(5));

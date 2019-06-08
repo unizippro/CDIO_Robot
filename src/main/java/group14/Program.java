@@ -98,6 +98,33 @@ public class Program {
         //Drive to next quadrant safe point
         roadController.getNextInstruction();
 
+        //The robot is roughly this way, and now pointing to the right
+        roadController.updateRobot(new Point(201,25), new Point(199,25));
+
+        //By safepoint in 2 quadrant and should now go to ball
+        roadController.getNextInstruction();
+
+        //The robot just picked up ball 3 and is now pointing up
+        roadController.updateRobot(new Point(200,41), new Point(200,39));
+        roadController.removeBall(0);
+
+
+        //No more balls in quadrant, should travel back to safe point (200,25)
+        roadController.getNextInstruction();
+
+        //The robot is pointing down and ready to travel to next quadrant
+        roadController.updateRobot(new Point(200,24), new Point(200,26));
+        //Drive to next quadrant safe point
+        roadController.getNextInstruction();
+
+        //The robot is roughly this way, and now pointing to the right
+        roadController.updateRobot(new Point(274,55), new Point(276,55));
+
+        System.out.println("--------------------------------\nNewest Command:");
+        //By safepoint 3, should travel to ball 4 (280,80)
+        roadController.getNextInstruction();
+
+
         /*
         //15 units frem
         roadController.updateRobot(new Point(76,60), new Point(74,60));
