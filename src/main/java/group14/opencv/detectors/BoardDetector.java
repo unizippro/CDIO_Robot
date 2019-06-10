@@ -1,28 +1,17 @@
 package group14.opencv.detectors;
 
-import java.awt.Component;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.highgui.HighGui;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.utils.Converters;
 import org.opencv.videoio.VideoCapture;
 
 public class BoardDetector {
@@ -59,7 +48,7 @@ public class BoardDetector {
         destNorm.get(0, 0, destNormData);
         int threshold = 200;
         Point p;
-        List<Point> pointlist = new ArrayList<Point>();
+        List<Point> pointlist = new ArrayList<>();
         for (int i = 0; i < destNorm.rows(); i++) {
             for (int j = 0; j < destNorm.cols(); j++) {
                 if ((int) destNormData[i * destNorm.cols() + j] > threshold) {
@@ -67,29 +56,26 @@ public class BoardDetector {
 
                     pointlist.add(p);
                     System.out.println(p);
-
                 }
             }
         }
-        List<Point> finalPointList = new ArrayList<Point>();
-        finalPointList = this.SortPoints(pointlist);
+        List<Point> finalPointList = this.sortPoints(pointlist);
         System.out.println(finalPointList);
         for (Point point : finalPointList) {
             Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(0), 2, 8, 0);
         }
 
-        List<Point> possibleCrossPointList = new ArrayList<Point>();
+        List<Point> possibleCrossPointList = new ArrayList<>();
         for (Point point : pointlist) {
-            if(point.x>100 && point.y>100 && point.x<500 && point.y<400) {
+            if (point.x > 100 && point.y > 100 && point.x < 500 && point.y < 400) {
                 possibleCrossPointList.add(point);
             }
         }
         System.out.println(possibleCrossPointList);
 
-        List<Point> finalCrossPointList = new ArrayList<Point>();
-        finalCrossPointList = this.calculatePoints(possibleCrossPointList);
+        List<Point> finalCrossPointList = this.calculatePoints(possibleCrossPointList);
         System.out.println(finalCrossPointList);
-        for(Point point: finalCrossPointList) {
+        for(Point point : finalCrossPointList) {
             Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(0), 2, 8, 0);
         }
 
@@ -108,25 +94,20 @@ public class BoardDetector {
 
 
     private List<Point> calculatePoints(List<Point> pointList) {
-        List<Point> crossPoints = new ArrayList<Point>();
-
         List<Point> xList = this.sortX(pointList);
         List<Point> yList = this.sortY(pointList);
 
-        Point left = new Point();
-        Point right = new Point();
-        Point up = new Point();
-        Point down = new Point();
+        Point left = xList.get(0);
+        Point right = xList.get(xList.size() - 1);
+        Point up = yList.get(0);
+        Point down = yList.get(yList.size() - 1);
 
-        left = xList.get(0);
-        right = xList.get(xList.size()-1);
-
-        up = yList.get(0);
-        down = yList.get(yList.size()-1);
+        List<Point> crossPoints = new ArrayList<>();
         crossPoints.add(left);
         crossPoints.add(right);
         crossPoints.add(up);
         crossPoints.add(down);
+
         return crossPoints;
     }
 
@@ -134,82 +115,51 @@ public class BoardDetector {
     private List<Point> sortX(List<Point> pointList) {
         List<Point> xSortedList = new ArrayList<>(pointList);
         xSortedList.sort(Comparator.comparingInt(o -> (int) o.x));
+
         return xSortedList;
     }
 
     private List<Point> sortY(List<Point> pointList) {
         List<Point> ySortedList = new ArrayList<>(pointList);
         ySortedList.sort(Comparator.comparingInt(o -> (int) o.y));
+
         return ySortedList;
     }
 
 
-    public List<Point> SortPoints(List<Point> p) {
-        Point firstQuarterPoint = new Point();
-        Point secondQuarterPoint = new Point();
-        Point thirdQuarterPoint = new Point(1000, 1000);
-        Point fourthQuarterPoint = new Point();
-        List<Point> correctPoints = new ArrayList<Point>();
+    private List<Point> sortPoints(List<Point> points) {
+        Point upperLeftPoint = new Point();
+        Point upperRightPoint = new Point();
+        Point lowerRightPoint = new Point(1000, 1000);
+        Point lowerLeftPoint = new Point();
 
-        for (Point point : p) {
-            System.out.println(point);
-            if (0 < point.x && point.x < 100 && 0 < point.y && point.y < 100) {
-                if (firstQuarterPoint == null) {
-                    firstQuarterPoint = point;
-                } else {
-                    if (point.x > firstQuarterPoint.x) {
-                        firstQuarterPoint = point;
-                    }
-                    if (point.y > firstQuarterPoint.y) {
-                        firstQuarterPoint = point;
-                    }
+        for (Point point : points) {
+            if (point.x < 100 && point.y < 100) {
+                if (point.x > upperLeftPoint.x || point.y > upperLeftPoint.y) {
+                    upperLeftPoint = point;
+                }
+            } else if (500 < point.x && point.x < 700 && 0 < point.y && point.y < 100) {
+                if (point.x < upperRightPoint.x || point.y > upperRightPoint.y) {
+                    upperRightPoint = point;
+                }
+            } else if (500 < point.x && point.x < 700 && 400 < point.y && point.y < 600) {
+                if (point.x < lowerRightPoint.x || point.y < lowerRightPoint.y) {
+                    lowerRightPoint = point;
+                }
+            } else if (0 < point.x && point.x < 100 && 400 < point.y && point.y < 600) {
+                if (point.x > lowerLeftPoint.x || point.y < lowerLeftPoint.y) {
+                    lowerLeftPoint = point;
                 }
             }
-            if (500 < point.x && point.x < 700 && 0 < point.y && point.y < 100) {
-                if (secondQuarterPoint == null) {
-                    secondQuarterPoint = point;
-                } else {
-                    if (point.x < secondQuarterPoint.x) {
-                        secondQuarterPoint = point;
-                    }
-                    if (point.y > secondQuarterPoint.y) {
-                        secondQuarterPoint = point;
-                    }
-                }
-            }
-            if (500 < point.x && point.x < 700 && 400 < point.y && point.y < 600) {
-                if (thirdQuarterPoint == null) {
-                    thirdQuarterPoint = point;
-                } else {
-                    if (point.x < thirdQuarterPoint.x) {
-                        thirdQuarterPoint = point;
-                    }
-                    if (point.y < thirdQuarterPoint.y) {
-                        thirdQuarterPoint = point;
-                    }
-                }
-            }
-            if (0 < point.x && point.x < 100 && 400 < point.y && point.y < 600) {
-                if (fourthQuarterPoint == null) {
-                    fourthQuarterPoint = point;
-                } else {
-                    if (point.x > fourthQuarterPoint.x) {
-                        fourthQuarterPoint = point;
-                    }
-                    if (point.y < fourthQuarterPoint.y) {
-                        fourthQuarterPoint = point;
-                    }
-                }
-            }
-
         }
 
-        correctPoints.add(firstQuarterPoint);
-        correctPoints.add(secondQuarterPoint);
-        correctPoints.add(thirdQuarterPoint);
-        correctPoints.add(fourthQuarterPoint);
+        List<Point> correctPoints = new ArrayList<>();
+        correctPoints.add(upperLeftPoint);
+        correctPoints.add(upperRightPoint);
+        correctPoints.add(lowerRightPoint);
+        correctPoints.add(lowerLeftPoint);
+
         return correctPoints;
     }
-
 
 }
