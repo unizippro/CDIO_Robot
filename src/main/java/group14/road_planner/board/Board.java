@@ -2,10 +2,11 @@ package group14.road_planner.board;
 
 import group14.road_planner.Robot;
 import group14.road_planner.Vector;
+import group14.road_planner.board.goal.Goal;
+import group14.road_planner.board.goal.GoalType;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Board {
@@ -21,6 +22,8 @@ public class Board {
     private List<Quadrant> quadrants = new ArrayList<>();
     private BoardHelper boardHelper = new BoardHelper();
     private int robotQuadrantPlacement;
+    private Goal smallGoal;
+    private Goal largeGoal;
 
     public Board(List<Point> boardList) {
         this.update(boardList);
@@ -30,6 +33,8 @@ public class Board {
         //For planner constructor
         xAxis = new Vector(0, 0);
     }
+
+
 
     /**
      * assigns new points and updates xAxis' vectors
@@ -46,6 +51,9 @@ public class Board {
         this.corners.add(boardList.get(1));
         this.corners.add(boardList.get(2));
         this.corners.add(boardList.get(3));
+
+        this.smallGoal = new Goal(GoalType.SMALL, this);
+        this.largeGoal = new Goal(GoalType.LARGE, this);
     }
 
     public void createSafePoints(List<Quadrant> quadrants) {
