@@ -67,6 +67,11 @@
                                            AnchorPane.topAnchor="35.0"
                                            fitHeight="480" fitWidth="600"
                                 />
+
+                                <Slider fx:id="blurSizeSlider" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="3" max="9" majorTickUnit="2" minorTickCount="0" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="lowerThresholdSlider" layoutX="757.0" layoutY="75.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="houghParam1" layoutX="757.0" layoutY="115.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="houghParam2" layoutX="757.0" layoutY="155.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                             </children>
                         </AnchorPane>
                     </content>

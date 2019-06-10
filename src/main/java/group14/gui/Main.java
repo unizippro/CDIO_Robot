@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
 import java.util.*;
 
@@ -25,6 +26,8 @@ public class Main {
 
     private IRobotManager robotManager;
     private ICameraController cameraController;
+
+    private BallDetector ballDetector = new BallDetector();
 
 
     @FXML
@@ -41,6 +44,14 @@ public class Main {
     public ImageView image;
     @FXML
     public ImageView imageBalls;
+    @FXML
+    public Slider blurSizeSlider;
+    @FXML
+    public Slider lowerThresholdSlider;
+    @FXML
+    public Slider houghParam1;
+    @FXML
+    public Slider houghParam2;
 
 
 //    private Timer timer = new Timer();
@@ -85,6 +96,13 @@ public class Main {
 
         this.plot.setRobot(new Point2D(5, 16));
         this.plot.setCross(new Point2D(20, 10));
+
+        var config = this.ballDetector.getConfig();
+
+        this.blurSizeSlider.setValue(config.blurSize.get());
+        this.lowerThresholdSlider.setValue(config.lowerThreshold.get());
+        this.houghParam1.setValue(config.houghParam1.get());
+        this.houghParam2.setValue(config.houghParam2.get());
 
         if (Application.openCvLoaded) {
             this.cameraController.start(0, 60);
@@ -159,8 +177,7 @@ public class Main {
     private void cameraControllerUpdated() {
         var imageSource = SwingFXUtils.toFXImage(this.cameraController.getSourceAsBufferedImage(), null);
 
-        var result = new BallDetector()
-                .run(this.cameraController.getSource());
+        var result = this.ballDetector.run(this.cameraController.getSource());
 
         var imageBalls = SwingFXUtils.toFXImage(this.cameraController.matToBufferedImage(result.getKey()), null);
 
@@ -187,6 +204,15 @@ public class Main {
         return coordinates;
     }
 
+    @FXML
+    public void ballDetectorConfigUpdated(MouseEvent mouseEvent) {
+        var config = this.ballDetector.getConfig();
+
+        config.blurSize.set((int) this.blurSizeSlider.getValue());
+        config.lowerThreshold.set((int) this.lowerThresholdSlider.getValue());
+        config.houghParam1.set((int) this.houghParam1.getValue());
+        config.houghParam2.set((int) this.houghParam2.getValue());
+    }
 
 
     private class FileSelectItem {
