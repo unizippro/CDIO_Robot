@@ -1,6 +1,7 @@
 package group14.robot;
 
 import lejos.hardware.BrickInfo;
+import robot.rmi_interfaces.IController;
 import robot.rmi_interfaces.IMovement;
 import robot.rmi_interfaces.ISensors;
 
@@ -89,5 +90,10 @@ public class RobotManagerDemo implements IRobotManager {
                 return false;
             }
         };
+    }
+
+    @Override
+    public IController getController() {
+        return null;
     }
 }
