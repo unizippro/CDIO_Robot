@@ -41,13 +41,13 @@ public class Planner {
 
     private void findClosestBall() {
         if (this_quadrant_balls.size() > 0) {
-            currentClosetBall = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(), this_quadrant_balls.get(0).getPos());
+            currentClosetBall = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(), this_quadrant_balls.get(0).getPos());
             closestBall = this_quadrant_balls.get(0);
         } else {
             throw new IllegalArgumentException("There where no Balls in the balls array.");
         }
         for (int i = 1; i < this_quadrant_balls.size(); i++) {
-            Vector tempVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(), this_quadrant_balls.get(i).getPos());
+            Vector tempVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(), this_quadrant_balls.get(i).getPos());
             if (tempVector.length < currentClosetBall.length) {
                 currentClosetBall = tempVector;
                 closestBall = this_quadrant_balls.get(i);
@@ -61,7 +61,7 @@ public class Planner {
 
         //If the robot made it all the way though the safe points
         // it should now go drop off the balls
-        if(this.roadController.getRobot().QuadrantsVisited >= 4){
+        if(this.roadController.getRobot().getQuadrantsVisited() >= 4){
 
             double angleToDestinationPoint;
             switch (phaseOneStep){
@@ -71,7 +71,7 @@ public class Planner {
                             "Step 0 - Going to drop-off point");
                     //Go to drop-off point at hardcoded (20,100)
 
-                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(),
+                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(),
                             new Point(20,100));
 
                     angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
@@ -82,7 +82,7 @@ public class Planner {
                             " for reversing");
 
                     //Go to drop-off point at hardcoded (21,100)
-                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(),
+                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(),
                             new Point(21,100));
 
                     angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
@@ -100,7 +100,7 @@ public class Planner {
 
 
         //Make a new list with the balls in the current quadrant
-        this_quadrant_balls = ballsWithinSafeArea(this.roadController.getRobot().getCurrentQuadrant(), this.roadController.getBalls());
+        this_quadrant_balls = ballsWithinSafeArea(this.roadController.getCurrentQuadrant(), this.roadController.getBalls());
 
         //Check if there is any balls in the quadrant, if none we should go to the next quadrant
         if(this_quadrant_balls.size() == 0){
@@ -110,7 +110,7 @@ public class Planner {
             //Travel to own point directly
             //TODO: There should be a check if the "direct" path is
             // intersecting with the cross and if so, the robot should do the "two part" tour instead
-            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getMid(),
+            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(),
                     travelBetweenSafePoints(robot,this.roadController.getBoard(), true));
 
             if(this.travelToNextQuadrant){
@@ -120,17 +120,13 @@ public class Planner {
                 //TODO Here the next quadrant should be picked? But I'm not sure how
                 // so for now it is just hardcoded
                 List<Quadrant> quadrants_temp = this.roadController.getQuadrants();
-                if (quadrants_temp.get(0).equals(robot.getCurrentQuadrant())) {
-                    robot.setCurrentQuadrant(this.roadController.getQuadrants().get(1));
-                }else if (quadrants_temp.get(1).equals(robot.getCurrentQuadrant())) {
-                    robot.setCurrentQuadrant(this.roadController.getQuadrants().get(2));
-                }else if (quadrants_temp.get(2).equals(robot.getCurrentQuadrant())) {
-                    robot.setCurrentQuadrant(this.roadController.getQuadrants().get(3));
-                }else if (quadrants_temp.get(3).equals(robot.getCurrentQuadrant())) {
-                    robot.setCurrentQuadrant(this.roadController.getQuadrants().get(0));
+                if (quadrants_temp.get(0).equals(this.roadController.getCurrentQuadrant())) {
+                }else if (quadrants_temp.get(1).equals(this.roadController.getCurrentQuadrant())) {
+                }else if (quadrants_temp.get(2).equals(this.roadController.getCurrentQuadrant())) {
+                }else if (quadrants_temp.get(3).equals(this.roadController.getCurrentQuadrant())) {
                 }
 
-                this.roadController.getRobot().QuadrantsVisited++;
+                this.roadController.getRobot().incrementQuadrantsVisited();
 
 
             }
