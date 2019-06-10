@@ -10,15 +10,16 @@ import java.util.List;
 public class Robot {
 
     //TODO: This variable should be reset, when changing from phase 1->2
-    public int QuadrantsVisited = 0;
+    private int quadrantsVisited = 0;
 
-    public Quadrant getCurrentQuadrant() {
-        return this.currentQuadrant;
+    public int getQuadrantsVisited() {
+        return quadrantsVisited;
     }
 
-    public void setCurrentQuadrant(Quadrant currentQuadrant) {
-        this.currentQuadrant = currentQuadrant;
+    public void incrementQuadrantsVisited() {
+        this.quadrantsVisited++ ;
     }
+
 
     enum Sector{
         UPPER,
@@ -34,21 +35,24 @@ public class Robot {
         LEFT
     }
 
-    private Point front;
-    private Point rear;
-    private Point mid;
+    private Point frontOpenCVPoint;
+    private Point rearOpenCVPoint;
+    private Point midOpenCVPoint;
     private Vector vector;
     private Sector sector;
     private Compas compas;
     private Quadrant currentQuadrant;
+    private Point rear;
+    private Point mid;
+    private Point front;
 
     /**
-     * index 0 = front, index 1 = back
+     * index 0 = frontOpenCVPoint, index 1 = back
      * @param robotPoints
      */
     public Robot(List<Point> robotPoints) {
-        this.front = robotPoints.get(0);
-        this.rear = robotPoints.get(1);
+        this.frontOpenCVPoint = robotPoints.get(0);
+        this.rearOpenCVPoint = robotPoints.get(1);
         sector = Sector.UPPER;
         calcMid();
         calcVector();
@@ -67,30 +71,30 @@ public class Robot {
         return vector;
     }
 
-    public Point getFront() {
-        return front;
+    public Point getFrontOpenCVPoint() {
+        return frontOpenCVPoint;
     }
 
-    public Point getRear() {
-        return rear;
+    public Point getRearOpenCVPoint() {
+        return rearOpenCVPoint;
     }
 
-    public Point getMid() {
-        return mid;
+    public Point getMidOpenCVPoint() {
+        return midOpenCVPoint;
     }
 
-    public void setFront(Point c) {
-        this.front = c;
+    public void setFrontOpenCVPoint(Point c) {
+        this.frontOpenCVPoint = c;
     }
-    public void setRear(Point c) {
-        this.rear = c;
+    public void setRearOpenCVPoint(Point c) {
+        this.rearOpenCVPoint = c;
     }
     public void setCompas(Compas compas) {
         this.compas = compas;
     }
 
-    public void setMid(Point mid) {
-        this.mid = mid;
+    public void setMidOpenCVPoint(Point midOpenCVPoint) {
+        this.midOpenCVPoint = midOpenCVPoint;
     }
 
     private void setVector(Vector vector) {
@@ -101,8 +105,8 @@ public class Robot {
      * @param back
      */
     public void update(Point front, Point back) {
-        setFront(front);
-        setRear(back);
+        setFrontOpenCVPoint(front);
+        setRearOpenCVPoint(back);
         calcMid();
         calcVector();
      }
@@ -124,15 +128,19 @@ public class Robot {
     }
 
     private void calcMid() {
-        this.setMid(new Point((front.x + rear.x)/2,(front.y + rear.y)/2));
+        this.setMidOpenCVPoint(new Point((frontOpenCVPoint.x + rearOpenCVPoint.x)/2,(frontOpenCVPoint.y + rearOpenCVPoint.y)/2));
     }
 
     /**
      *  Calculate the vector from 2 Points c1 to c2.
      */
     private void calcVector() {
-        this.setVector(new Vector(front.x - mid.x, front.y - mid.y));
+        this.setVector(new Vector(frontOpenCVPoint.x - midOpenCVPoint.x, frontOpenCVPoint.y - midOpenCVPoint.y));
     }
+
+    private void calcRobotPositions() {
+    }
+
 
 
 }

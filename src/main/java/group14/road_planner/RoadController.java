@@ -75,7 +75,6 @@ public class RoadController {
 
     private void initializeRobot(List<Point> robotPoints) {
         this.robot = new Robot(robotPoints);
-        this.robot.setCurrentQuadrant(getQuadrants().get(0));
         this.robot.calcCompas(this.getBoard());
     }
 
@@ -135,6 +134,10 @@ public class RoadController {
      * @return list of balls within safetyarea
      */
     public List<Ball> getBallsWithinArea() {
-        return this.robot.getCurrentQuadrant().ballsWithinArea(this.getBalls());
+        return this.getCurrentQuadrant().ballsWithinArea(this.getBalls());
+    }
+
+    public Quadrant getCurrentQuadrant() {
+        return this.board.getQuadrants().get(this.board.getRobotQuadrantPlacement(this.robot));
     }
 }

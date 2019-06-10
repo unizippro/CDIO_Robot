@@ -16,15 +16,13 @@ public class SmartConverter {
                                Point lowerLeft,
                                Point lowerRight) {
         pixelsPerCm = 0;
-        for (int i = 0; i < 4; i++) {
-            double toAdd = (i % 2 == 0) ? calcXPixelLength(lowerLeft, lowerRight) : calcYPixelLength(upperLeft, lowerLeft);
-            pixelsPerCm = pixelsPerCm + toAdd;
-        }
-        pixelsPerCm = pixelsPerCm / 4;
+
+        pixelsPerCm = (calcXPixelLength(upperLeft, upperRight)+calcXPixelLength(lowerLeft, lowerRight)+calcYPixelLength(upperLeft, lowerLeft) + calcYPixelLength(upperRight,lowerRight)) / 4;
     }
 
     private double calcXPixelLength(Point p1, Point p2) {
-        return (p2.x - p1.x) / longBoard;
+        System.out.println(Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)) / longBoard);
+        return Math.sqrt(Math.pow(p2.x - p1.x,2)+Math.pow(p2.y - p1.y,2)) / longBoard;
     }
 
     private double calcYPixelLength(Point p1, Point p2) {
