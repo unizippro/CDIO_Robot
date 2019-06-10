@@ -23,6 +23,7 @@ public class Resources {
         public static final String board2 = load("board_2.jpg");
         public static final String board3 = load("board_3.jpg");
         public static final String board4 = load("board_4.jpg");
+        public static final String board5 = load("board_5.jpg");
 
         public static final String cross1 = load("red_cross_1.jpg");
         public static final String cross2 = load("red_cross_2.png");
