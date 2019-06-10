@@ -226,7 +226,7 @@ public class Planner {
         if (this.travelToNextQuadrant) {
             System.out.println("Jeg tager nu til næste kvadrant!");
             this.travelToNextQuadrant = false;
-            Point p = new SafePointTravel().getNextSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot);
+            Point p = new SafePointTravel().getNextSafePoint(board, robot);
             System.out.println("Safepoint i næste kvadrant der køres til: "+p.toString());
             return p;
         }
@@ -236,7 +236,7 @@ public class Planner {
 
     private Point travelOwnSafePoint(Robot robot, Board board, boolean travelToQuadrantExitSafepoint) {
         this.travelToNextQuadrant = true;
-        Point p = new SafePointTravel().getClosestSafePoint(board.getSafePointLinkedList(), this.roadController.getQuadrants(), robot, travelToQuadrantExitSafepoint);
+        Point p = new SafePointTravel().getClosestSafePoint(board, robot, travelToQuadrantExitSafepoint);
         System.out.println("Safepoint der køres til: "+p.toString());
         return p;
     }
