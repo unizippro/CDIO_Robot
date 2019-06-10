@@ -1,5 +1,6 @@
 package group14.robot;
 
+import group14.robot.data.Instruction;
 import lejos.hardware.BrickInfo;
 import group14.robot.interfaces.IController;
 import group14.robot.interfaces.IMovement;
@@ -40,6 +41,11 @@ public class RobotManagerDemo implements IRobotManager {
     @Override
     public IMovement getMovement() {
         return new IMovement() {
+            @Override
+            public void runInstruction(Instruction instruction) throws RemoteException {
+
+            }
+
             @Override
             public void forward() throws RemoteException {
 

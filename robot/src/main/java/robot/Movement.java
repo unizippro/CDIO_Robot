@@ -1,5 +1,6 @@
 package robot;
 
+import group14.robot.data.Instruction;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.RegulatedMotor;
 import group14.robot.interfaces.IMovement;
@@ -44,6 +45,15 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     public void setSpeedPercentage(double percent) {
         this.motorLeft.setSpeed((int) ((percent / 100) * this.maxSpeedLeft));
         this.motorRight.setSpeed((int) ((percent / 100) * this.maxSpeedRight));
+    }
+
+    @Override
+    public void runInstruction(Instruction instruction) {
+        if (instruction.getAngle() != 0) {
+            this.turn((int) instruction.getAngle());
+        }
+
+        this.forward(instruction.getDistance() * 10);
     }
 
     @Override
