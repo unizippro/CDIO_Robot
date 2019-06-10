@@ -1,5 +1,6 @@
 package group14.road_planner.board;
 
+import group14.road_planner.Robot;
 import group14.road_planner.Vector;
 
 import java.awt.*;
@@ -17,7 +18,9 @@ public class Board {
      */
     private List<Point> corners = new ArrayList<>();
     private Vector xAxis;
-    private LinkedList<Point> safePointLinkedList = new LinkedList<Point>();
+    private List<Quadrant> quadrants = new ArrayList<>();
+    private BoardHelper boardHelper = new BoardHelper();
+    private int robotQuadrantPlacement;
 
     public Board(List<Point> boardList) {
         this.update(boardList);
@@ -30,12 +33,14 @@ public class Board {
 
     /**
      * assigns new points and updates xAxis' vectors
+     *
      * @param boardList
      */
     public void update(List<Point> boardList) {
         this.assignPoints(boardList);
         this.xAxis.update(this.corners.get(2), this.corners.get(3));
     }
+
     private void assignPoints(List<Point> boardList) {
         this.corners.add(boardList.get(0));
         this.corners.add(boardList.get(1));
@@ -44,31 +49,7 @@ public class Board {
     }
 
     public void createSafePoints(List<Quadrant> quadrants) {
-        for (int i = 0; i < quadrants.size(); i++) {
-            if (i % 2 == 0 ) {
-                Point p1 = new Point();
-                Point p2 = new Point();
-                p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
-                p2.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
-                p1.y = quadrants.get(i).getSafetyArea().getUpperLeft().y + (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 4;
-                p2.y = quadrants.get(i).getSafetyArea().getLowerLeft().y - (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 4;
-                this.safePointLinkedList.add(p1);
-                this.safePointLinkedList.add(p2);
-
-            } else if (i == 1){
-                Point p1 = new Point();
-                p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
-                p1.y = quadrants.get(i).getSafetyArea().getUpperLeft().y + (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 2;
-                this.safePointLinkedList.add(p1);
-            } else if(i == 3) {
-                Point p1 = new Point();
-                p1.x = quadrants.get(i).getSafetyArea().getLowerLeft().x + (quadrants.get(i).getSafetyArea().getLowerRight().x - quadrants.get(i).getSafetyArea().getLowerLeft().x) / 2;
-                p1.y = quadrants.get(i).getSafetyArea().getLowerLeft().y - (quadrants.get(i).getSafetyArea().getLowerLeft().y - quadrants.get(i).getSafetyArea().getUpperLeft().y) / 2;
-                this.safePointLinkedList.add(p1);
-            }
-        }
-        //This null is added so we can do a check and roll around back to element 0
-        this.safePointLinkedList.add(null);
+        this.boardHelper.createPoints(quadrants);
     }
 
     public Point getLowerLeft() {
@@ -93,20 +74,20 @@ public class Board {
 
     /**
      * Facade for creating quadrants
+     *
      * @param board
      * @param cross
      * @return list of type quadrant
      */
     public List<Quadrant> calculateQuadrant(Board board, Cross cross) {
-        List<Quadrant> quadrants = new ArrayList<>();
-        quadrants.add(this.calculateQuadrantLeft(board, cross));
-        quadrants.add(this.calculateQuadrantUp(board, cross));
-        quadrants.add(this.calculateQuadrantRight(board, cross));
-        quadrants.add(this.calculateQuadrantDown(board, cross));
-        for (Quadrant quadrant : quadrants) {
+        this.quadrants.add(this.calculateQuadrantLeft(board, cross));
+        this.quadrants.add(this.calculateQuadrantUp(board, cross));
+        this.quadrants.add(this.calculateQuadrantRight(board, cross));
+        this.quadrants.add(this.calculateQuadrantDown(board, cross));
+        for (Quadrant quadrant : this.quadrants) {
             quadrant.createSafetyArea();
         }
-        return quadrants;
+        return this.quadrants;
     }
 
     private Quadrant calculateQuadrantLeft(Board board, Cross cross) {
@@ -128,6 +109,7 @@ public class Board {
 
         return quadrant;
     }
+
     private Quadrant calculateQuadrantRight(Board board, Cross cross) {
         Quadrant quadrant = new Quadrant();
         quadrant.setUpperLeft(new Point(cross.getRight().x, board.getUpperLeft().y));
@@ -137,6 +119,7 @@ public class Board {
 
         return quadrant;
     }
+
     private Quadrant calculateQuadrantDown(Board board, Cross cross) {
         Quadrant quadrant = new Quadrant();
         quadrant.setUpperLeft(new Point(cross.getLeft().x, cross.getDown().y));
@@ -145,5 +128,13 @@ public class Board {
         quadrant.setLowerRight(new Point(cross.getRight().x, board.getLowerRight().y));
 
         return quadrant;
+    }
+
+    public int getRobotQuadrantPlacement(Robot robot) {
+        return this.boardHelper.getRobotPlacement(robot.getMid(), this);
+    }
+
+    public List<Quadrant> getQuadrants() {
+        return this.quadrants;
     }
 }

@@ -1,15 +1,22 @@
 package group14.road_planner;
 
+import group14.math.Calculator;
+import group14.road_planner.board.Board;
+import group14.road_planner.board.Quadrant;
+
 import java.awt.*;
 import java.util.List;
 
 public class Robot {
 
-    public int getCurrentQuadrant() {
+    //TODO: This variable should be reset, when changing from phase 1->2
+    public int QuadrantsVisited = 0;
+
+    public Quadrant getCurrentQuadrant() {
         return this.currentQuadrant;
     }
 
-    public void setCurrentQuadrant(int currentQuadrant) {
+    public void setCurrentQuadrant(Quadrant currentQuadrant) {
         this.currentQuadrant = currentQuadrant;
     }
 
@@ -33,7 +40,7 @@ public class Robot {
     private Vector vector;
     private Sector sector;
     private Compas compas;
-    private int currentQuadrant = 0;
+    private Quadrant currentQuadrant;
 
     /**
      * index 0 = front, index 1 = back
@@ -99,6 +106,22 @@ public class Robot {
         calcMid();
         calcVector();
      }
+
+    public void calcCompas(Board board) {
+            double temp = Calculator.CALCULATE_ANGLE(this.getVector(), board.getxAxis());
+            System.out.println("The robot's direction is " + temp+
+                    "\n-------------------------------------");
+
+            if (temp <= 45 && temp >= -45) {
+                this.setCompas(Robot.Compas.RIGHT);
+            } else if (temp < 135 && temp > 45) {
+                this.setCompas(Robot.Compas.UP);
+            } else if (temp <= -135 || temp >= 135) {
+                this.setCompas(Robot.Compas.LEFT);
+            } else if (temp < -45 && temp > -135) {
+                this.setCompas(Robot.Compas.DOWN);
+            }
+    }
 
     private void calcMid() {
         this.setMid(new Point((front.x + rear.x)/2,(front.y + rear.y)/2));

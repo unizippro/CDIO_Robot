@@ -4,6 +4,7 @@ import group14.road_planner.ball.Ball;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Quadrant {
@@ -12,7 +13,7 @@ public class Quadrant {
     private Point lowerLeft;
     private Point lowerRight;
     private SafetyArea safetyArea;
-
+    private List<Point> safePoints = new ArrayList<>();
 
 
     public Point getUpperLeft() {
@@ -69,5 +70,23 @@ public class Quadrant {
 
     public SafetyArea getSafetyArea() {
         return this.safetyArea;
+    }
+
+    public List<Ball> ballsWithinArea(List<Ball> ballList) {
+        List<Ball> newBallList = new ArrayList<>();
+        for (Ball ball : ballList) {
+            if (this.isWithingSafetyArea(ball)) {
+                newBallList.add(ball);
+            }
+        }
+        return newBallList;
+    }
+
+    public void setSafePoints(Point... points) {
+        this.safePoints.addAll(Arrays.asList(points));
+    }
+
+    public List<Point> getSafePoints() {
+        return this.safePoints;
     }
 }
