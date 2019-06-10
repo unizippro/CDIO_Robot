@@ -1,14 +1,8 @@
 package robot;
 
-import lejos.hardware.motor.BasicMotor;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.motor.UnregulatedMotor;
-import lejos.hardware.port.BasicMotorPort;
 import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.SensorPort;
-import lejos.hardware.sensor.EV3IRSensor;
-import robot.rmi_interfaces.IRobot;
+import group14.robot.interfaces.IRobot;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

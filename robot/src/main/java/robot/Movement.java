@@ -2,7 +2,7 @@ package robot;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.RegulatedMotor;
-import robot.rmi_interfaces.IMovement;
+import group14.robot.interfaces.IMovement;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

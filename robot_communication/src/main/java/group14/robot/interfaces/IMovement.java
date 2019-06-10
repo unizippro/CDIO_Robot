@@ -1,4 +1,4 @@
-package robot.rmi_interfaces;
+package group14.robot.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

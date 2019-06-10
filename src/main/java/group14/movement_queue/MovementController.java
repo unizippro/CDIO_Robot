@@ -2,7 +2,7 @@ package group14.movement_queue;
 
 import group14.road_planner.Instruction;
 import group14.network.RobotFinder;
-import robot.rmi_interfaces.IMovement;
+import group14.robot.interfaces.IMovement;
 
 import java.rmi.RemoteException;
 

@@ -4,7 +4,7 @@ package robot;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import robot.rmi_interfaces.IController;
+import group14.robot.interfaces.IController;
 
 import java.io.File;
 import java.rmi.RemoteException;
