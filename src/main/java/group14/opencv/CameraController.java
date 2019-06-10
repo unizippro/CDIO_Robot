@@ -39,7 +39,11 @@ public class CameraController implements ICameraController {
             this.source.set(mat);
 
             if (this.cameraUpdatedHandler != null) {
-                this.cameraUpdatedHandler.updated();
+                try {
+                    this.cameraUpdatedHandler.updated();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, 0, 1000 / fps, TimeUnit.MILLISECONDS);
     }
@@ -47,11 +51,11 @@ public class CameraController implements ICameraController {
     @Override
     public void stop() {
         if (this.currentFuture != null) {
-            System.out.println("Stopping");
-
             this.currentFuture.cancel(true);
             this.currentFuture = null;
+        }
 
+        if (this.camera != null) {
             this.camera.release();
             this.camera = null;
         }
@@ -71,7 +75,7 @@ public class CameraController implements ICameraController {
             if (this.cameraUpdatedHandler != null) {
                 this.cameraUpdatedHandler.updated();
             }
-        }).run();
+        }).start();
     }
 
     @Override
