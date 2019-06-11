@@ -81,7 +81,7 @@ public class Corners {
         Imgproc.rectangle(image, new Rect(0, (int) (this.imageSize.height - this.marginHeight), (int) this.marginWidth, (int) this.marginHeight), new Scalar(0), 3);
         Imgproc.rectangle(image, new Rect((int) (this.imageSize.width - this.marginWidth), (int) (this.imageSize.height - this.marginHeight), (int) this.marginWidth, (int) this.marginHeight), new Scalar(0), 3);
 
-        if (this.upperLeftPoint != null && this.lowerRightPoint != null) {
+        if (this.upperLeftPoint != null && this.upperRightPoint != null && this.lowerRightPoint != null && this.lowerLeftPoint != null) {
             Imgproc.line(image, this.upperLeftPoint, this.upperRightPoint, new Scalar(0, 255, 255), 3);
             Imgproc.line(image, this.upperRightPoint, this.lowerRightPoint, new Scalar(0, 255, 255), 3);
             Imgproc.line(image, this.lowerRightPoint, this.lowerLeftPoint, new Scalar(0, 255, 255), 3);
