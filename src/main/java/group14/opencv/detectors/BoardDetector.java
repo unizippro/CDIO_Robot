@@ -52,7 +52,10 @@ public class BoardDetector {
         cornerPoints.calculatePoints(pointList);
         cornerPoints.draw(out);
 
+        return new Pair<>(out, cornerPoints);
+    }
 
+    public Pair<Mat, List<Point>> runCross(Mat src, List<Point> pointList) {
         List<Point> possibleCrossPointList = new ArrayList<>();
         for (Point point : pointList) {
             if (point.x > 100 && point.y > 100 && point.x < 500 && point.y < 400) {
@@ -67,7 +70,7 @@ public class BoardDetector {
             Imgproc.circle(src, point, 5, new Scalar(0), 2, 8, 0);
         }
 
-        return new Pair<>(out, cornerPoints);
+        return new Pair<>(src, finalCrossPointList);
     }
 
 
