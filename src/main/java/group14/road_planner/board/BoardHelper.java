@@ -57,27 +57,27 @@ public class BoardHelper {
 //        this.safePointLinkedList.add(null);
     }
 
-    public int getRobotPlacement(Point robotMid, Board board) {
-        if (robotMid.x >= board.getQuadrants().get(0).getLowerLeft().x && robotMid.x <= board.getQuadrants().get(0).getLowerRight().x
-            && robotMid.y >= board.getQuadrants().get(0).getUpperLeft().y && robotMid.y <= board.getQuadrants().get(0).getLowerRight().y) {
+    public int getRobotPlacement(Point robotFront, Board board) {
+        if (robotFront.x >= board.getQuadrants().get(0).getLowerLeft().x && robotFront.x <= board.getQuadrants().get(0).getLowerRight().x
+            && robotFront.y >= board.getQuadrants().get(0).getUpperLeft().y && robotFront.y <= board.getQuadrants().get(0).getLowerRight().y) {
             return 0;
         }
 
-        if (robotMid.x >= board.getQuadrants().get(1).getLowerLeft().x && robotMid.x <= board.getQuadrants().get(1).getLowerRight().x
-            && robotMid.y >= board.getQuadrants().get(1).getUpperLeft().y && robotMid.y <= board.getQuadrants().get(1).getLowerRight().y) {
+        if (robotFront.x >= board.getQuadrants().get(1).getLowerLeft().x && robotFront.x <= board.getQuadrants().get(1).getLowerRight().x
+            && robotFront.y >= board.getQuadrants().get(1).getUpperLeft().y && robotFront.y <= board.getQuadrants().get(1).getLowerRight().y) {
             return 1;
         }
 
-        if (robotMid.x >= board.getQuadrants().get(2).getLowerLeft().x && robotMid.x <= board.getQuadrants().get(2).getLowerRight().x
-                && robotMid.y >= board.getQuadrants().get(2).getUpperLeft().y && robotMid.y <= board.getQuadrants().get(2).getLowerRight().y) {
+        if (robotFront.x >= board.getQuadrants().get(2).getLowerLeft().x && robotFront.x <= board.getQuadrants().get(2).getLowerRight().x
+                && robotFront.y >= board.getQuadrants().get(2).getUpperLeft().y && robotFront.y <= board.getQuadrants().get(2).getLowerRight().y) {
             return 2;
         }
 
-        if (robotMid.x >= board.getQuadrants().get(3).getLowerLeft().x && robotMid.x <= board.getQuadrants().get(3).getLowerRight().x
-                && robotMid.y >= board.getQuadrants().get(3).getUpperLeft().y && robotMid.y <= board.getQuadrants().get(3).getLowerRight().y) {
+        if (robotFront.x >= board.getQuadrants().get(3).getLowerLeft().x && robotFront.x <= board.getQuadrants().get(3).getLowerRight().x
+                && robotFront.y >= board.getQuadrants().get(3).getUpperLeft().y && robotFront.y <= board.getQuadrants().get(3).getLowerRight().y) {
             return 3;
         }
         //shouldnt happen
-        return 4;
+        return -1;
     }
 }

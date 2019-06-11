@@ -5,6 +5,7 @@ import group14.road_planner.board.Board;
 import group14.road_planner.board.Cross;
 import group14.road_planner.board.Quadrant;
 import group14.math.Calculator;
+import group14.road_planner.board.goal.Goal;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -75,7 +76,6 @@ public class RoadController {
 
     private void initializeRobot(List<Point> robotPoints) {
         this.robot = new Robot(robotPoints);
-        this.robot.setCurrentQuadrant(getQuadrants().get(0));
         this.robot.calcCompas(this.getBoard());
     }
 
@@ -122,7 +122,7 @@ public class RoadController {
     public Instruction getNextInstruction() {
         Instruction inst = null;
         try {
-            inst = this.planner.nextInstruction(this.getRobot());
+            inst = this.planner.nextInstruction();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,6 +135,16 @@ public class RoadController {
      * @return list of balls within safetyarea
      */
     public List<Ball> getBallsWithinArea() {
-        return this.robot.getCurrentQuadrant().ballsWithinArea(this.getBalls());
+        return this.getCurrentQuadrant().ballsWithinArea(this.getBalls());
+    }
+
+    public Quadrant getCurrentQuadrant() {
+        return this.board.getQuadrants().get(this.board.getRobotQuadrantPlacement(this.robot));
+    }
+
+    public void swapGoals() {
+        for (Goal goal : this.board.getGoals()) {
+            goal.swapGoalType();
+        }
     }
 }

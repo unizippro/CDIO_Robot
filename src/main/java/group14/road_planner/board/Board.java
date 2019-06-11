@@ -22,9 +22,7 @@ public class Board {
     private List<Quadrant> quadrants = new ArrayList<>();
     private BoardHelper boardHelper = new BoardHelper();
     private int robotQuadrantPlacement;
-    private Goal smallGoal;
-    private Goal largeGoal;
-
+    private List<Goal> goals = new ArrayList<>();
     public Board(List<Point> boardList) {
         this.update(boardList);
     }
@@ -43,6 +41,7 @@ public class Board {
      */
     public void update(List<Point> boardList) {
         this.assignPoints(boardList);
+        new SmartConverter().calculateBoard(boardList);
         this.xAxis.update(this.corners.get(2), this.corners.get(3));
     }
 
@@ -52,8 +51,8 @@ public class Board {
         this.corners.add(boardList.get(2));
         this.corners.add(boardList.get(3));
 
-        this.smallGoal = new Goal(GoalType.SMALL, this);
-        this.largeGoal = new Goal(GoalType.LARGE, this);
+        this.goals.add(new Goal(GoalType.SMALL, this));
+        this.goals.add(new Goal(GoalType.LARGE, this));
     }
 
     public void createSafePoints(List<Quadrant> quadrants) {
@@ -139,10 +138,14 @@ public class Board {
     }
 
     public int getRobotQuadrantPlacement(Robot robot) {
-        return this.boardHelper.getRobotPlacement(robot.getMid(), this);
+        return this.boardHelper.getRobotPlacement(robot.getFront(), this);
     }
 
     public List<Quadrant> getQuadrants() {
         return this.quadrants;
+    }
+
+    public List<Goal> getGoals() {
+        return this.goals;
     }
 }

@@ -3,15 +3,13 @@ package group14.road_planner.board;
 import group14.road_planner.Robot;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class SafePointTravel {
 
     public Point getClosestSafePoint(Board board, Robot robot, boolean travelToQuadrantExitSafepoint) {
         int currentQuadrant = board.getRobotQuadrantPlacement(robot);
-        return getClosest(board.getQuadrants().get(currentQuadrant).getSafePoints(), robot.getMid(), travelToQuadrantExitSafepoint);
+        return getClosest(board.getQuadrants().get(currentQuadrant).getSafePoints(), robot.getFront(), travelToQuadrantExitSafepoint);
     }
 
     /**
@@ -27,17 +25,7 @@ public class SafePointTravel {
         }else{
             currentQuadrant++;
         }
-        return getClosest(board.getQuadrants().get(currentQuadrant).getSafePoints(), robot.getMid(), false);
-    }
-
-    private int calculateCurrentQuadrant(List<Quadrant> quadrants, Robot robot) {
-        for (int i = 0; i < quadrants.size(); i++) {
-            if (quadrants.get(i) == robot.getCurrentQuadrant()) {
-                return i;
-            }
-        }
-        //Hopefully not gonna happen.
-        return -1;
+        return getClosest(board.getQuadrants().get(currentQuadrant).getSafePoints(), robot.getFront(), false);
     }
 
 
@@ -64,28 +52,5 @@ public class SafePointTravel {
         //hopefully not gonna happen.
         return null;
     }
-
-
-//    private List<Point> getSafePointsQuadrant(Quadrant quadrant) {
-//        List<Point> pointsArray = new ArrayList<>();
-//
-//        switch (quadrant) {
-//            case 0:
-//                pointsArray.add(linkedList.get(0));
-//                pointsArray.add(linkedList.get(1));
-//                break;
-//            case 1:
-//                pointsArray.add(linkedList.get(2));
-//                break;
-//            case 2:
-//                pointsArray.add(linkedList.get(3));
-//                pointsArray.add(linkedList.get(4));
-//                break;
-//            case 3:
-//                pointsArray.add(linkedList.get(5));
-//                break;
-//        }
-//        return pointsArray;
-//    }
 
 }
