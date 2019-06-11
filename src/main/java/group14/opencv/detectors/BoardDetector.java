@@ -39,16 +39,11 @@ public class BoardDetector {
         destNorm.get(0, 0, destNormData);
 
         int threshold = 200;
-        Point p;
         List<Point> pointList = new ArrayList<>();
         for (int i = 0; i < destNorm.rows(); i++) {
             for (int j = 0; j < destNorm.cols(); j++) {
                 if ((int) destNormData[i * destNorm.cols() + j] > threshold) {
-                    p = new Point(j, i);
-                    pointList.add(p);
-
-                    Imgproc.circle(out, p = new Point(j, i), 5, new Scalar(0), 2, 8, 0);
-                    System.out.println(p);
+                    pointList.add(new Point(j, i));
                 }
             }
         }
@@ -69,7 +64,7 @@ public class BoardDetector {
         List<Point> finalCrossPointList = this.calculatePoints(possibleCrossPointList);
         System.out.println(finalCrossPointList);
         for(Point point : finalCrossPointList) {
-            Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(0), 2, 8, 0);
+            Imgproc.circle(src, point, 5, new Scalar(0), 2, 8, 0);
         }
 
         return new Pair<>(out, cornerPoints);
