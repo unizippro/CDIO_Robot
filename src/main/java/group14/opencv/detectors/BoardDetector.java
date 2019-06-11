@@ -23,16 +23,7 @@ public class BoardDetector {
     int maxGreen= 120;
     int maxBlue = 120;
 
-    public void run(String[] args) {
-        Mat src = new Mat();
-        VideoCapture cap = new VideoCapture(1);
-        if(!cap.isOpened()) {
-            System.out.println("Error");
-        }
-        else {
-            cap.read(src);
-        }
-
+    public Pair<Mat, List<Point>> run(Mat src) {
         //Bgrthresh overvejes hvis hsv ikke er tilstrækkeligt
         Mat bgrThresh = new Mat();
         Core.inRange(src, new Scalar(minBlue, minGreen, minRed), new Scalar(maxBlue, maxGreen, maxRed), bgrThresh);
@@ -44,11 +35,13 @@ public class BoardDetector {
         Imgproc.cornerHarris(bgrThresh, dest, 9, 5, 0.1);
         Core.normalize(dest, destNorm, 0, 255, Core.NORM_MINMAX);
         Core.convertScaleAbs(destNorm, destNormScaled);
+
         float[] destNormData = new float[(int) (destNorm.total() * destNorm.channels())];
         destNorm.get(0, 0, destNormData);
+
         int threshold = 200;
         Point p;
-        List<Point> pointlist = new ArrayList<>();
+        List<Point> pointList = new ArrayList<>();
         for (int i = 0; i < destNorm.rows(); i++) {
             for (int j = 0; j < destNorm.cols(); j++) {
                 if ((int) destNormData[i * destNorm.cols() + j] > threshold) {
@@ -79,17 +72,7 @@ public class BoardDetector {
             Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(0), 2, 8, 0);
         }
 
-        Mat reziseImg = new Mat();
-        Size scaleSize = new Size(1000, 680);
-        Imgproc.resize(src, reziseImg, scaleSize, 0, 0, Imgproc.INTER_AREA);
-
-        // ! [display]
-        HighGui.imshow("detected corners", reziseImg);
-        HighGui.waitKey();
-        // ! [display]
-
-        System.exit(0);
-
+        return new Pair<>(src, finalPointList);
     }
 
 
