@@ -26,6 +26,7 @@ public class RectanglesDetectRun {
         var result = new BoardDetector().run(src);
 
         System.out.println(result.getCorners());
+        result.getCross().forEach(System.out::println);
 
         HighGui.imshow("Result", result.getOutput());
         HighGui.resizeWindow("Result", src.width() / 2, src.height() / 2);

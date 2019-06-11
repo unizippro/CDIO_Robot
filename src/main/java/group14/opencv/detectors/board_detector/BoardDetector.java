@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import group14.opencv.detectors.Detector;
-import javafx.util.Pair;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
@@ -16,11 +15,11 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
         public AtomicDouble cornerMarginPercentage = new AtomicDouble(30);
     }
 
-    int minRed= 160;
+    int minRed = 160;
     int minGreen = 0;
     int minBlue = 0;
     int maxRed = 255;
-    int maxGreen= 120;
+    int maxGreen = 120;
     int maxBlue = 120;
 
     public BoardDetectorResult run(Mat src) {
@@ -56,7 +55,25 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
         cornerPoints.calculatePoints(pointList);
         cornerPoints.draw(out);
 
-        return new BoardDetectorResult(out, cornerPoints);
+        // Calculate cross position
+        var center = new Point(src.width() / 2, src.height() / 2);
+        var marginWidth = center.x * (this.getConfig().cornerMarginPercentage.get() / 100.0);
+        var marginHeight = center.y * (this.getConfig().cornerMarginPercentage.get() / 100.0);
+        var centerRect = new Rect(new Point(center.x - marginWidth, center.y - marginHeight), new Point(center.x + marginWidth, center.y + marginHeight));
+        List<Point> possibleCrossPointList = new ArrayList<>();
+        for (Point point : pointList) {
+            if (centerRect.contains(point)) {
+                possibleCrossPointList.add(point);
+            }
+        }
+
+        List<Point> finalCrossPointList = this.calculatePoints(possibleCrossPointList);
+        for (Point point : finalCrossPointList) {
+            Imgproc.circle(out, point, 5, new Scalar(0), 2, 8, 0);
+        }
+        Imgproc.rectangle(out, centerRect, new Scalar(255, 255, 0), 3);
+
+        return new BoardDetectorResult(out, cornerPoints, finalCrossPointList);
     }
 
     @Override
@@ -64,26 +81,12 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
         return new Config();
     }
 
-    public Pair<Mat, List<Point>> runCross(Mat src, List<Point> pointList) {
-        List<Point> possibleCrossPointList = new ArrayList<>();
-        for (Point point : pointList) {
-            if (point.x > 100 && point.y > 100 && point.x < 500 && point.y < 400) {
-                possibleCrossPointList.add(point);
-            }
-        }
-        System.out.println(possibleCrossPointList);
-
-        List<Point> finalCrossPointList = this.calculatePoints(possibleCrossPointList);
-        System.out.println(finalCrossPointList);
-        for(Point point : finalCrossPointList) {
-            Imgproc.circle(src, point, 5, new Scalar(0), 2, 8, 0);
-        }
-
-        return new Pair<>(src, finalCrossPointList);
-    }
-
 
     private List<Point> calculatePoints(List<Point> pointList) {
+        if (pointList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         List<Point> xList = this.sortX(pointList);
         List<Point> yList = this.sortY(pointList);
 
