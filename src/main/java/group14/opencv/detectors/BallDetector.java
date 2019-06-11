@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class BallDetector {
-
-    private Config config = new Config();
+public class BallDetector extends Detector<Pair<Mat, List<Point>>, BallDetector.Config> {
 
     public static class Config {
         public AtomicInteger blurSize = new AtomicInteger(5);
@@ -27,27 +25,23 @@ public class BallDetector {
         private AtomicInteger houghMaxRadius = new AtomicInteger(30);
     }
 
-    public BallDetector() { }
-
-    public Config getConfig() {
-        return this.config;
-    }
-
     public Pair<Mat, List<Point>> run(Mat src) {
         var points = new ArrayList<Point>();
         var out = new Mat();
         src.copyTo(out);
 
+        var config = this.getConfig();
+
 
         //Blur mat to better define objects
-        var blurred = this.blur(src, this.config.blurSize.get());
+        var blurred = this.blur(src, config.blurSize.get());
 
         //Set threshold
-        var thresh = this.threshold(blurred, this.config.lowerThreshold.get(), 255);
+        var thresh = this.threshold(blurred, config.lowerThreshold.get(), 255);
 
         //! [houghcircles]
         Mat circles = new Mat();
-        Imgproc.HoughCircles(thresh, circles, Imgproc.HOUGH_GRADIENT, this.config.houghDp.get(), this.config.houghMinDist.get(), this.config.houghParam1.get(), this.config.houghParam2.get(), this.config.houghMinRadius.get(), this.config.houghMaxRadius.get());
+        Imgproc.HoughCircles(thresh, circles, Imgproc.HOUGH_GRADIENT, config.houghDp.get(), config.houghMinDist.get(), config.houghParam1.get(), config.houghParam2.get(), config.houghMinRadius.get(), config.houghMaxRadius.get());
 
         //! [draw]
         for (int x = 0; x < circles.cols(); x++) {
@@ -67,6 +61,10 @@ public class BallDetector {
         return new Pair<>(out, points);
     }
 
+    @Override
+    protected Config createConfig() {
+        return new Config();
+    }
 
     private Mat blur(Mat src, int ksize) {
         Mat out = new Mat();
@@ -74,7 +72,6 @@ public class BallDetector {
 
         return out;
     }
-
 
     private Mat threshold(Mat src, double lower, double upper) {
         Mat out = new Mat();

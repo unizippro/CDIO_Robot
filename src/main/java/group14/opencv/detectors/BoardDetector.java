@@ -9,9 +9,7 @@ import javafx.util.Pair;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
-public class BoardDetector {
-
-    private Config config = new Config();
+public class BoardDetector extends Detector<Pair<Mat, BoardDetector.Corners>, BoardDetector.Config> {
 
     public static class Config {
         public AtomicDouble cornerMarginPercentage = new AtomicDouble(30);
@@ -23,10 +21,6 @@ public class BoardDetector {
     int maxRed = 255;
     int maxGreen= 120;
     int maxBlue = 120;
-
-    public Config getConfig() {
-        return this.config;
-    }
 
     public Pair<Mat, Corners> run(Mat src) {
         var out = new Mat();
@@ -57,11 +51,16 @@ public class BoardDetector {
             }
         }
 
-        var cornerPoints = new Corners(src.size(), this.config.cornerMarginPercentage.get());
+        var cornerPoints = new Corners(src.size(), this.getConfig().cornerMarginPercentage.get());
         cornerPoints.calculatePoints(pointList);
         cornerPoints.draw(out);
 
         return new Pair<>(out, cornerPoints);
+    }
+
+    @Override
+    protected Config createConfig() {
+        return new Config();
     }
 
     public Pair<Mat, List<Point>> runCross(Mat src, List<Point> pointList) {
