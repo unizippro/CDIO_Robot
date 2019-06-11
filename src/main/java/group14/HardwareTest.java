@@ -9,26 +9,28 @@ public class HardwareTest {
 
     public static void main(String[] args) {
         IController cont = new RobotManager().getController();
-        int delaytime = 5000;
+        int delaytime = 7500;
 
         try {
-            //cont.fanOn();
+            cont.fanOn();
             System.out.println("Start:");
             System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
-//            Thread.sleep(delaytime);
-//            cont.fanOff();
-//            cont.gateOpen();
-//            cont.vibOn();
-//            System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
-//            Thread.sleep(delaytime);
-//
-//            cont.gateClose();
-//            cont.vibOff();
+            Thread.sleep(delaytime);
+            cont.fanOff();
+            Thread.sleep(delaytime/2);
+
+            cont.vibOn();
             cont.gateOpen();
             System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
-            //cont.fanOn();
-            Thread.sleep(delaytime);
-            //cont.fanOff();
+
+            Thread.sleep(delaytime/2);
+            cont.vibOff();
+            Thread.sleep(delaytime/2);
+            cont.vibOn();
+            Thread.sleep(delaytime/2);
+
+
+            cont.vibOff();
             cont.gateClose();
             System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
 

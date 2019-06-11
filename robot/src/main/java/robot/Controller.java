@@ -56,21 +56,21 @@ public class Controller extends UnicastRemoteObject implements IController {
 
     @Override
     public void gateOpen() {
-        gateMotor.rotate(openCloseAngle);
+        gateMotor.rotate(-openCloseAngle);
         gateOpen.set(true);
 
     }
 
     @Override
     public void gateClose() {
-        gateMotor.rotate(-openCloseAngle);
+        gateMotor.rotate(openCloseAngle);
         gateOpen.set(false);
 
     }
 
     @Override
     public void gateCalibration(int angle, boolean openState) throws RemoteException {
-        gateMotor.rotate(openCloseAngle);
+        gateMotor.rotate(-openCloseAngle);
         gateOpen.set(openState);
     }
 
