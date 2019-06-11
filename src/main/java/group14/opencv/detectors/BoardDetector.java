@@ -19,7 +19,7 @@ public class BoardDetector {
     int maxGreen= 120;
     int maxBlue = 120;
 
-    public Pair<Mat, List<Point>> run(Mat src) {
+    public Pair<Mat, Corners> run(Mat src) {
         //Bgrthresh overvejes hvis hsv ikke er tilstrækkeligt
         Mat bgrThresh = new Mat();
         Core.inRange(src, new Scalar(minBlue, minGreen, minRed), new Scalar(maxBlue, maxGreen, maxRed), bgrThresh);
@@ -50,11 +50,10 @@ public class BoardDetector {
             }
         }
 
-        List<Point> finalPointList = this.sortPoints(pointList, src.size());
-        System.out.println(finalPointList);
-        for (Point point : finalPointList) {
-            Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(255, 255, 255), 2, 8, 0);
-        }
+        var cornerPoints = new Corners(src.size(), this.cornerMarginPercentage);
+        cornerPoints.calculatePoints(pointList);
+        cornerPoints.draw(src);
+
 
         List<Point> possibleCrossPointList = new ArrayList<>();
         for (Point point : pointList) {
@@ -70,7 +69,7 @@ public class BoardDetector {
             Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(0), 2, 8, 0);
         }
 
-        return new Pair<>(src, finalPointList);
+        return new Pair<>(src, cornerPoints);
     }
 
 
@@ -108,50 +107,17 @@ public class BoardDetector {
     }
 
 
-    private List<Point> sortPoints(List<Point> points, Size imageSize) {
-        Point upperLeftPoint = new Point();
-        Point upperRightPoint = new Point();
-        Point lowerRightPoint = new Point(200000, 200000);
-        Point lowerLeftPoint = new Point();
-
-        var imageCalculator = new ImageSizeCalculator(imageSize, this.cornerMarginPercentage);
-
-        for (Point point : points) {
-            if (imageCalculator.isWithin(point, ImageSizeCalculator.ImageLocation.TOP_LEFT)) {
-                if (point.x > upperLeftPoint.x || point.y > upperLeftPoint.y) {
-                    upperLeftPoint = point;
-                }
-            } else if (imageCalculator.isWithin(point, ImageSizeCalculator.ImageLocation.TOP_RIGHT)) {
-                if (point.x < upperRightPoint.x || point.y > upperRightPoint.y) {
-                    upperRightPoint = point;
-                }
-            } else if (imageCalculator.isWithin(point, ImageSizeCalculator.ImageLocation.BOTTOM_RIGHT)) {
-                if (point.x < lowerRightPoint.x || point.y < lowerRightPoint.y) {
-                    lowerRightPoint = point;
-                }
-            } else if (imageCalculator.isWithin(point, ImageSizeCalculator.ImageLocation.BOTTOM_LEFT)) {
-                if (point.x > lowerLeftPoint.x || point.y < lowerLeftPoint.y) {
-                    lowerLeftPoint = point;
-                }
-            }
-        }
-
-        List<Point> correctPoints = new ArrayList<>();
-        correctPoints.add(upperLeftPoint);
-        correctPoints.add(upperRightPoint);
-        correctPoints.add(lowerRightPoint);
-        correctPoints.add(lowerLeftPoint);
-
-        return correctPoints;
-    }
-
-
-    static class ImageSizeCalculator {
+    public static class Corners {
         private final double marginWidth;
         private final double marginHeight;
         private Size imageSize;
 
-        public ImageSizeCalculator(Size imageSize, double margin) {
+        private Point upperLeftPoint;
+        private Point upperRightPoint;
+        private Point lowerRightPoint;
+        private Point lowerLeftPoint;
+
+        protected Corners(Size imageSize, double margin) {
             this.imageSize = imageSize;
 
             margin = Math.max(0, Math.min(margin, 50));
@@ -160,7 +126,60 @@ public class BoardDetector {
             this.marginHeight = imageSize.height * (margin / 100.0);
         }
 
-        public boolean isWithin(Point point, ImageLocation corner) {
+        public Point getUpperLeftPoint() {
+            return upperLeftPoint;
+        }
+
+        public Point getUpperRightPoint() {
+            return upperRightPoint;
+        }
+
+        public Point getLowerRightPoint() {
+            return lowerRightPoint;
+        }
+
+        public Point getLowerLeftPoint() {
+            return lowerLeftPoint;
+        }
+
+        public void calculatePoints(List<Point> points) {
+            for (Point point : points) {
+                if (this.isWithin(point, Corners.ImageLocation.TOP_LEFT)) {
+                    if (upperLeftPoint == null || (point.x > upperLeftPoint.x || point.y > upperLeftPoint.y)) {
+                        upperLeftPoint = point;
+                    }
+                } else if (this.isWithin(point, Corners.ImageLocation.TOP_RIGHT)) {
+                    if (upperRightPoint == null || (point.x < upperRightPoint.x || point.y > upperRightPoint.y)) {
+                        upperRightPoint = point;
+                    }
+                } else if (this.isWithin(point, Corners.ImageLocation.BOTTOM_RIGHT)) {
+                    if (lowerRightPoint == null || (point.x < lowerRightPoint.x || point.y < lowerRightPoint.y)) {
+                        lowerRightPoint = point;
+                    }
+                } else if (this.isWithin(point, Corners.ImageLocation.BOTTOM_LEFT)) {
+                    if (lowerLeftPoint == null || (point.x > lowerLeftPoint.x || point.y < lowerLeftPoint.y)) {
+                        lowerLeftPoint = point;
+                    }
+                }
+            }
+        }
+
+        protected void draw(Mat image) {
+            if (this.upperLeftPoint != null) {
+                Imgproc.circle(image, this.upperLeftPoint, 5, new Scalar(255, 255, 255), 2, 8, 0);
+            }
+            if (this.upperRightPoint != null) {
+                Imgproc.circle(image, this.upperRightPoint, 5, new Scalar(255, 255, 255), 2, 8, 0);
+            }
+            if (this.lowerRightPoint != null) {
+                Imgproc.circle(image, this.lowerRightPoint, 5, new Scalar(255, 255, 255), 2, 8, 0);
+            }
+            if (this.lowerLeftPoint != null) {
+                Imgproc.circle(image, this.lowerLeftPoint, 5, new Scalar(255, 255, 255), 2, 8, 0);
+            }
+        }
+
+        private boolean isWithin(Point point, ImageLocation corner) {
             switch (corner) {
                 case TOP_LEFT:
                     return point.x < this.marginWidth && point.y < this.marginHeight;
@@ -173,6 +192,11 @@ public class BoardDetector {
                 default:
                     return false;
             }
+        }
+
+        @Override
+        public String toString() {
+            return "[" + this.upperLeftPoint + ", " + this.upperRightPoint + ", " + this.lowerRightPoint + ", " + this.lowerLeftPoint + "]";
         }
 
 

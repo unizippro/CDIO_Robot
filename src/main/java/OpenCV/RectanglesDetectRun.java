@@ -26,7 +26,7 @@ public class RectanglesDetectRun {
 
         var result = new BoardDetector().run(src);
 
-        result.getValue().forEach(System.out::println);
+        System.out.println(result.getValue());
 
         HighGui.imshow("Result", result.getKey());
         HighGui.resizeWindow("Result", src.width() / 2, src.height() / 2);
