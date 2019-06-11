@@ -2,6 +2,7 @@ package group14.road_planner;
 
 import group14.math.Calculator;
 import group14.road_planner.board.Board;
+import group14.road_planner.board.SmartConverter;
 
 import java.awt.*;
 import java.util.List;
@@ -20,7 +21,7 @@ public class Robot {
     private Vector vector;
     private Compas compas;
     private Point front;
-    private int distanceFromBackToFront;
+    private double distanceFromBackToFront = 25 * SmartConverter.getPixelsPerCm();
 
     /**
      * index 0 = frontOpenCVPoint, index 1 = back
