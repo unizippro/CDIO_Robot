@@ -18,12 +18,16 @@ public class RobotDetector {
 
     // Color 2 - Green
     // BGR: 49, 134, 25
-    int minRed_Color2 = 30;
-    int minGreen_Color2 = 160;
-    int minBlue_Color2 = 30;
-    int maxRed_Color2 = 140;
+    int minRed_Color2 = 70;
+    int minGreen_Color2 = 150;
+    int minBlue_Color2 = 70;
+    int maxRed_Color2 = 150;
     int maxGreen_Color2 = 255;
-    int maxBlue_Color2 = 140;
+    int maxBlue_Color2 = 150;
+
+    double camHeight = 165;
+    double robotFrontHeight = 28;
+    double robotBackHeight = 27;
 
     public void run(String[] args) {
         Mat src = new Mat();
@@ -52,30 +56,33 @@ public class RobotDetector {
         Mat circles_Color2 = new Mat();
         Imgproc.HoughCircles(bgrThresh_Color2, circles_Color2, Imgproc.HOUGH_GRADIENT, 3, 0.5, 50, 25, 0, 15);
 
+        Point imgCenter = new Point(src.width()/2, src.height()/2);
         //! [draw] Color 1
         for (int x = 0; x < circles_Color1.cols(); x++) {
             double[] c = circles_Color1.get(0, x);
             Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+            Point finalCenter = projectPoint(camHeight, robotFrontHeight, imgCenter, center);
             // circle center
-            Imgproc.circle(src, center, 1, new Scalar(0,100,100), 3, 8, 0 );
+            Imgproc.circle(src, finalCenter, 1, new Scalar(0,100,100), 3, 8, 0 );
             // circle outline
             int radius = (int) Math.round(c[2]);
-            Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
+            Imgproc.circle(src, finalCenter, radius, new Scalar(255,0,255), 3, 8, 0 );
 
-            System.out.println(center);
+            System.out.println(finalCenter);
         }
 
         //! [draw] Color 2
         for (int x = 0; x < circles_Color2.cols(); x++) {
             double[] c = circles_Color2.get(0, x);
             Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+            Point finalCenter = projectPoint(camHeight, robotBackHeight, imgCenter, center);
             // circle center
-            Imgproc.circle(src, center, 1, new Scalar(0,100,100), 3, 8, 0 );
+            Imgproc.circle(src, finalCenter, 1, new Scalar(0,100,100), 3, 8, 0 );
             // circle outline
             int radius = (int) Math.round(c[2]);
-            Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
+            Imgproc.circle(src, finalCenter, radius, new Scalar(255,0,255), 3, 8, 0 );
 
-            System.out.println(center);
+            System.out.println(finalCenter);
         }
 
         Mat reziseImg = new Mat();
@@ -94,5 +101,23 @@ public class RobotDetector {
         HighGui.waitKey();
 
         System.exit(0);
+    }
+
+    public Point projectPoint(double camHeight, double objectHeight, Point centerPoint, Point projectPoint) {
+        //Camheight og objectHeight er angviet i pixel så de konverteres
+        camHeight = camHeight*2.8;
+        objectHeight = objectHeight*2.8;
+
+        double grundLinje = Math.sqrt(Math.pow(centerPoint.x-projectPoint.x, 2)+ Math.pow(centerPoint.y-projectPoint.y, 2));
+        double vinkelProjectPoint = Math.toDegrees(Math.asin(camHeight/(Math.sqrt(Math.pow(camHeight, 2)+Math.pow(grundLinje, 2)))));
+
+        double robotTopVinkel = 90-vinkelProjectPoint;
+        double projectLength = (objectHeight*robotTopVinkel)/vinkelProjectPoint;
+        double grundLinje2 = grundLinje-projectLength;
+        double strengthFactor = grundLinje2/grundLinje;
+        double xChange = centerPoint.x-projectPoint.x;
+        double yChange = centerPoint.y - projectPoint.y;
+        Point newPoint = new Point(centerPoint.x-xChange*strengthFactor,centerPoint.y-yChange*strengthFactor);
+        return newPoint;
     }
 }
