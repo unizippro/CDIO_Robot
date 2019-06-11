@@ -9,6 +9,10 @@ import java.util.List;
 
 public class Robot {
 
+    public Point getRotationalPoint() {
+        return rotationalPoint;
+    }
+
     enum Compas {
         UP,
         DOWN,
@@ -21,7 +25,9 @@ public class Robot {
     private Vector vector;
     private Compas compas;
     private Point front;
-    private double distanceFromBackToFront = 25 * SmartConverter.getPixelsPerCm();
+    private Point rotationalPoint;
+    private double distanceFromBackToFront = 23 * SmartConverter.getPixelsPerCm();
+    private double distanceFromBackToRotational = 11 * SmartConverter.getPixelsPerCm();
 
     /**
      * index 0 = frontOpenCVPoint, index 1 = back
@@ -30,10 +36,16 @@ public class Robot {
      */
     public Robot(List<Point> robotPoints) {
         this.frontOpenCVPoint = robotPoints.get(0);
-        this.rearOpenCVPoint = robotPoints.get(1);
+        this.rearOpenCVPoint = robotPoints.get(1);double angle = Math.atan2(this.frontOpenCVPoint.y - this.rearOpenCVPoint.y,
+                this.frontOpenCVPoint.x - this.rearOpenCVPoint.x);
+        System.out.println(Math.cos(angle));
+        double xPoint = this.rearOpenCVPoint.x + this.distanceFromBackToFront * Math.cos(angle);
+        double yPoint = this.rearOpenCVPoint.y + this.distanceFromBackToFront * Math.sin(angle);
+        this.front = new Point((int) xPoint, (int) yPoint);
 //        calcMid();
         calcVector();
         calcRobotPositions();
+        calcPositionalPoint();
     }
 
     public Compas getCompas() {
@@ -46,6 +58,10 @@ public class Robot {
 
     public Point getFront() {
         return this.front;
+    }
+
+    public Point getRearOpenCVPoint() {
+        return this.rearOpenCVPoint;
     }
 
     private void setCompas(Compas compas) {
@@ -61,6 +77,7 @@ public class Robot {
         this.rearOpenCVPoint = back;
         calcVector();
         calcRobotPositions();
+        calcPositionalPoint();
     }
 
     public void calcCompas(Board board) {
@@ -97,10 +114,17 @@ public class Robot {
     private void calcRobotPositions() {
         double angle = Math.atan2(this.frontOpenCVPoint.y - this.rearOpenCVPoint.y,
                 this.frontOpenCVPoint.x - this.rearOpenCVPoint.x);
-        System.out.println(Math.cos(angle));
         double xPoint = this.rearOpenCVPoint.x + this.distanceFromBackToFront * Math.cos(angle);
         double yPoint = this.rearOpenCVPoint.y + this.distanceFromBackToFront * Math.sin(angle);
         this.front = new Point((int) xPoint, (int) yPoint);
+    }
+
+    private void calcPositionalPoint() {
+        double angle = Math.atan2(this.frontOpenCVPoint.y - this.rearOpenCVPoint.y,
+                this.frontOpenCVPoint.x - this.rearOpenCVPoint.x);
+        double xPoint = this.rearOpenCVPoint.x + this.distanceFromBackToRotational * Math.cos(angle);
+        double yPoint = this.rearOpenCVPoint.y + this.distanceFromBackToRotational * Math.sin(angle);
+        this.rotationalPoint = new Point((int) xPoint, (int) yPoint);
     }
 
     //TODO: This variable should be reset, when changing from phase 1->2

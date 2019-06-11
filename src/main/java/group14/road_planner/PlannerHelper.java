@@ -8,7 +8,9 @@ public class PlannerHelper {
         return Point2D.distance(robotPos.getX(), robotPos.getY(), ballPoint.getX(), ballPoint.getY());
     }
 
-    public double getAngle(Point robotPos, Point ballPoint) {
-        return Math.toDegrees(Math.atan2(ballPoint.getY() - robotPos.getY(), ballPoint.getX() - robotPos.getX()));
+    public double getAngle(Robot robot, Point ballPoint) {
+        double robotRot = Math.toDegrees(Math.atan2(robot.getFront().getY() - robot.getRearOpenCVPoint().getY(), robot.getFront().getX() - robot.getRearOpenCVPoint().getX()));
+        double ballRot = Math.toDegrees(Math.atan2(ballPoint.getY() - robot.getRotationalPoint().getY(), ballPoint.getX() - robot.getRotationalPoint().getX()));
+        return robotRot-ballRot;
     }
 }
