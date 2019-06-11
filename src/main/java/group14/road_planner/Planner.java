@@ -214,7 +214,7 @@ public class Planner {
      * @return Instruction
      */
     private Instruction travelToPoint(Point travelToPoint) {
-        double angle = this.plannerHelper.getAngle(this.roadController.getRobot().getFront(), travelToPoint);
+        double angle = this.plannerHelper.getAngle(this.roadController.getRobot(), travelToPoint);
         double distance = this.plannerHelper.getDistance(this.roadController.getRobot().getFront(), travelToPoint);
         return new Instruction(angle, distance);
     }
