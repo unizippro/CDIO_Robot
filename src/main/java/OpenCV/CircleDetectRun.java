@@ -1,7 +1,7 @@
 package OpenCV;
 
 import group14.Resources;
-import group14.opencv.detectors.BallDetector;
+import group14.opencv.detectors.ball_detector.BallDetector;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.highgui.HighGui;
@@ -25,9 +25,9 @@ public class CircleDetectRun {
 
         var result = new BallDetector().run(src);
 
-        result.getValue().forEach(System.out::println);
+        result.getBalls().forEach(System.out::println);
 
-        HighGui.imshow("Result", result.getKey());
+        HighGui.imshow("Result", result.getOutput());
         HighGui.resizeWindow("Result", 680, 400);
         HighGui.waitKey();
 

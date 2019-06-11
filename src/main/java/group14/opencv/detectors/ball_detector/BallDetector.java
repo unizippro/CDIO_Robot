@@ -1,6 +1,7 @@
-package group14.opencv.detectors;
+package group14.opencv.detectors.ball_detector;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import group14.opencv.detectors.Detector;
 import javafx.util.Pair;
 import org.opencv.core.*;
 import org.opencv.core.Point;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class BallDetector extends Detector<Pair<Mat, List<Point>>, BallDetector.Config> {
+public class BallDetector extends Detector<BallDetectorResult, BallDetector.Config> {
 
     public static class Config {
         public AtomicInteger blurSize = new AtomicInteger(5);
@@ -25,7 +26,7 @@ public class BallDetector extends Detector<Pair<Mat, List<Point>>, BallDetector.
         private AtomicInteger houghMaxRadius = new AtomicInteger(30);
     }
 
-    public Pair<Mat, List<Point>> run(Mat src) {
+    public BallDetectorResult run(Mat src) {
         var points = new ArrayList<Point>();
         var out = new Mat();
         src.copyTo(out);
@@ -58,7 +59,7 @@ public class BallDetector extends Detector<Pair<Mat, List<Point>>, BallDetector.
         }
         //! [draw]
 
-        return new Pair<>(out, points);
+        return new BallDetectorResult(out, points);
     }
 
     @Override

@@ -1,12 +1,11 @@
 package OpenCV;
 
 import group14.Resources;
-import group14.opencv.detectors.BoardDetector;
+import group14.opencv.detectors.board_detector.BoardDetector;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.videoio.VideoCapture;
 
 public class RectanglesDetectRun {
     public static void main(String[] args) {
@@ -26,9 +25,9 @@ public class RectanglesDetectRun {
 
         var result = new BoardDetector().run(src);
 
-        System.out.println(result.getValue());
+        System.out.println(result.getCorners());
 
-        HighGui.imshow("Result", result.getKey());
+        HighGui.imshow("Result", result.getOutput());
         HighGui.resizeWindow("Result", src.width() / 2, src.height() / 2);
         HighGui.waitKey();
 
