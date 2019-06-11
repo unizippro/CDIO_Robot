@@ -20,6 +20,9 @@ public class BoardDetector {
     int maxBlue = 120;
 
     public Pair<Mat, Corners> run(Mat src) {
+        var out = new Mat();
+        src.copyTo(out);
+
         //Bgrthresh overvejes hvis hsv ikke er tilstrækkeligt
         Mat bgrThresh = new Mat();
         Core.inRange(src, new Scalar(minBlue, minGreen, minRed), new Scalar(maxBlue, maxGreen, maxRed), bgrThresh);
@@ -44,7 +47,7 @@ public class BoardDetector {
                     p = new Point(j, i);
                     pointList.add(p);
 
-                    Imgproc.circle(src, p = new Point(j, i), 5, new Scalar(0), 2, 8, 0);
+                    Imgproc.circle(out, p = new Point(j, i), 5, new Scalar(0), 2, 8, 0);
                     System.out.println(p);
                 }
             }
@@ -52,7 +55,7 @@ public class BoardDetector {
 
         var cornerPoints = new Corners(src.size(), this.cornerMarginPercentage);
         cornerPoints.calculatePoints(pointList);
-        cornerPoints.draw(src);
+        cornerPoints.draw(out);
 
 
         List<Point> possibleCrossPointList = new ArrayList<>();
@@ -69,7 +72,7 @@ public class BoardDetector {
             Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(0), 2, 8, 0);
         }
 
-        return new Pair<>(src, cornerPoints);
+        return new Pair<>(out, cornerPoints);
     }
 
 
