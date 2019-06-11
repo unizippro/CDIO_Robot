@@ -57,11 +57,11 @@ public class Planner {
     }
 
     //TODO
-    public Instruction nextInstruction(Robot robot) throws Exception {
-
+    public Instruction nextInstruction() throws Exception {
+        var robot = this.roadController.getRobot();
         //If the robot made it all the way though the safe points
         // it should now go drop off the balls
-        if(this.roadController.getRobot().getQuadrantsVisited() >= 4){
+        if(robot.getQuadrantsVisited() >= 4){
 
             double angleToDestinationPoint;
             switch (phaseOneStep){
@@ -71,7 +71,7 @@ public class Planner {
                             "Step 0 - Going to drop-off point");
                     //Go to drop-off point at hardcoded (20,100)
 
-                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFront(),
+                    destinationVector = Calculator.CALCULATE_VECTOR(robot.getFront(),
                             new Point(20,100));
 
                     angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
@@ -82,7 +82,7 @@ public class Planner {
                             " for reversing");
 
                     //Go to drop-off point at hardcoded (21,100)
-                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFront(),
+                    destinationVector = Calculator.CALCULATE_VECTOR(robot.getFront(),
                             new Point(21,100));
 
                     angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
@@ -110,7 +110,7 @@ public class Planner {
             //Travel to own point directly
             //TODO: There should be a check if the "direct" path is
             // intersecting with the cross and if so, the robot should do the "two part" tour instead
-            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFront(),
+            destinationVector = Calculator.CALCULATE_VECTOR(robot.getFront(),
                     travelBetweenSafePoints(robot,this.roadController.getBoard(), true));
 
             if(this.travelToNextQuadrant){
@@ -126,7 +126,7 @@ public class Planner {
                 }else if (quadrants_temp.get(3).equals(this.roadController.getCurrentQuadrant())) {
                 }
 
-                this.roadController.getRobot().incrementQuadrantsVisited();
+                robot.incrementQuadrantsVisited();
 
 
             }
