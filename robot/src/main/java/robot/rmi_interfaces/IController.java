@@ -12,6 +12,7 @@ public interface IController extends Remote {
 
     void gateOpen() throws RemoteException;
     void gateClose() throws RemoteException;
+    void gateCalibration(int angle, boolean openState) throws RemoteException;
 
     boolean gateIsOpen() throws RemoteException;
     boolean getVibStatus() throws RemoteException;

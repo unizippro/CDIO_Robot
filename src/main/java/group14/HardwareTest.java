@@ -9,20 +9,28 @@ public class HardwareTest {
 
     public static void main(String[] args) {
         IController cont = new RobotManager().getController();
+        int delaytime = 5000;
 
         try {
-            cont.fanOn();
-            Thread.sleep(2000);
-            cont.fanOff();
-            System.out.println("Start gate is open = " + cont.gateIsOpen());
+            //cont.fanOn();
+            System.out.println("Start:");
+            System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
+//            Thread.sleep(delaytime);
+//            cont.fanOff();
+//            cont.gateOpen();
+//            cont.vibOn();
+//            System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
+//            Thread.sleep(delaytime);
+//
+//            cont.gateClose();
+//            cont.vibOff();
             cont.gateOpen();
-            cont.vibOn();
-            System.out.println("Gate is open now = " + cont.gateIsOpen());
-            Thread.sleep(2000);
-
+            System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
+            //cont.fanOn();
+            Thread.sleep(delaytime);
+            //cont.fanOff();
             cont.gateClose();
-            cont.vibOff();
-            System.out.println("Gate is open now = " + cont.gateIsOpen());
+            System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -14,7 +14,7 @@ public class Controller extends UnicastRemoteObject implements IController {
     private AtomicBoolean fanRunning = new AtomicBoolean(false);
     private AtomicBoolean vibRunning = new AtomicBoolean(false);
     private AtomicBoolean gateOpen = new AtomicBoolean(false);
-    private int openCloseAngle = 720;
+    private int openCloseAngle = 1080;
 
     private EV3LargeRegulatedMotor controllerMotor;
     private EV3MediumRegulatedMotor gateMotor;
@@ -66,6 +66,12 @@ public class Controller extends UnicastRemoteObject implements IController {
         gateMotor.rotate(-openCloseAngle);
         gateOpen.set(false);
 
+    }
+
+    @Override
+    public void gateCalibration(int angle, boolean openState) throws RemoteException {
+        gateMotor.rotate(openCloseAngle);
+        gateOpen.set(openState);
     }
 
     @Override
