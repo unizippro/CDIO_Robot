@@ -121,7 +121,7 @@ public class RoadController {
     public Instruction getNextInstruction() {
         Instruction inst = null;
         try {
-            inst = this.planner.nextInstruction(this.getRobot());
+            inst = this.planner.nextInstruction();
         } catch (Exception e) {
             e.printStackTrace();
         }
