@@ -89,4 +89,12 @@ public class Quadrant {
     public List<Point> getSafePoints() {
         return this.safePoints;
     }
+
+    public Point getExitSafePoint() {
+        return this.safePoints.get(this.safePoints.size()-1);
+    }
+
+    public Point getEntrySafePoint() {
+        return this.safePoints.get(0);
+    }
 }
