@@ -178,6 +178,18 @@ public class BoardDetector {
             if (this.lowerLeftPoint != null) {
                 Imgproc.circle(image, this.lowerLeftPoint, 5, new Scalar(255, 255, 255), 2, 8, 0);
             }
+
+            Imgproc.rectangle(image, new Rect(0, 0, (int) this.marginWidth, (int) this.marginHeight), new Scalar(0), 3);
+            Imgproc.rectangle(image, new Rect((int) (this.imageSize.width - this.marginWidth), 0, (int) this.marginWidth, (int) this.marginHeight), new Scalar(0), 3);
+            Imgproc.rectangle(image, new Rect(0, (int) (this.imageSize.height - this.marginHeight), (int) this.marginWidth, (int) this.marginHeight), new Scalar(0), 3);
+            Imgproc.rectangle(image, new Rect((int) (this.imageSize.width - this.marginWidth), (int) (this.imageSize.height - this.marginHeight), (int) this.marginWidth, (int) this.marginHeight), new Scalar(0), 3);
+
+            if (this.upperLeftPoint != null && this.lowerRightPoint != null) {
+                Imgproc.line(image, this.upperLeftPoint, this.upperRightPoint, new Scalar(0, 255, 255), 3);
+                Imgproc.line(image, this.upperRightPoint, this.lowerRightPoint, new Scalar(0, 255, 255), 3);
+                Imgproc.line(image, this.lowerRightPoint, this.lowerLeftPoint, new Scalar(0, 255, 255), 3);
+                Imgproc.line(image, this.lowerLeftPoint, this.upperLeftPoint, new Scalar(0, 255, 255), 3);
+            }
         }
 
         private boolean isWithin(Point point, ImageLocation corner) {
