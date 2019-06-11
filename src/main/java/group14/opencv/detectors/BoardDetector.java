@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import javafx.util.Pair;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 public class BoardDetector {
 
-    private double cornerMarginPercentage = 45;
+    private Config config = new Config();
+
+    public static class Config {
+        public AtomicDouble cornerMarginPercentage = new AtomicDouble(30);
+    }
 
     int minRed= 160;
     int minGreen = 0;
@@ -18,6 +23,10 @@ public class BoardDetector {
     int maxRed = 255;
     int maxGreen= 120;
     int maxBlue = 120;
+
+    public Config getConfig() {
+        return this.config;
+    }
 
     public Pair<Mat, Corners> run(Mat src) {
         var out = new Mat();
@@ -48,7 +57,7 @@ public class BoardDetector {
             }
         }
 
-        var cornerPoints = new Corners(src.size(), this.cornerMarginPercentage);
+        var cornerPoints = new Corners(src.size(), this.config.cornerMarginPercentage.get());
         cornerPoints.calculatePoints(pointList);
         cornerPoints.draw(out);
 

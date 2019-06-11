@@ -6,6 +6,7 @@ import group14.Resources;
 import group14.gui.components.CoordinateSystem;
 import group14.opencv.ICameraController;
 import group14.opencv.detectors.BallDetector;
+import group14.opencv.detectors.BoardDetector;
 import group14.robot.IRobotManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -28,6 +29,7 @@ public class Main {
     private ICameraController cameraController;
 
     private BallDetector ballDetector = new BallDetector();
+    private BoardDetector boardDetector = new BoardDetector();
 
 
     @FXML
@@ -52,6 +54,10 @@ public class Main {
     public Slider houghParam1;
     @FXML
     public Slider houghParam2;
+    @FXML
+    public ImageView imageBoard;
+    @FXML
+    public Slider cornerMarginSlider;
 
 
 //    private Timer timer = new Timer();
@@ -97,12 +103,14 @@ public class Main {
         this.plot.setRobot(new Point2D(5, 16));
         this.plot.setCross(new Point2D(20, 10));
 
-        var config = this.ballDetector.getConfig();
+        var ballDetectorConfig = this.ballDetector.getConfig();
+        this.blurSizeSlider.setValue(ballDetectorConfig.blurSize.get());
+        this.lowerThresholdSlider.setValue(ballDetectorConfig.lowerThreshold.get());
+        this.houghParam1.setValue(ballDetectorConfig.houghParam1.get());
+        this.houghParam2.setValue(ballDetectorConfig.houghParam2.get());
 
-        this.blurSizeSlider.setValue(config.blurSize.get());
-        this.lowerThresholdSlider.setValue(config.lowerThreshold.get());
-        this.houghParam1.setValue(config.houghParam1.get());
-        this.houghParam2.setValue(config.houghParam2.get());
+        var boardDetectorConfig = this.boardDetector.getConfig();
+        this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
 
         if (Application.openCvLoaded) {
             this.cameraController.start(0, 60);
@@ -175,15 +183,19 @@ public class Main {
     }
 
     private void cameraControllerUpdated() {
+        var source = this.cameraController.getSource();
         var imageSource = SwingFXUtils.toFXImage(this.cameraController.getSourceAsBufferedImage(), null);
 
-        var result = this.ballDetector.run(this.cameraController.getSource());
+        var resultBalls = this.ballDetector.run(source);
+        var imageBalls = SwingFXUtils.toFXImage(this.cameraController.matToBufferedImage(resultBalls.getKey()), null);
 
-        var imageBalls = SwingFXUtils.toFXImage(this.cameraController.matToBufferedImage(result.getKey()), null);
+        var resultBoard = this.boardDetector.run(source);
+        var imageBoard = SwingFXUtils.toFXImage(this.cameraController.matToBufferedImage(resultBoard.getKey()), null);
 
         Platform.runLater(() -> {
             this.image.setImage(imageSource);
             this.imageBalls.setImage(imageBalls);
+            this.imageBoard.setImage(imageBoard);
         });
     }
 
@@ -206,12 +218,14 @@ public class Main {
 
     @FXML
     public void ballDetectorConfigUpdated(MouseEvent mouseEvent) {
-        var config = this.ballDetector.getConfig();
+        var ballDetectorConfig = this.ballDetector.getConfig();
+        ballDetectorConfig.blurSize.set((int) this.blurSizeSlider.getValue());
+        ballDetectorConfig.lowerThreshold.set((int) this.lowerThresholdSlider.getValue());
+        ballDetectorConfig.houghParam1.set((int) this.houghParam1.getValue());
+        ballDetectorConfig.houghParam2.set((int) this.houghParam2.getValue());
 
-        config.blurSize.set((int) this.blurSizeSlider.getValue());
-        config.lowerThreshold.set((int) this.lowerThresholdSlider.getValue());
-        config.houghParam1.set((int) this.houghParam1.getValue());
-        config.houghParam2.set((int) this.houghParam2.getValue());
+        var boardDetectorConfig = this.boardDetector.getConfig();
+        boardDetectorConfig.cornerMarginPercentage.set(this.cornerMarginSlider.getValue());
     }
 
 
