@@ -28,23 +28,23 @@ public class Main {
     public CoordinateSystem plot;
 
 
-    private Timer timer = new Timer();
-    private TimerTask updateDistance = new TimerTask() {
-        public void run() {
-            try {
-                double percentage = robotManager.getSensors().getRange();
-                if (Double.isInfinite(percentage)) {
-                    Platform.runLater(() -> distanceLabel.setText("∞"));
-                } else {
-                    final double range = (90 * percentage) / 100;
-                    Platform.runLater(() -> distanceLabel.setText(range + "cm"));
-                }
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                timer.cancel();
-            }
-        }
-    };
+//    private Timer timer = new Timer();
+//    private TimerTask updateDistance = new TimerTask() {
+//        public void run() {
+//            try {
+//                double percentage = robotManager.getSensors().getRange();
+//                if (Double.isInfinite(percentage)) {
+//                    Platform.runLater(() -> distanceLabel.setText("∞"));
+//                } else {
+//                    final double range = (90 * percentage) / 100;
+//                    Platform.runLater(() -> distanceLabel.setText(range + "cm"));
+//                }
+//            } catch (Exception exception) {
+//                exception.printStackTrace();
+//                timer.cancel();
+//            }
+//        }
+//    };
 
 
     @Inject
@@ -55,7 +55,7 @@ public class Main {
 
     @FXML
     public void initialize() {
-        this.timer.schedule(this.updateDistance, 0, 1000);
+//        this.timer.schedule(this.updateDistance, 0, 1000);
 
         this.setPoints(this.generateCoordinates());
 
@@ -100,6 +100,7 @@ public class Main {
     @FXML
     public void onShutdownClick() throws Exception {
         this.robotManager.shutdown();
+        Platform.exit();
     }
 
     @FXML
