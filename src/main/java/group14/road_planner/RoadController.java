@@ -5,6 +5,7 @@ import group14.road_planner.board.Board;
 import group14.road_planner.board.Cross;
 import group14.road_planner.board.Quadrant;
 import group14.math.Calculator;
+import group14.road_planner.board.goal.Goal;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -139,5 +140,11 @@ public class RoadController {
 
     public Quadrant getCurrentQuadrant() {
         return this.board.getQuadrants().get(this.board.getRobotQuadrantPlacement(this.robot));
+    }
+
+    public void swapGoals() {
+        for (Goal goal : this.board.getGoals()) {
+            goal.swapGoalType();
+        }
     }
 }
