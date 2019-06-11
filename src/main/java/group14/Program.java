@@ -22,16 +22,16 @@ public class Program {
 
         //balls
         ArrayList<Point> ballList = new ArrayList<>();
-        ballList.add(new Point(443, 419));
-        ballList.add(new Point(224, 338));
-        ballList.add(new Point(556, 86));
-        ballList.add(new Point(509, 434));
-        ballList.add(new Point(383, 422));
-        ballList.add(new Point(263, 125));
-        ballList.add(new Point(107, 266));
-        ballList.add(new Point(83, 407));
-        ballList.add(new Point(386, 233));
-        ballList.add(new Point(344, 242));
+        ballList.add(new Point(296, 107));
+        ballList.add(new Point(197, 383));
+//        ballList.add(new Point(556, 86));
+//        ballList.add(new Point(509, 434));
+//        ballList.add(new Point(383, 422));
+//        ballList.add(new Point(263, 125));
+//        ballList.add(new Point(107, 266));
+//        ballList.add(new Point(83, 407));
+//        ballList.add(new Point(386, 233));
+//        ballList.add(new Point(344, 242));
 
         //Board
         List<Point> boardList = new ArrayList<>();
@@ -42,8 +42,8 @@ public class Program {
 
         //Robot
         List<Point> robotList = new ArrayList<>();
-        robotList.add(new Point(136, 195));
-        robotList.add(new Point(136, 223));
+        robotList.add(new Point(154, 231));
+        robotList.add(new Point(131, 233));
 
         //Cross
         List<Point> crossList = new ArrayList<>();
