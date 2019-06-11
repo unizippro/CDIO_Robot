@@ -9,7 +9,7 @@ public class SafePointTravel {
 
     public Point getClosestSafePoint(Board board, Robot robot, boolean travelToQuadrantExitSafepoint) {
         int currentQuadrant = board.getRobotQuadrantPlacement(robot);
-        return getClosest(board.getQuadrants().get(currentQuadrant).getSafePoints(), robot.getFrontOpenCVPoint(), travelToQuadrantExitSafepoint);
+        return getClosest(board.getQuadrants().get(currentQuadrant).getSafePoints(), robot.getFront(), travelToQuadrantExitSafepoint);
     }
 
     /**
@@ -25,7 +25,7 @@ public class SafePointTravel {
         }else{
             currentQuadrant++;
         }
-        return getClosest(board.getQuadrants().get(currentQuadrant).getSafePoints(), robot.getFrontOpenCVPoint(), false);
+        return getClosest(board.getQuadrants().get(currentQuadrant).getSafePoints(), robot.getFront(), false);
     }
 
 

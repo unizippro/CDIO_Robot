@@ -41,13 +41,13 @@ public class Planner {
 
     private void findClosestBall() {
         if (this_quadrant_balls.size() > 0) {
-            currentClosetBall = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(), this_quadrant_balls.get(0).getPos());
+            currentClosetBall = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFront(), this_quadrant_balls.get(0).getPos());
             closestBall = this_quadrant_balls.get(0);
         } else {
             throw new IllegalArgumentException("There where no Balls in the balls array.");
         }
         for (int i = 1; i < this_quadrant_balls.size(); i++) {
-            Vector tempVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(), this_quadrant_balls.get(i).getPos());
+            Vector tempVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFront(), this_quadrant_balls.get(i).getPos());
             if (tempVector.length < currentClosetBall.length) {
                 currentClosetBall = tempVector;
                 closestBall = this_quadrant_balls.get(i);
@@ -71,7 +71,7 @@ public class Planner {
                             "Step 0 - Going to drop-off point");
                     //Go to drop-off point at hardcoded (20,100)
 
-                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(),
+                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFront(),
                             new Point(20,100));
 
                     angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
@@ -82,7 +82,7 @@ public class Planner {
                             " for reversing");
 
                     //Go to drop-off point at hardcoded (21,100)
-                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(),
+                    destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFront(),
                             new Point(21,100));
 
                     angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
@@ -110,7 +110,7 @@ public class Planner {
             //Travel to own point directly
             //TODO: There should be a check if the "direct" path is
             // intersecting with the cross and if so, the robot should do the "two part" tour instead
-            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFrontOpenCVPoint(),
+            destinationVector = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFront(),
                     travelBetweenSafePoints(robot,this.roadController.getBoard(), true));
 
             if(this.travelToNextQuadrant){
