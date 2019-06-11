@@ -4,17 +4,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
-import org.opencv.highgui.HighGui;
+import javafx.util.Pair;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.videoio.VideoCapture;
 
 public class BoardDetector {
+
+    private double cornerMarginPercentage = 45;
 
     int minRed= 160;
     int minGreen = 0;
@@ -45,21 +41,23 @@ public class BoardDetector {
         for (int i = 0; i < destNorm.rows(); i++) {
             for (int j = 0; j < destNorm.cols(); j++) {
                 if ((int) destNormData[i * destNorm.cols() + j] > threshold) {
-                    Imgproc.circle(destNormScaled, p = new Point(j, i), 5, new Scalar(0), 2, 8, 0);
+                    p = new Point(j, i);
+                    pointList.add(p);
 
-                    pointlist.add(p);
+                    Imgproc.circle(src, p = new Point(j, i), 5, new Scalar(0), 2, 8, 0);
                     System.out.println(p);
                 }
             }
         }
-        List<Point> finalPointList = this.sortPoints(pointlist);
+
+        List<Point> finalPointList = this.sortPoints(pointList, src.size());
         System.out.println(finalPointList);
         for (Point point : finalPointList) {
-            Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(0), 2, 8, 0);
+            Imgproc.circle(src, p = new Point(point.x, point.y), 5, new Scalar(255, 255, 255), 2, 8, 0);
         }
 
         List<Point> possibleCrossPointList = new ArrayList<>();
-        for (Point point : pointlist) {
+        for (Point point : pointList) {
             if (point.x > 100 && point.y > 100 && point.x < 500 && point.y < 400) {
                 possibleCrossPointList.add(point);
             }
@@ -110,26 +108,28 @@ public class BoardDetector {
     }
 
 
-    private List<Point> sortPoints(List<Point> points) {
+    private List<Point> sortPoints(List<Point> points, Size imageSize) {
         Point upperLeftPoint = new Point();
         Point upperRightPoint = new Point();
-        Point lowerRightPoint = new Point(1000, 1000);
+        Point lowerRightPoint = new Point(200000, 200000);
         Point lowerLeftPoint = new Point();
 
+        var imageCalculator = new ImageSizeCalculator(imageSize, this.cornerMarginPercentage);
+
         for (Point point : points) {
-            if (point.x < 100 && point.y < 100) {
+            if (imageCalculator.isWithin(point, ImageSizeCalculator.ImageLocation.TOP_LEFT)) {
                 if (point.x > upperLeftPoint.x || point.y > upperLeftPoint.y) {
                     upperLeftPoint = point;
                 }
-            } else if (500 < point.x && point.x < 700 && 0 < point.y && point.y < 100) {
+            } else if (imageCalculator.isWithin(point, ImageSizeCalculator.ImageLocation.TOP_RIGHT)) {
                 if (point.x < upperRightPoint.x || point.y > upperRightPoint.y) {
                     upperRightPoint = point;
                 }
-            } else if (500 < point.x && point.x < 700 && 400 < point.y && point.y < 600) {
+            } else if (imageCalculator.isWithin(point, ImageSizeCalculator.ImageLocation.BOTTOM_RIGHT)) {
                 if (point.x < lowerRightPoint.x || point.y < lowerRightPoint.y) {
                     lowerRightPoint = point;
                 }
-            } else if (0 < point.x && point.x < 100 && 400 < point.y && point.y < 600) {
+            } else if (imageCalculator.isWithin(point, ImageSizeCalculator.ImageLocation.BOTTOM_LEFT)) {
                 if (point.x > lowerLeftPoint.x || point.y < lowerLeftPoint.y) {
                     lowerLeftPoint = point;
                 }
@@ -143,6 +143,43 @@ public class BoardDetector {
         correctPoints.add(lowerLeftPoint);
 
         return correctPoints;
+    }
+
+
+    static class ImageSizeCalculator {
+        private final double marginWidth;
+        private final double marginHeight;
+        private Size imageSize;
+
+        public ImageSizeCalculator(Size imageSize, double margin) {
+            this.imageSize = imageSize;
+
+            margin = Math.max(0, Math.min(margin, 50));
+
+            this.marginWidth = imageSize.width * (margin / 100.0);
+            this.marginHeight = imageSize.height * (margin / 100.0);
+        }
+
+        public boolean isWithin(Point point, ImageLocation corner) {
+            switch (corner) {
+                case TOP_LEFT:
+                    return point.x < this.marginWidth && point.y < this.marginHeight;
+                case TOP_RIGHT:
+                    return point.x > (this.imageSize.width - this.marginWidth) && point.y < this.marginHeight;
+                case BOTTOM_LEFT:
+                    return point.x < this.marginWidth && point.y > (this.imageSize.height - this.marginHeight);
+                case BOTTOM_RIGHT:
+                    return point.x > (this.imageSize.width - this.marginWidth) && point.y > (this.imageSize.height - this.marginHeight);
+                default:
+                    return false;
+            }
+        }
+
+
+        enum ImageLocation {
+            TOP_LEFT, TOP_RIGHT,
+            BOTTOM_RIGHT, BOTTOM_LEFT
+        }
     }
 
 }
