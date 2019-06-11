@@ -54,8 +54,8 @@ public class Program {
 
         //Robot
         List<Point> robotList = new ArrayList<>();
-        robotList.add(new Point(2, 0));
-        robotList.add(new Point(0, 0));
+        robotList.add(new Point(5, 50));
+        robotList.add(new Point(17, 50));
 
         //Cross
         List<Point> crossList = new ArrayList<>();

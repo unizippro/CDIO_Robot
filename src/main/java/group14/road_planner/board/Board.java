@@ -139,7 +139,7 @@ public class Board {
     }
 
     public int getRobotQuadrantPlacement(Robot robot) {
-        return this.boardHelper.getRobotPlacement(robot.getMidOpenCVPoint(), this);
+        return this.boardHelper.getRobotPlacement(robot.getFront(), this);
     }
 
     public List<Quadrant> getQuadrants() {
