@@ -108,6 +108,18 @@ public class Main {
         ToggleButton button = (ToggleButton) actionEvent.getTarget();
 
         button.setText(button.isSelected() ? "Fan on" : "Fan off");
+
+        var controller = this.robotManager.getController();
+
+        try {
+            if (button.isSelected()) {
+                controller.fanOn();
+            } else {
+                controller.fanOff();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setPoints(List<Point2D> points) {
