@@ -26,9 +26,9 @@ public class Program {
 
         //balls
         ArrayList<Point> ballList = new ArrayList<>();
-        ballList.add(new Point(165, 110));
-        ballList.add(new Point(133, 403));
-        ballList.add(new Point(261, 157));
+        ballList.add(new Point(127, 295));
+        ballList.add(new Point(505, 85));
+        ballList.add(new Point(277, 61));
 //        ballList.add(new Point(556, 86));
 //        ballList.add(new Point(509, 434));
 //        ballList.add(new Point(383, 422));
