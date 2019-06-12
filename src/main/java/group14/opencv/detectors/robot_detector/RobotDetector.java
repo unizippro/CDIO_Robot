@@ -63,10 +63,10 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
             Point center = new Point(Math.round(c[0]), Math.round(c[1]));
             Point finalCenter = projectPoint(camHeight, robotFrontHeight, imgCenter, center);
             // circle center
-            Imgproc.circle(src, finalCenter, 1, new Scalar(0,100,100), 3, 8, 0 );
+            Imgproc.circle(out, finalCenter, 1, new Scalar(0,100,100), 3, 8, 0 );
             // circle outline
             int radius = (int) Math.round(c[2]);
-            Imgproc.circle(src, finalCenter, radius, new Scalar(255,0,255), 3, 8, 0 );
+            Imgproc.circle(out, finalCenter, radius, new Scalar(255,0,255), 3, 8, 0 );
 
             System.out.println(finalCenter);
         }
@@ -77,10 +77,10 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
             Point center = new Point(Math.round(c[0]), Math.round(c[1]));
             Point finalCenter = projectPoint(camHeight, robotBackHeight, imgCenter, center);
             // circle center
-            Imgproc.circle(src, finalCenter, 1, new Scalar(0,100,100), 3, 8, 0 );
+            Imgproc.circle(out, finalCenter, 1, new Scalar(0,100,100), 3, 8, 0 );
             // circle outline
             int radius = (int) Math.round(c[2]);
-            Imgproc.circle(src, finalCenter, radius, new Scalar(255,0,255), 3, 8, 0 );
+            Imgproc.circle(out, finalCenter, radius, new Scalar(255,0,255), 3, 8, 0 );
 
             System.out.println(finalCenter);
         }
