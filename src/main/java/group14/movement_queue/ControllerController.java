@@ -4,7 +4,7 @@ import group14.network.RobotFinder;
 import robot.rmi_interfaces.IController;
 
 import java.rmi.RemoteException;
-
+@Deprecated
 public class ControllerController {
     private IController controller;
 
