@@ -29,7 +29,7 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
 
     private Movement movement = new Movement(new EV3LargeRegulatedMotor(MotorPort.A), new EV3LargeRegulatedMotor(MotorPort.B));
     //private Sensors sensors = new Sensors(new EV3IRSensor(SensorPort.S1));
-    private Controller controller = new Controller( new EV3LargeRegulatedMotor(MotorPort.C));//, new UnregulatedMotor(MotorPort.C));
+    private Controller controller = new Controller( new EV3LargeRegulatedMotor(MotorPort.C), new EV3MediumRegulatedMotor(MotorPort.D));
 
     private AtomicBoolean running = new AtomicBoolean(false);
     private Thread runningThread = null;

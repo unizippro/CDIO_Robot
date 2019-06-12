@@ -33,6 +33,10 @@ public class Movement extends UnicastRemoteObject implements IMovement {
         this.maxSpeedLeft = this.motorLeft.getMaxSpeed();
         this.maxSpeedRight = this.motorRight.getMaxSpeed();
 
+        this.motorLeft.setAcceleration(5500);
+        this.motorRight.setAcceleration(5500);
+
+
         this.setSpeedPercentage(DEFAULT_SPEED);
     }
 
@@ -56,9 +60,16 @@ public class Movement extends UnicastRemoteObject implements IMovement {
      */
     @Override
     public void forward(double distance){
-        double deg = -(360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR);
+        double deg = -(360*distance/(WHEEL_DIAMETER * Math.PI));
+        if (distance < 0){
+            deg -= MARGIN_OF_ERROR;
+        } else {
+            deg += MARGIN_OF_ERROR;
+        }
+        this.motorLeft.endSynchronization();
         this.motorLeft.rotate((int)deg, true);
         this.motorRight.rotate((int)deg, true);
+        this.motorLeft.endSynchronization();
 
         while (this.motorLeft.isMoving() || this.motorRight.isMoving()) {}
     }
@@ -77,11 +88,7 @@ public class Movement extends UnicastRemoteObject implements IMovement {
      */
     @Override
     public void backward(double distance) {
-        double deg = (360*distance/(WHEEL_DIAMETER * Math.PI)+MARGIN_OF_ERROR);
-        this.motorLeft.rotate((int)deg, true);
-        this.motorRight.rotate((int)deg, true);
-
-        while (this.motorLeft.isMoving() || this.motorRight.isMoving()) {}
+        this.forward(-distance);
     }
 
     @Override

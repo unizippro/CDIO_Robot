@@ -2,6 +2,7 @@ package group14.robot;
 
 import lejos.hardware.BrickFinder;
 import lejos.hardware.BrickInfo;
+import robot.rmi_interfaces.IController;
 import robot.rmi_interfaces.IMovement;
 import robot.rmi_interfaces.IRobot;
 import robot.rmi_interfaces.ISensors;
@@ -13,6 +14,7 @@ public class RobotManager implements IRobotManager {
     private IRobot robot;
     private IMovement movement;
     private ISensors sensors;
+    private IController controller;
 
     private BrickInfo brick;
 
@@ -102,5 +104,20 @@ public class RobotManager implements IRobotManager {
         }
 
         return sensors;
+    }
+
+    @Override
+    public IController getController() {
+        if (controller == null) {
+            try {
+                controller = (IController) Naming.lookup("rmi://" + this.brick.getIPAddress() + ":1199/controller");
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                return null;
+            }
+        }
+
+        return controller;
     }
 }

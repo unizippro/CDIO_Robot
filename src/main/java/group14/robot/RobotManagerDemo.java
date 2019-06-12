@@ -1,6 +1,7 @@
 package group14.robot;
 
 import lejos.hardware.BrickInfo;
+import robot.rmi_interfaces.IController;
 import robot.rmi_interfaces.IMovement;
 import robot.rmi_interfaces.ISensors;
 
@@ -86,6 +87,61 @@ public class RobotManagerDemo implements IRobotManager {
 
             @Override
             public boolean isWithinRange(double range) throws RemoteException {
+                return false;
+            }
+        };
+    }
+
+    @Override
+    public IController getController() {
+        return new IController() {
+            @Override
+            public void fanOn() throws RemoteException {
+
+            }
+
+            @Override
+            public void fanOff() throws RemoteException {
+
+            }
+
+            @Override
+            public void vibOn() throws RemoteException {
+
+            }
+
+            @Override
+            public void vibOff() throws RemoteException {
+
+            }
+
+            @Override
+            public void gateOpen() throws RemoteException {
+
+            }
+
+            @Override
+            public void gateClose() throws RemoteException {
+
+            }
+
+            @Override
+            public void gateCalibration(int angle, boolean openState) throws RemoteException {
+
+            }
+
+            @Override
+            public boolean gateIsOpen() throws RemoteException {
+                return false;
+            }
+
+            @Override
+            public boolean getVibStatus() throws RemoteException {
+                return false;
+            }
+
+            @Override
+            public boolean getFanStatus() throws RemoteException {
                 return false;
             }
         };
