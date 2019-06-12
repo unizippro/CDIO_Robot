@@ -11,6 +11,21 @@ public class PlannerHelper {
     public double getAngle(Robot robot, Point ballPoint) {
         double robotRot = Math.toDegrees(Math.atan2(robot.getFront().getY() - robot.getRearOpenCVPoint().getY(), robot.getFront().getX() - robot.getRearOpenCVPoint().getX()));
         double ballRot = Math.toDegrees(Math.atan2(ballPoint.getY() - robot.getRotationalPoint().getY(), ballPoint.getX() - robot.getRotationalPoint().getX()));
-        return robotRot+ballRot;
+
+//        return ballRot - robotRot;
+        if (robotRot > 0) {
+            return ballRot-robotRot;
+        } else {
+            return ballRot+robotRot;
+        }
+
+    }
+
+    public double getDistanceProjected(Robot robot, Point ballPoint) {
+        double angle = Math.atan2(ballPoint.getY() - robot.getRotationalPoint().getY(), ballPoint.getX() - robot.getRotationalPoint().getX());
+        double xPoint = robot.getRotationalPoint().x + robot.getDistanceRotationalToFront() * Math.cos(angle);
+        double yPoint = robot.getRotationalPoint().y + robot.getDistanceRotationalToFront() * Math.sin(angle);
+
+        return this.getDistance(new Point((int) xPoint, (int) yPoint), ballPoint);
     }
 }
