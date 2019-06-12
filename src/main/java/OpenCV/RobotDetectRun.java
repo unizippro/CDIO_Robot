@@ -26,6 +26,12 @@ public class RobotDetectRun {
 
         var result = new RobotDetector().run(src);
 
+        System.out.println("Front points");
+        result.getPointsFront().forEach(System.out::println);
+
+        System.out.println("Back points");
+        result.getPointsBack().forEach(System.out::println);
+
         HighGui.imshow("Result", result.getOutput());
         HighGui.resizeWindow("Result", src.width() / 2, src.height() / 2);
         HighGui.waitKey();

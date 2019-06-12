@@ -5,6 +5,9 @@ import group14.opencv.utils.ImageProcessUtils;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.Config> {
 
     static class Config {
@@ -41,51 +44,13 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         //Blur mat to better define objects
         var blurred = ImageProcessUtils.blur(src, 5);
 
-        //BgrThresh - Color 1 - blue
-        Mat bgrThresh_Color1 = new Mat();
-        Core.inRange(blurred, new Scalar(minBlue_Color1, minGreen_Color1, minRed_Color1), new Scalar(maxBlue_Color1, maxGreen_Color1, maxRed_Color1), bgrThresh_Color1);
+        // Color 1 - blue
+        var frontPoints = this.getPointsWithColor(blurred, out, new Scalar(minBlue_Color1, minGreen_Color1, minRed_Color1), new Scalar(maxBlue_Color1, maxGreen_Color1, maxRed_Color1));
 
-        //BgrThresh - Color 2 - green
-        Mat bgrThresh_Color2 = new Mat();
-        Core.inRange(blurred, new Scalar(minBlue_Color2, minGreen_Color2, minRed_Color2), new Scalar(maxBlue_Color2, maxGreen_Color2, maxRed_Color2), bgrThresh_Color2);
+        // Color 2 - green
+        var backPoints = this.getPointsWithColor(blurred, out, new Scalar(minBlue_Color2, minGreen_Color2, minRed_Color2), new Scalar(maxBlue_Color2, maxGreen_Color2, maxRed_Color2));
 
-        //! [houghcircles]
-        Mat circles_Color1 = new Mat();
-        Imgproc.HoughCircles(bgrThresh_Color1, circles_Color1, Imgproc.HOUGH_GRADIENT, 3, 0.5, 50, 25, 0, 15);
-
-        Mat circles_Color2 = new Mat();
-        Imgproc.HoughCircles(bgrThresh_Color2, circles_Color2, Imgproc.HOUGH_GRADIENT, 3, 0.5, 50, 25, 0, 15);
-
-        Point imgCenter = new Point(src.width()/2, src.height()/2);
-        //! [draw] Color 1
-        for (int x = 0; x < circles_Color1.cols(); x++) {
-            double[] c = circles_Color1.get(0, x);
-            Point center = new Point(Math.round(c[0]), Math.round(c[1]));
-            Point finalCenter = projectPoint(camHeight, robotFrontHeight, imgCenter, center);
-            // circle center
-            Imgproc.circle(out, finalCenter, 1, new Scalar(0,100,100), 3, 8, 0 );
-            // circle outline
-            int radius = (int) Math.round(c[2]);
-            Imgproc.circle(out, finalCenter, radius, new Scalar(255,0,255), 3, 8, 0 );
-
-            System.out.println(finalCenter);
-        }
-
-        //! [draw] Color 2
-        for (int x = 0; x < circles_Color2.cols(); x++) {
-            double[] c = circles_Color2.get(0, x);
-            Point center = new Point(Math.round(c[0]), Math.round(c[1]));
-            Point finalCenter = projectPoint(camHeight, robotBackHeight, imgCenter, center);
-            // circle center
-            Imgproc.circle(out, finalCenter, 1, new Scalar(0,100,100), 3, 8, 0 );
-            // circle outline
-            int radius = (int) Math.round(c[2]);
-            Imgproc.circle(out, finalCenter, radius, new Scalar(255,0,255), 3, 8, 0 );
-
-            System.out.println(finalCenter);
-        }
-
-        return new RobotDetectorResult(out);
+        return new RobotDetectorResult(out, frontPoints, backPoints);
     }
 
     @Override
@@ -93,7 +58,35 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         return new Config();
     }
 
-    public Point projectPoint(double camHeight, double objectHeight, Point centerPoint, Point projectPoint) {
+    private List<Point> getPointsWithColor(Mat frame, Mat out, Scalar lower, Scalar upper) {
+        Mat backgroundThresholdFrame = new Mat();
+        Core.inRange(frame, new Scalar(minBlue_Color1, minGreen_Color1, minRed_Color1), new Scalar(maxBlue_Color1, maxGreen_Color1, maxRed_Color1), backgroundThresholdFrame);
+
+        //! [houghcircles]
+        Mat circlesFrame = new Mat();
+        Imgproc.HoughCircles(backgroundThresholdFrame, circlesFrame, Imgproc.HOUGH_GRADIENT, 3, 0.5, 50, 25, 0, 15);
+
+        Point imgCenter = new Point(frame.width() / 2, frame.height() / 2);
+
+        var points = new ArrayList<Point>();
+        //! [draw] Color 1
+        for (int x = 0; x < circlesFrame.cols(); x++) {
+            double[] c = circlesFrame.get(0, x);
+            Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+            Point finalCenter = projectPoint(camHeight, robotFrontHeight, imgCenter, center);
+            // circle center
+            Imgproc.circle(out, finalCenter, 1, new Scalar(0, 100, 100), 3, 8, 0);
+            // circle outline
+            int radius = (int) Math.round(c[2]);
+            Imgproc.circle(out, finalCenter, radius, new Scalar(255, 0, 255), 3, 8, 0);
+
+            points.add(finalCenter);
+        }
+
+        return points;
+    }
+
+    private Point projectPoint(double camHeight, double objectHeight, Point centerPoint, Point projectPoint) {
         //Camheight og objectHeight er angviet i pixel så de konverteres
         camHeight = camHeight*2.8;
         objectHeight = objectHeight*2.8;
