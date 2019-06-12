@@ -12,12 +12,19 @@ public class PlannerHelper {
         double robotRot = Math.toDegrees(Math.atan2(robot.getFront().getY() - robot.getRearOpenCVPoint().getY(), robot.getFront().getX() - robot.getRearOpenCVPoint().getX()));
         double ballRot = Math.toDegrees(Math.atan2(ballPoint.getY() - robot.getRotationalPoint().getY(), ballPoint.getX() - robot.getRotationalPoint().getX()));
 
-//        return ballRot - robotRot;
-        if (robotRot > 0) {
-            return ballRot-robotRot;
-        } else {
-            return ballRot+robotRot;
-        }
+        double angle = ballRot - robotRot;
+        if (Math.abs(angle) > 180)
+            if (angle > 0) {
+                angle = 360 - angle;
+            } else {
+                angle = 360 + angle;
+            }
+        return angle;
+//        if (robotRot > 0) {
+//            return ballRot-robotRot;
+//        } else {
+//            return ballRot+robotRot;
+//        }
 
     }
 
