@@ -1,5 +1,8 @@
 package group14.road_planner;
 
+import group14.road_planner.board.Board;
+import group14.road_planner.board.Quadrant;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 
@@ -22,12 +25,6 @@ public class PlannerHelper {
                 angle = 360 + angle;
             }
         return angle;
-//        if (robotRot > 0) {
-//            return ballRot-robotRot;
-//        } else {
-//            return ballRot+robotRot;
-//        }
-
     }
 
     public double getDistanceProjected(Robot robot, Point ballPoint) {
@@ -45,6 +42,27 @@ public class PlannerHelper {
      * @return
      */
     public boolean isNearPoint(Robot robot, Point boardPoint) {
-        return !(this.getDistance(robot.getFront(), boardPoint) > 5);
+        return !(this.getDistance(robot.getFront(), boardPoint) > this.acceptedDistance);
+    }
+
+    /**
+     * TODO
+     * Checks if it is faster to go to next or previous quadrant.
+     * @return 1 = next, 0 = previous
+     */
+    public int goBackOrForward(RoadController roadController, Quadrant toQuadrant) {
+        //checks if the distance from prev safepoint/next safepoint to quadrants different safepoints, approximate
+        //estimation for best route
+        var prev = roadController.getPreviousQuadrant();
+        var next = roadController.getNextQuadrant();
+
+        var distancePrev = this.getDistance(prev.getExitSafePoint(), toQuadrant.getExitSafePoint());
+        var distanceNext = this.getDistance(next.getEntrySafePoint(), toQuadrant.getEntrySafePoint());
+
+        if (distancePrev <= distanceNext) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 }
