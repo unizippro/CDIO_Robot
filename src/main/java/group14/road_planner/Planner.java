@@ -4,7 +4,6 @@ import group14.road_planner.ball.Ball;
 import group14.road_planner.board.Quadrant;
 import group14.road_planner.board.SafePointTravel;
 import group14.road_planner.deposit.DepositPlanner;
-import jdk.jshell.spi.ExecutionControl;
 
 import java.awt.*;
 
@@ -63,32 +62,45 @@ public class Planner {
         return new Instruction(angle, distance);
     }
 
+
+    /**
+     * Checks if the robot is within acceptable distance to the exit safe point, if so the robot will travel
+     * to next quadrant's entry safe point
+     * @return Instruction
+     */
     private Instruction travelToNextSafePoint() {
-        //this.travelOwnSafePoint(robot, board);
-        if (this.travelToNextQuadrant) {
-            System.out.println("Jeg tager nu til næste kvadrant!");
+        var exitSafePoint = this.roadController.getCurrentQuadrant().getExitSafePoint();
+        if (this.plannerHelper.isNearPoint(this.roadController.getRobot(), exitSafePoint)) {
             this.travelToNextQuadrant = false;
-            Point p = new SafePointTravel().getNextSafePoint(this.roadController.getBoard(), this.roadController.getRobot());
-            System.out.println("Safepoint i næste kvadrant der køres til: "+p.toString());
-            return this.travelToPoint(p);
+            return this.travelToPoint(this.roadController.getNextQuadrant().getEntrySafePoint());
         }
-
-        return this.travelOwnSafePoint();
+        return this.travelOwnExitSafePoint();
     }
 
+    /**
+     * Checks if the robot is within acceptable distance to the entry safe point, if so the robot will travel
+     * to previous quadrant's exit safe point
+     * @return Instruction
+     */
     private Instruction travelToPreviousSafePoint() {
-        if (this.travelToNextQuadrant) {
+        var entrySafePoint = this.roadController.getCurrentQuadrant().getEntrySafePoint();
+        if (this.plannerHelper.isNearPoint(this.roadController.getRobot(), entrySafePoint)) {
             this.travelToNextQuadrant = false;
-            Point p = this.roadController.getPreviousQuadrant().getExitSafePoint().getLocation();
-            return this.travelToPoint(p);
+            return this.travelToPoint(this.roadController.getPreviousQuadrant().getExitSafePoint());
         }
-
-        return this.travelOwnSafePoint();
+        return this.travelOwnEntrySafePoint();
     }
 
-    private Instruction travelOwnSafePoint() {
+    private Instruction travelOwnExitSafePoint() {
         this.travelToNextQuadrant = true;
         Point p = this.roadController.getCurrentQuadrant().getExitSafePoint();
+        System.out.println("Safepoint der køres til: "+p.toString());
+        return this.travelToPoint(p);
+    }
+
+    private Instruction travelOwnEntrySafePoint() {
+        this.travelToNextQuadrant = true;
+        Point p = this.roadController.getCurrentQuadrant().getEntrySafePoint();
         System.out.println("Safepoint der køres til: "+p.toString());
         return this.travelToPoint(p);
     }

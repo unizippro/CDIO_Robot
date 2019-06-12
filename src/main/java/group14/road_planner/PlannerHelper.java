@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class PlannerHelper {
+    private final int acceptedDistance = 5;
+
     public double getDistance(Point robotPos, Point ballPoint) {
         return Point2D.distance(robotPos.getX(), robotPos.getY(), ballPoint.getX(), ballPoint.getY());
     }
@@ -34,5 +36,15 @@ public class PlannerHelper {
         double yPoint = robot.getRotationalPoint().y + robot.getDistanceRotationalToFront() * Math.sin(angle);
 
         return this.getDistance(new Point((int) xPoint, (int) yPoint), ballPoint);
+    }
+
+    /**
+     * checks if the robot's front is within acceptable distance to point
+     * @param robot
+     * @param boardPoint
+     * @return
+     */
+    public boolean isNearPoint(Robot robot, Point boardPoint) {
+        return !(this.getDistance(robot.getFront(), boardPoint) > 5);
     }
 }
