@@ -7,6 +7,7 @@ import group14.gui.components.CoordinateSystem;
 import group14.opencv.ICameraController;
 import group14.opencv.detectors.ball_detector.BallDetector;
 import group14.opencv.detectors.board_detector.BoardDetector;
+import group14.opencv.detectors.robot_detector.RobotDetector;
 import group14.robot.IRobotManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -29,6 +30,7 @@ public class Main {
 
     private BallDetector ballDetector = new BallDetector();
     private BoardDetector boardDetector = new BoardDetector();
+    private RobotDetector robotDetector = new RobotDetector();
 
 
     @FXML
@@ -57,6 +59,8 @@ public class Main {
     public ImageView imageBoard;
     @FXML
     public Slider cornerMarginSlider;
+    @FXML
+    public ImageView imageRobot;
 
 
 //    private Timer timer = new Timer();
@@ -191,10 +195,14 @@ public class Main {
         var resultBoard = this.boardDetector.run(source);
         var imageBoard = this.cameraController.matToImageFX(resultBoard.getOutput());
 
+        var resultRobot = this.robotDetector.run(source);
+        var imageRobot = this.cameraController.matToImageFX(resultRobot.getOutput());
+
         Platform.runLater(() -> {
             this.image.setImage(imageSource);
             this.imageBalls.setImage(imageBalls);
             this.imageBoard.setImage(imageBoard);
+            this.imageRobot.setImage(imageRobot);
         });
     }
 

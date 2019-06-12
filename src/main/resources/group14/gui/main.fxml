@@ -101,6 +101,24 @@
                         </AnchorPane>
                     </content>
                 </Tab>
+                <Tab text="Image Robot">
+                    <content>
+                        <AnchorPane>
+                            <children>
+                                <ImageView fx:id="imageRobot"
+                                           style="-fx-background-color: rgb(0,41,52);"
+                                           pickOnBounds="true"
+                                           preserveRatio="true"
+                                           AnchorPane.bottomAnchor="35.0"
+                                           AnchorPane.leftAnchor="35.0"
+                                           AnchorPane.rightAnchor="35.0"
+                                           AnchorPane.topAnchor="35.0"
+                                           fitHeight="480" fitWidth="600"
+                                />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
             </tabs>
         </TabPane>
         <SplitPane dividerPositions="0.6014492753623188" focusTraversable="true" layoutX="0.0" layoutY="0.0" prefHeight="290.0" prefWidth="968.0">
