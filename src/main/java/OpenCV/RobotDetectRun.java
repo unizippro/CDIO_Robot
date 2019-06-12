@@ -1,6 +1,6 @@
 package OpenCV;
 
-import group14.opencv.detectors.RobotDetector;
+import group14.opencv.detectors.robot_detector.RobotDetector;
 import org.opencv.core.Core;
 
 public class RobotDetectRun {

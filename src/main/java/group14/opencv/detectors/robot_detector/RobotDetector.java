@@ -1,4 +1,4 @@
-package group14.opencv.detectors;
+package group14.opencv.detectors.robot_detector;
 
 import org.opencv.core.*;
 import org.opencv.highgui.HighGui;
