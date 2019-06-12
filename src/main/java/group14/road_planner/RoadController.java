@@ -36,26 +36,12 @@ public class RoadController {
         this.quadrants = quadrants;
     }
 
-    public RoadController() {
-    }
-
-    /**
-     *
-     * @param boardPoints
-     * @param ballPoints
-     * @param crossPoints
-     * @param robotPoints
-     */
-    public void initialize(List<Point> boardPoints,
-                           List<Point> ballPoints,
-                           List<Point> crossPoints,
-                           List<Point> robotPoints) {
+    public void initialize(List<Point> boardPoints, List<Point> ballPoints, List<Point> crossPoints, List<Point> robotPoints) {
         this.initializeBoard(boardPoints);
         this.initializeBalls(ballPoints);
         this.initializeCross(crossPoints);
         this.initializeQuadrants();
         this.initializeRobot(robotPoints);
-
     }
 
     private void initializeBoard(List<Point> points) {
@@ -125,12 +111,7 @@ public class RoadController {
      * @return instruction to be executed by MovementController
      */
     public Instruction getNextInstruction() {
-        Instruction inst = null;
-        try {
-            inst = this.planner.nextInstruction();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Instruction inst = this.planner.nextInstruction();
         System.out.println(inst);
         return inst;
     }
@@ -145,6 +126,39 @@ public class RoadController {
 
     public Quadrant getCurrentQuadrant() {
         return this.board.getQuadrants().get(this.board.getRobotQuadrantPlacement(this.robot));
+    }
+
+    /**
+     * Loops through quadrants, check the current quadrant placement and returns index -1, unless it is at index 0, in which case
+     * it returns index 3.
+     * @return
+     */
+    public Quadrant getPreviousQuadrant() {
+        Quadrant q = this.getCurrentQuadrant();
+        for (int i = 0; i < getQuadrants().size(); i++) {
+            if (getQuadrants().get(i) == q) {
+                if (i == 0) {
+                    return getQuadrants().get(3);
+                } else {
+                    return getQuadrants().get(i-1);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Quadrant getNextQuadrant() {
+        Quadrant q = this.getCurrentQuadrant();
+        for (int i = 0; i < getQuadrants().size(); i++) {
+            if (getQuadrants().get(i) == q) {
+                if (i == 3) {
+                    return getQuadrants().get(0);
+                } else {
+                    return getQuadrants().get(i+1);
+                }
+            }
+        }
+        return null;
     }
 
     public void swapGoals() {
