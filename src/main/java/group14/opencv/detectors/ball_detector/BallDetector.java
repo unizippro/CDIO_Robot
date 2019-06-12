@@ -15,14 +15,14 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
 
     public static class Config {
         public AtomicInteger blurSize = new AtomicInteger(5);
-        public AtomicDouble lowerThreshold = new AtomicDouble(185);
+        public AtomicDouble lowerThreshold = new AtomicDouble(200);
 
-        private AtomicDouble houghDp = new AtomicDouble(3);
-        private AtomicDouble houghMinDist = new AtomicDouble(0.5);
-        public AtomicDouble houghParam1 = new AtomicDouble(50);
-        public AtomicDouble houghParam2 = new AtomicDouble(25);
-        private AtomicInteger houghMinRadius = new AtomicInteger(0);
-        private AtomicInteger houghMaxRadius = new AtomicInteger(30);
+        private AtomicDouble houghDp = new AtomicDouble(2);
+        private AtomicDouble houghMinDist = new AtomicDouble(10);
+        public AtomicDouble houghParam1 = new AtomicDouble(80);
+        public AtomicDouble houghParam2 = new AtomicDouble(28);
+        private AtomicInteger houghMinRadius = new AtomicInteger(10);
+        private AtomicInteger houghMaxRadius = new AtomicInteger(20);
     }
 
     public BallDetectorResult run(Mat src) {
