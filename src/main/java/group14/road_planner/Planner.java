@@ -5,6 +5,7 @@ import group14.road_planner.board.Board;
 import group14.road_planner.board.Quadrant;
 import group14.road_planner.board.SafePointTravel;
 import group14.robot.data.Instruction;
+import group14.road_planner.deposit.DepositPlanner;
 import jdk.jshell.spi.ExecutionControl;
 
 import java.awt.*;
@@ -13,37 +14,18 @@ import java.util.List;
 
 
 public class Planner {
-    private Ball closestBall;
-    private Vector currentClosetBall;
-    private int deltaAngle = 2;
     private RoadController roadController;
-    private Vector destinationVector;
     private boolean travelToNextQuadrant = false;
-    private int phaseOneStep = 0;
     private PlannerHelper plannerHelper = new PlannerHelper();
+    private Point depositPoint;
 
     public Planner(RoadController roadController) {
         this.roadController = roadController;
-        this.currentClosetBall = new Vector();
-//        updatePlanner(coorList);
-
-
-        //TODO align robot first!
-
-        //findClosestBall();
-        //Vector toBall = calcVector(robot.mid,closestBall.pos);
-        //Vector robotv = calcVector(robot.mid,robot.front);
-        //System.out.println("toBall: " + toBall);
-        //System.out.println("Robot: " + robotv);
-        //System.out.println("AngleToBall = " + calcAngle(robotv,toBall));
     }
 
     private Ball getClosestBall() {
+
         var balls = this.roadController.getBallsWithinArea();
-//        if (balls.size() > 0) {
-//            currentClosetBall = Calculator.CALCULATE_VECTOR(this.roadController.getRobot().getFront(), this_quadrant_balls.get(0).getPos());
-//            return balls.get(0);
-//        }
         Ball max = balls.get(0);
         double minLength = Integer.MAX_VALUE;
         for (int i = 0; i < balls.size(); i++) {
@@ -65,6 +47,7 @@ public class Planner {
         //ballswithinarea?
 
         if (this.roadController.getBalls().size() == 0) {
+            depositPoint = new DepositPlanner().getSmallGoal(this.roadController.getBoard());
             throw new ExecutionControl.NotImplementedException("The robot should do a check and then deposit");
         }
         if (this.roadController.getBallsWithinArea().size() > 0) {
@@ -72,8 +55,6 @@ public class Planner {
         } else {
             return this.travelBetweenSafePoints();
         }
-
-        return null;
         //If the robot made it all the way though the safe points
         // it should now go drop off the balls
 //        if(robot.getQuadrantsVisited() >= 4){
@@ -218,23 +199,6 @@ public class Planner {
         double distance = this.plannerHelper.getDistanceProjected(this.roadController.getRobot(), travelToPoint);
         return new Instruction(angle, distance);
     }
-
-//    /**
-//     *
-//     * @param quadrant
-//     * @param ballList
-//     * @return list of balls within safetyarea
-//     */
-//    public List<Ball> ballsWithinSafeArea(Quadrant quadrant, List<Ball> ballList) {
-//        List<Ball> newBallList = new ArrayList<>();
-//        for (Ball ball : ballList) {
-//            if (quadrant.isWithingSafetyArea(ball)) {
-//                newBallList.add(ball);
-//            }
-//        }
-//        return newBallList;
-//    }
-
 
     private Instruction travelBetweenSafePoints() {
         //this.travelOwnSafePoint(robot, board);

@@ -34,4 +34,8 @@ public class Goal  {
             this.goalType = GoalType.SMALL;
         }
     }
+
+    public Point getPos() {
+        return this.goalPoint;
+    }
 }
