@@ -1,10 +1,9 @@
 package group14.opencv.detectors.robot_detector;
 
 import group14.opencv.detectors.Detector;
+import group14.opencv.utils.ImageProcessUtils;
 import org.opencv.core.*;
-import org.opencv.highgui.HighGui;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.videoio.VideoCapture;
 
 public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.Config> {
 
@@ -40,15 +39,15 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         src.copyTo(out);
 
         //Blur mat to better define objects
-        Imgproc.medianBlur(src, src, 5);
+        var blurred = ImageProcessUtils.blur(src, 5);
 
         //BgrThresh - Color 1 - blue
         Mat bgrThresh_Color1 = new Mat();
-        Core.inRange(src, new Scalar(minBlue_Color1, minGreen_Color1, minRed_Color1), new Scalar(maxBlue_Color1, maxGreen_Color1, maxRed_Color1), bgrThresh_Color1);
+        Core.inRange(blurred, new Scalar(minBlue_Color1, minGreen_Color1, minRed_Color1), new Scalar(maxBlue_Color1, maxGreen_Color1, maxRed_Color1), bgrThresh_Color1);
 
-        //BgrThresh - Color 2 - yellow
+        //BgrThresh - Color 2 - green
         Mat bgrThresh_Color2 = new Mat();
-        Core.inRange(src, new Scalar(minBlue_Color2, minGreen_Color2, minRed_Color2), new Scalar(maxBlue_Color2, maxGreen_Color2, maxRed_Color2), bgrThresh_Color2);
+        Core.inRange(blurred, new Scalar(minBlue_Color2, minGreen_Color2, minRed_Color2), new Scalar(maxBlue_Color2, maxGreen_Color2, maxRed_Color2), bgrThresh_Color2);
 
         //! [houghcircles]
         Mat circles_Color1 = new Mat();

@@ -2,13 +2,12 @@ package group14.opencv.detectors.ball_detector;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import group14.opencv.detectors.Detector;
-import javafx.util.Pair;
+import group14.opencv.utils.ImageProcessUtils;
 import org.opencv.core.*;
 import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -35,7 +34,7 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
 
 
         //Blur mat to better define objects
-        var blurred = this.blur(src, config.blurSize.get());
+        var blurred = ImageProcessUtils.blur(src, config.blurSize.get());
 
         //Set threshold
         var thresh = this.threshold(blurred, config.lowerThreshold.get(), 255);
@@ -65,13 +64,6 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
     @Override
     protected Config createConfig() {
         return new Config();
-    }
-
-    private Mat blur(Mat src, int ksize) {
-        Mat out = new Mat();
-        Imgproc.medianBlur(src, out, ksize);
-
-        return out;
     }
 
     private Mat threshold(Mat src, double lower, double upper) {
