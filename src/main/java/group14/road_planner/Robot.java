@@ -26,7 +26,7 @@ public class Robot {
     private Compas compas;
     private Point front;
     private Point rotationalPoint;
-    private double distanceFromBackToFront = 23 * SmartConverter.getPixelsPerCm();
+    private double distanceFromBackToFront = 29.5 * SmartConverter.getPixelsPerCm();
     private double distanceFromBackToRotational = 11 * SmartConverter.getPixelsPerCm();
 
     /**
