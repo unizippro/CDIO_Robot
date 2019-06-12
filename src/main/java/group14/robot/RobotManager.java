@@ -18,39 +18,30 @@ public class RobotManager implements IRobotManager {
 
     private BrickInfo brick;
 
-    public RobotManager() {
-        this.brick = this.getBricksOnNetwork()[0];
-
-        try {
-            this.robot = (IRobot) Naming.lookup("rmi://" + this.brick.getIPAddress() + ":1199/robot");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public BrickInfo[] getBricksOnNetwork() {
-        BrickInfo[] bricks = BrickFinder.discover();
-        if (bricks.length == 0) {
-            throw new RuntimeException("No bricks on group14.network");
-        }
-
-        return bricks;
+        return BrickFinder.discover();
     }
 
     @Override
     public void setBrick(BrickInfo brick) {
-        this.brick = brick;
-
         try {
-            this.robot = (IRobot) Naming.lookup("rmi://" + this.brick.getIPAddress() + ":1199/robot");
+            this.robot = (IRobot) Naming.lookup("rmi://" + brick.getIPAddress() + ":1199/robot");
+            this.brick = brick;
         } catch (Exception e) {
+            this.brick = null;
+            this.robot = null;
+
             e.printStackTrace();
         }
     }
 
     @Override
     public void start() {
+        if (this.robot == null) {
+            return;
+        }
+
         try {
             this.robot.start();
         } catch (RemoteException e) {
@@ -60,6 +51,10 @@ public class RobotManager implements IRobotManager {
 
     @Override
     public void stop() {
+        if (this.robot == null) {
+            return;
+        }
+
         try {
             this.robot.stop();
         } catch (RemoteException e) {
@@ -69,6 +64,10 @@ public class RobotManager implements IRobotManager {
 
     @Override
     public void shutdown() {
+        if (this.robot == null) {
+            return;
+        }
+
         try {
             this.robot.shutdown();
         } catch (RemoteException e) {
@@ -78,9 +77,15 @@ public class RobotManager implements IRobotManager {
 
     @Override
     public IMovement getMovement() {
-        if (movement == null) {
+        if (this.brick == null) {
+            this.movement = null;
+
+            return null;
+        }
+
+        if (this.movement == null) {
             try {
-                movement = (IMovement) Naming.lookup("rmi://" + this.brick.getIPAddress() + ":1199/movement");
+                this.movement = (IMovement) Naming.lookup("rmi://" + this.brick.getIPAddress() + ":1199/movement");
             } catch (Exception e) {
                 e.printStackTrace();
 
@@ -88,14 +93,20 @@ public class RobotManager implements IRobotManager {
             }
         }
 
-        return movement;
+        return this.movement;
     }
 
     @Override
     public ISensors getSensors() {
-        if (sensors == null) {
+        if (this.brick == null) {
+            this.sensors = null;
+
+            return null;
+        }
+
+        if (this.sensors == null) {
             try {
-                sensors = (ISensors) Naming.lookup("rmi://" + this.brick.getIPAddress() + ":1199/sensors");
+                this.sensors = (ISensors) Naming.lookup("rmi://" + this.brick.getIPAddress() + ":1199/sensors");
             } catch (Exception e) {
                 e.printStackTrace();
 
@@ -103,14 +114,20 @@ public class RobotManager implements IRobotManager {
             }
         }
 
-        return sensors;
+        return this.sensors;
     }
 
     @Override
     public IController getController() {
-        if (controller == null) {
+        if (this.brick == null) {
+            this.controller = null;
+
+            return null;
+        }
+
+        if (this.controller == null) {
             try {
-                controller = (IController) Naming.lookup("rmi://" + this.brick.getIPAddress() + ":1199/controller");
+                this.controller = (IController) Naming.lookup("rmi://" + this.brick.getIPAddress() + ":1199/controller");
             } catch (Exception e) {
                 e.printStackTrace();
 
@@ -118,6 +135,6 @@ public class RobotManager implements IRobotManager {
             }
         }
 
-        return controller;
+        return this.controller;
     }
 }

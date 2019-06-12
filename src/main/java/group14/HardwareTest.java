@@ -11,8 +11,12 @@ public class HardwareTest {
 
 
     public static void main(String[] args) {
-        IController cont = new RobotManager().getController();
-        IMovement movement = new RobotManager().getMovement();
+        var robotManager = new RobotManager();
+
+        robotManager.setBrick(robotManager.getBricksOnNetwork()[0]);
+
+        IController cont = robotManager.getController();
+        IMovement movement = robotManager.getMovement();
         int delaytime = 7500;
 
         try {
