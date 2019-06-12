@@ -1,11 +1,16 @@
 package group14.opencv.detectors.robot_detector;
 
+import group14.opencv.detectors.Detector;
 import org.opencv.core.*;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
-public class RobotDetector {
+public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.Config> {
+
+    static class Config {
+
+    }
 
     // Color 1 - Blue
     //BGR: 199, 41, 29
@@ -29,14 +34,10 @@ public class RobotDetector {
     double robotFrontHeight = 28;
     double robotBackHeight = 27;
 
-    public void run(String[] args) {
-        Mat src = new Mat();
-        VideoCapture cap = new VideoCapture(1);
-        if (!cap.isOpened()) {
-            System.out.println("Error");
-        } else {
-            cap.read(src);
-        }
+    @Override
+    public RobotDetectorResult run(Mat src) {
+        var out = new Mat();
+        src.copyTo(out);
 
         //Blur mat to better define objects
         Imgproc.medianBlur(src, src, 5);
@@ -85,22 +86,12 @@ public class RobotDetector {
             System.out.println(finalCenter);
         }
 
-        Mat reziseImg = new Mat();
-        Mat reziseColor1Img = new Mat();
-        Mat reziseColor2Img = new Mat();
-        Size scaleSize = new Size(1000, 680);
-        Imgproc.resize(src, reziseImg, scaleSize, 0, 0, Imgproc.INTER_AREA);
-        Imgproc.resize(bgrThresh_Color1, reziseColor1Img, scaleSize, 0, 0, Imgproc.INTER_AREA);
-        Imgproc.resize(bgrThresh_Color2, reziseColor2Img, scaleSize, 0, 0, Imgproc.INTER_AREA);
+        return new RobotDetectorResult(out);
+    }
 
-
-        // ! [display]
-        HighGui.imshow("detected robot", reziseImg);
-        //HighGui.imshow("detected robot", reziseColor1Img);
-        //HighGui.imshow("detected robot", reziseColor2Img);
-        HighGui.waitKey();
-
-        System.exit(0);
+    @Override
+    protected Config createConfig() {
+        return new Config();
     }
 
     public Point projectPoint(double camHeight, double objectHeight, Point centerPoint, Point projectPoint) {
