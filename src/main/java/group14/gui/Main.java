@@ -10,7 +10,6 @@ import group14.opencv.detectors.board_detector.BoardDetector;
 import group14.robot.IRobotManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -184,13 +183,13 @@ public class Main {
 
     private void cameraControllerUpdated() {
         var source = this.cameraController.getSource();
-        var imageSource = SwingFXUtils.toFXImage(this.cameraController.getSourceAsBufferedImage(), null);
+        var imageSource = this.cameraController.getSourceAsImageFX();
 
         var resultBalls = this.ballDetector.run(source);
-        var imageBalls = SwingFXUtils.toFXImage(this.cameraController.matToBufferedImage(resultBalls.getOutput()), null);
+        var imageBalls = this.cameraController.matToImageFX(resultBalls.getOutput());
 
         var resultBoard = this.boardDetector.run(source);
-        var imageBoard = SwingFXUtils.toFXImage(this.cameraController.matToBufferedImage(resultBoard.getOutput()), null);
+        var imageBoard = this.cameraController.matToImageFX(resultBoard.getOutput());
 
         Platform.runLater(() -> {
             this.image.setImage(imageSource);

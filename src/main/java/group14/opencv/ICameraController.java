@@ -1,5 +1,6 @@
 package group14.opencv;
 
+import javafx.scene.image.Image;
 import org.opencv.core.Mat;
 
 import java.awt.image.BufferedImage;
@@ -16,6 +17,6 @@ public interface ICameraController {
     void updateWithImage(String filePath);
 
     Mat getSource();
-    BufferedImage getSourceAsBufferedImage();
-    BufferedImage matToBufferedImage(Mat mat);
+    Image getSourceAsImageFX();
+    Image matToImageFX(Mat mat);
 }
