@@ -1,3 +1,4 @@
+import lejos.hardware.Sound;
 import robot.Robot;
 
 import java.rmi.Naming;
@@ -6,12 +7,14 @@ import java.rmi.registry.LocateRegistry;
 
 
 public class Program {
-    private final String IP_ADDRESS = "192.168.2.6";
+    private final String IP_ADDRESS = "192.168.43.195";
     public static void main(String[] args) throws Exception {
 
         System.out.println("Robot starting");
         new Program();
         System.out.println("Robot ready for remote connection");
+        Sound.setVolume(Sound.VOL_MAX);
+        Sound.beep();
     }
 
     private Program() throws Exception {

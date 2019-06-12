@@ -1,10 +1,12 @@
 package robot;
 
+
+import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.motor.UnregulatedMotor;
 import robot.rmi_interfaces.IController;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -70,7 +72,8 @@ public class Controller extends UnicastRemoteObject implements IController {
 
     @Override
     public void gateCalibration(int angle, boolean openState) throws RemoteException {
-        gateMotor.rotate(-openCloseAngle);
+
+        gateMotor.rotate(angle);
         gateOpen.set(openState);
     }
 
