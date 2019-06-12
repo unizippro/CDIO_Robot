@@ -67,6 +67,7 @@ public class RoadController {
     }
 
     private  void initializeBalls(List<Point> balls) {
+        this.balls.clear();
         List<Ball> newBallList = new ArrayList<>();
         for (Point point : balls) {
             newBallList.add(new Ball(point));
@@ -107,6 +108,10 @@ public class RoadController {
 
     public Robot getRobot() {
         return robot;
+    }
+
+    public void setBalls(List<Point> ballList) {
+        this.initializeBalls(ballList);
     }
 
     public void updateRobot(Point pointFront, Point pointBack) {

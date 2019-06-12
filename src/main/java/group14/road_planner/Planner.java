@@ -46,7 +46,7 @@ public class Planner {
 //        }
         Ball max = balls.get(0);
         double minLength = Integer.MAX_VALUE;
-        for (int i = 1; i < balls.size(); i++) {
+        for (int i = 0; i < balls.size(); i++) {
             double temp = this.plannerHelper.getDistance(this.roadController.getRobot().getFront(), balls.get(i).getPos());
             if (temp < minLength) {
                 max = balls.get(i);
@@ -215,7 +215,7 @@ public class Planner {
      */
     private Instruction travelToPoint(Point travelToPoint) {
         double angle = this.plannerHelper.getAngle(this.roadController.getRobot(), travelToPoint);
-        double distance = this.plannerHelper.getDistance(this.roadController.getRobot().getFront(), travelToPoint);
+        double distance = this.plannerHelper.getDistanceProjected(this.roadController.getRobot(), travelToPoint);
         return new Instruction(angle, distance);
     }
 

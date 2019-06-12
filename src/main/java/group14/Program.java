@@ -1,7 +1,11 @@
 package group14;
 
+import group14.movement_queue.ControllerController;
+import group14.movement_queue.MovementController;
 import group14.road_planner.*;
+import group14.road_planner.Robot;
 import group14.road_planner.board.SmartConverter;
+import robot.Controller;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,6 +15,8 @@ import java.util.List;
 
 public class Program {
 //    private MovementController movementController = new MovementController();
+//    private Controller controller = new Rob;
+//    private ControllerController controllerController = new ControllerController();
 
     public static void main(String[] args) {
         new Program().doAction();
@@ -18,12 +24,11 @@ public class Program {
 
     private void doAction() {
 
-
-
         //balls
         ArrayList<Point> ballList = new ArrayList<>();
-        ballList.add(new Point(296, 107));
-        ballList.add(new Point(197, 383));
+        ballList.add(new Point(165, 110));
+        ballList.add(new Point(133, 403));
+        ballList.add(new Point(261, 157));
 //        ballList.add(new Point(556, 86));
 //        ballList.add(new Point(509, 434));
 //        ballList.add(new Point(383, 422));
@@ -42,8 +47,8 @@ public class Program {
 
         //Robot
         List<Point> robotList = new ArrayList<>();
-        robotList.add(new Point(154, 231));
-        robotList.add(new Point(131, 233));
+        robotList.add(new Point(179, 228));
+        robotList.add(new Point(159, 218));
 
         //Cross
         List<Point> crossList = new ArrayList<>();
@@ -56,9 +61,35 @@ public class Program {
         RoadController roadController = new RoadController();
         roadController.initialize(boardList, ballList, crossList, robotList);
 
-        System.out.println(roadController.getQuadrants());
+//        this.controllerController.fanOn();
 
+        System.out.println(roadController.getQuadrants());
         roadController.getNextInstruction();
+
+//        this.movementController.addMovement(roadController.getNextInstruction());
+//        this.movementController.run();
+
+        ArrayList<Point> ballList2 = new ArrayList<>();
+        ballList2.add(new Point(165, 110));
+        ballList2.add(new Point(133, 403));
+
+        roadController.setBalls(ballList2);
+
+        roadController.updateRobot(new Point(233, 184), new Point(207, 202));
+        roadController.getNextInstruction();
+//        this.movementController.addMovement(roadController.getNextInstruction());
+//        this.movementController.run();
+
+        ArrayList<Point> ballList3 = new ArrayList<>();
+        ballList3.add(new Point(133, 403));
+
+        roadController.setBalls(ballList3);
+
+        roadController.updateRobot(new Point(198, 132), new Point(221, 145));
+        roadController.getNextInstruction();
+//        this.movementController.addMovement(roadController.getNextInstruction());
+//        this.movementController.run();
+//        this.controllerController.fanOff();
 
 //        roadController.updateRobot(new Point(16, 0), new Point(14, 0));
 //

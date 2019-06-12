@@ -138,4 +138,8 @@ public class Robot {
         this.quadrantsVisited++;
     }
 
+    public double getDistanceRotationalToFront() {
+        return this.distanceFromBackToFront - this.distanceFromBackToRotational;
+    }
+
 }
