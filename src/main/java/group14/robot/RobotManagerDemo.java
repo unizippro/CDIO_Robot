@@ -94,6 +94,56 @@ public class RobotManagerDemo implements IRobotManager {
 
     @Override
     public IController getController() {
-        return null;
+        return new IController() {
+            @Override
+            public void fanOn() throws RemoteException {
+
+            }
+
+            @Override
+            public void fanOff() throws RemoteException {
+
+            }
+
+            @Override
+            public void vibOn() throws RemoteException {
+
+            }
+
+            @Override
+            public void vibOff() throws RemoteException {
+
+            }
+
+            @Override
+            public void gateOpen() throws RemoteException {
+
+            }
+
+            @Override
+            public void gateClose() throws RemoteException {
+
+            }
+
+            @Override
+            public void gateCalibration(int angle, boolean openState) throws RemoteException {
+
+            }
+
+            @Override
+            public boolean gateIsOpen() throws RemoteException {
+                return false;
+            }
+
+            @Override
+            public boolean getVibStatus() throws RemoteException {
+                return false;
+            }
+
+            @Override
+            public boolean getFanStatus() throws RemoteException {
+                return false;
+            }
+        };
     }
 }
