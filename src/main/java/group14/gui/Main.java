@@ -63,6 +63,8 @@ public class Main {
     public Slider cornerMarginSlider;
     @FXML
     public ImageView imageRobot;
+    @FXML
+    public ImageView imageThreshBalls;
 
 
 //    private Timer timer = new Timer();
@@ -199,11 +201,15 @@ public class Main {
         var resultRobot = this.robotDetector.run(frame);
         var imageRobot = ImageConverter.matToImageFX(resultRobot.getOutput());
 
+        var imageBallsThresh = ImageConverter.matToImageFX(resultBalls.getOutputThresh());
+
         Platform.runLater(() -> {
             this.image.setImage(image);
             this.imageBalls.setImage(imageBalls);
             this.imageBoard.setImage(imageBoard);
             this.imageRobot.setImage(imageRobot);
+            this.imageThreshBalls.setImage(imageBallsThresh);
+
         });
     }
 
