@@ -25,11 +25,11 @@ public class RobotDetectorResult {
         return this.output;
     }
 
-    private List<Point> getPointsFront() {
+    public List<Point> getPointsFront() {
         return this.pointsFront;
     }
 
-    private List<Point> getPointsBack() {
+    public List<Point> getPointsBack() {
         return this.pointsBack;
     }
 
