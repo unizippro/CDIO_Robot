@@ -58,7 +58,7 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
         }
         //! [draw]
 
-        return new BallDetectorResult(out, points);
+        return new BallDetectorResult(out, thresh, points);
     }
 
     @Override

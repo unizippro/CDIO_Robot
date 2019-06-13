@@ -1,5 +1,6 @@
 package group14.opencv.detectors.robot_detector;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import group14.opencv.detectors.Detector;
 import group14.opencv.utils.ImageProcessUtils;
 import org.opencv.core.*;
@@ -7,34 +8,54 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.Config> {
 
-    static class Config {
+    public static class Config {
+        // Color 2 - Green
+        public AtomicInteger minRedColorGreen = new AtomicInteger(70);
+        public AtomicInteger maxRedColorGreen = new AtomicInteger(150);
+        public AtomicInteger minGreenColorGreen = new AtomicInteger(150);
+        public AtomicInteger maxGreenColorGreen = new AtomicInteger(255);
+        public AtomicInteger minBlueColorGreen = new AtomicInteger(70);
+        public AtomicInteger maxBlueColorGreen = new AtomicInteger(150);
 
+        // Color 1 - Blue
+        public AtomicInteger minRedColorBlue = new AtomicInteger(0);
+        public AtomicInteger maxRedColorBlue = new AtomicInteger(130);
+        public AtomicInteger minGreenColorBlue = new AtomicInteger(0);
+        public AtomicInteger maxGreenColorBlue = new AtomicInteger(130);
+        public AtomicInteger minBlueColorBlue = new AtomicInteger(160);
+        public AtomicInteger maxBlueColorBlue = new AtomicInteger(255);
     }
-
-    // Color 1 - Blue
-    //BGR: 199, 41, 29
-    int minRed_Color1 = 0;
-    int minGreen_Color1 = 0;
-    int minBlue_Color1 = 160;
-    int maxRed_Color1 = 130;
-    int maxGreen_Color1 = 130;
-    int maxBlue_Color1 = 255;
-
-    // Color 2 - Green
-    // BGR: 49, 134, 25
-    int minRed_Color2 = 70;
-    int minGreen_Color2 = 150;
-    int minBlue_Color2 = 70;
-    int maxRed_Color2 = 150;
-    int maxGreen_Color2 = 255;
-    int maxBlue_Color2 = 150;
 
     double camHeight = 165;
     double robotFrontHeight = 28;
     double robotBackHeight = 27;
+
+    /*
+    // Color 2 - Green
+    // BGR: 49, 134, 25
+    int minRed_Color2 = 70;
+    int maxRed_Color2 = 150;
+
+    int minGreen_Color2 = 150;
+    int maxGreen_Color2 = 255;
+
+    int minBlue_Color2 = 70;
+    int maxBlue_Color2 = 150;
+
+    // Color 1 - Blue
+    //BGR: 199, 41, 29
+    int minRed_Color1 = 0;
+    int maxRed_Color1 = 130;
+
+    int minGreen_Color1 = 0;
+    int maxGreen_Color1 = 130;
+
+    int minBlue_Color1 = 160;
+    int maxBlue_Color1 = 255;*/
 
     @Override
     public RobotDetectorResult run(Mat src) {
@@ -44,13 +65,20 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         //Blur mat to better define objects
         var blurred = ImageProcessUtils.blur(src, 5);
 
+        var config = this.getConfig();
+
+        var threshBlue = this.threshold(src, new Scalar(config.minBlueColorBlue.get(), config.minGreenColorBlue.get(), config.minRedColorBlue.get()), new Scalar(config.maxBlueColorBlue.get(), config.maxGreenColorBlue.get(), config.maxRedColorBlue.get()));
+
+        var threshGreen = this.threshold(src, new Scalar(config.minBlueColorGreen.get(), config.minGreenColorGreen.get(), config.minRedColorGreen.get()), new Scalar(config.maxBlueColorGreen.get(), config.maxGreenColorGreen.get(), config.maxRedColorGreen.get()));
+
+
         // Color 1 - blue
-        var frontPoints = this.getPointsWithColor(blurred, out, new Scalar(minBlue_Color1, minGreen_Color1, minRed_Color1), new Scalar(maxBlue_Color1, maxGreen_Color1, maxRed_Color1));
+        var frontPoints = this.getPointsWithColor(blurred, out, new Scalar(config.minBlueColorBlue.get(), config.minGreenColorBlue.get(), config.minRedColorBlue.get()), new Scalar(config.maxBlueColorBlue.get(), config.maxGreenColorBlue.get(), config.maxRedColorBlue.get()));
 
         // Color 2 - green
-        var backPoints = this.getPointsWithColor(blurred, out, new Scalar(minBlue_Color2, minGreen_Color2, minRed_Color2), new Scalar(maxBlue_Color2, maxGreen_Color2, maxRed_Color2));
+        var backPoints = this.getPointsWithColor(blurred, out, new Scalar(config.minBlueColorGreen.get(), config.minGreenColorGreen.get(), config.minRedColorGreen.get()), new Scalar(config.maxBlueColorGreen.get(), config.maxGreenColorGreen.get(), config.maxRedColorGreen.get()));
 
-        return new RobotDetectorResult(out, frontPoints, backPoints);
+        return new RobotDetectorResult(out, threshBlue, threshGreen, frontPoints, backPoints);
     }
 
     @Override
@@ -102,5 +130,12 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         double yChange = centerPoint.y - projectPoint.y;
         Point newPoint = new Point(centerPoint.x-xChange*strengthFactor,centerPoint.y-yChange*strengthFactor);
         return newPoint;
+    }
+
+    private Mat threshold(Mat src, Scalar lower, Scalar upper) {
+        Mat out = new Mat();
+        Core.inRange(src, lower, upper, out);
+
+        return out;
     }
 }

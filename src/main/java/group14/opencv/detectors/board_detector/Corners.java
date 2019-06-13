@@ -1,6 +1,7 @@
 package group14.opencv.detectors.board_detector;
 
 import org.opencv.core.*;
+import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.List;
