@@ -60,7 +60,7 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
 
     private List<Point> getPointsWithColor(Mat frame, Mat out, Scalar lower, Scalar upper) {
         Mat backgroundThresholdFrame = new Mat();
-        Core.inRange(frame, new Scalar(minBlue_Color1, minGreen_Color1, minRed_Color1), new Scalar(maxBlue_Color1, maxGreen_Color1, maxRed_Color1), backgroundThresholdFrame);
+        Core.inRange(frame, lower, upper, backgroundThresholdFrame);
 
         //! [houghcircles]
         Mat circlesFrame = new Mat();
