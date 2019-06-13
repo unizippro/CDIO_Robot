@@ -67,16 +67,16 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
 
         var config = this.getConfig();
 
-        var threshBlue = this.threshold(src, new Scalar(config.minBlueColorBlue.get(), config.minGreenColorBlue.get(), config.minRedColorBlue.get()), new Scalar(config.maxBlueColorBlue.get(), config.maxGreenColorBlue.get(), config.maxRedColorBlue.get()));
+        var threshBlue = this.threshold(blurred, new Scalar(config.minBlueColorBlue.get(), config.minGreenColorBlue.get(), config.minRedColorBlue.get()), new Scalar(config.maxBlueColorBlue.get(), config.maxGreenColorBlue.get(), config.maxRedColorBlue.get()));
 
-        var threshGreen = this.threshold(src, new Scalar(config.minBlueColorGreen.get(), config.minGreenColorGreen.get(), config.minRedColorGreen.get()), new Scalar(config.maxBlueColorGreen.get(), config.maxGreenColorGreen.get(), config.maxRedColorGreen.get()));
+        var threshGreen = this.threshold(blurred, new Scalar(config.minBlueColorGreen.get(), config.minGreenColorGreen.get(), config.minRedColorGreen.get()), new Scalar(config.maxBlueColorGreen.get(), config.maxGreenColorGreen.get(), config.maxRedColorGreen.get()));
 
 
         // Color 1 - blue
-        var frontPoints = this.getPointsWithColor(blurred, out, new Scalar(config.minBlueColorBlue.get(), config.minGreenColorBlue.get(), config.minRedColorBlue.get()), new Scalar(config.maxBlueColorBlue.get(), config.maxGreenColorBlue.get(), config.maxRedColorBlue.get()));
+        var frontPoints = this.getPointsWithColor(threshBlue, out);
 
         // Color 2 - green
-        var backPoints = this.getPointsWithColor(blurred, out, new Scalar(config.minBlueColorGreen.get(), config.minGreenColorGreen.get(), config.minRedColorGreen.get()), new Scalar(config.maxBlueColorGreen.get(), config.maxGreenColorGreen.get(), config.maxRedColorGreen.get()));
+        var backPoints = this.getPointsWithColor(threshGreen, out);
 
         return new RobotDetectorResult(out, threshBlue, threshGreen, frontPoints, backPoints);
     }
@@ -86,13 +86,13 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         return new Config();
     }
 
-    private List<Point> getPointsWithColor(Mat frame, Mat out, Scalar lower, Scalar upper) {
-        Mat backgroundThresholdFrame = new Mat();
-        Core.inRange(frame, lower, upper, backgroundThresholdFrame);
+    private List<Point> getPointsWithColor(Mat frame, Mat out) {
+
+        //Core.inRange(frame, lower, upper, backgroundThresholdFrame);
 
         //! [houghcircles]
         Mat circlesFrame = new Mat();
-        Imgproc.HoughCircles(backgroundThresholdFrame, circlesFrame, Imgproc.HOUGH_GRADIENT, 3, 0.5, 50, 25, 0, 15);
+        Imgproc.HoughCircles(frame, circlesFrame, Imgproc.HOUGH_GRADIENT, 2, 10, 80, 34, 10, 40);
 
         Point imgCenter = new Point(frame.width() / 2, frame.height() / 2);
 

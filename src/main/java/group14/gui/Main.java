@@ -147,18 +147,18 @@ public class Main {
         // Color 1 - Blue
         this.rbgMinRedSliderBlue.setValue(robotDetectorConfig.minRedColorBlue.get());
         this.rbgMaxRedSliderBlue.setValue(robotDetectorConfig.maxRedColorBlue.get());
-        this.rbgMinBlueSliderBlue.setValue(robotDetectorConfig.minGreenColorBlue.get());
-        this.rbgMaxBlueSliderBlue.setValue(robotDetectorConfig.maxGreenColorBlue.get());
-        this.rbgMinGreenSliderBlue.setValue(robotDetectorConfig.minBlueColorBlue.get());
-        this.rbgMaxGreenSliderBlue.setValue(robotDetectorConfig.maxBlueColorBlue.get());
+        this.rbgMinGreenSliderBlue.setValue(robotDetectorConfig.minGreenColorBlue.get());
+        this.rbgMaxGreenSliderBlue.setValue(robotDetectorConfig.maxGreenColorBlue.get());
+        this.rbgMinBlueSliderBlue.setValue(robotDetectorConfig.minBlueColorBlue.get());
+        this.rbgMaxBlueSliderBlue.setValue(robotDetectorConfig.maxBlueColorBlue.get());
 
         // Color 2 - Green
         this.rbgMinRedSliderGreen.setValue(robotDetectorConfig.minRedColorGreen.get());
         this.rbgMaxRedSliderGreen.setValue(robotDetectorConfig.maxRedColorGreen.get());
-        this.rbgMinBlueSliderGreen.setValue(robotDetectorConfig.minGreenColorGreen.get());
-        this.rbgMaxBlueSliderGreen.setValue(robotDetectorConfig.maxGreenColorGreen.get());
-        this.rbgMinGreenSliderGreen.setValue(robotDetectorConfig.minBlueColorGreen.get());
-        this.rbgMaxGreenSliderGreen.setValue(robotDetectorConfig.maxBlueColorGreen.get());
+        this.rbgMinBlueSliderGreen.setValue(robotDetectorConfig.minBlueColorGreen.get());
+        this.rbgMaxBlueSliderGreen.setValue(robotDetectorConfig.maxBlueColorGreen.get());
+        this.rbgMinGreenSliderGreen.setValue(robotDetectorConfig.minGreenColorGreen.get());
+        this.rbgMaxGreenSliderGreen.setValue(robotDetectorConfig.maxGreenColorGreen.get());
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
@@ -289,6 +289,24 @@ public class Main {
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         boardDetectorConfig.cornerMarginPercentage.set(this.cornerMarginSlider.getValue());
+
+        var robotDetector = this.robotDetector.getConfig();
+        //Blue color sliders
+        robotDetector.minRedColorBlue.set((int) this.rbgMinRedSliderBlue.getValue());
+        robotDetector.minGreenColorBlue.set((int) this.rbgMinGreenSliderBlue.getValue());
+        robotDetector.minBlueColorBlue.set((int) this.rbgMinBlueSliderBlue.getValue());
+        robotDetector.maxRedColorBlue.set((int) this.rbgMaxRedSliderBlue.getValue());
+        robotDetector.maxGreenColorBlue.set((int) this.rbgMaxGreenSliderBlue.getValue());
+        robotDetector.maxBlueColorBlue.set((int) this.rbgMaxBlueSliderBlue.getValue());
+
+        //Green color sliders
+        robotDetector.minRedColorGreen.set((int) this.rbgMinRedSliderGreen.getValue());
+        robotDetector.minGreenColorGreen.set((int) this.rbgMinGreenSliderGreen.getValue());
+        robotDetector.minBlueColorGreen.set((int) this.rbgMinBlueSliderGreen.getValue());
+        robotDetector.maxRedColorGreen.set((int) this.rbgMaxRedSliderGreen.getValue());
+        robotDetector.maxGreenColorGreen.set((int) this.rbgMaxGreenSliderGreen.getValue());
+        robotDetector.maxBlueColorGreen.set((int) this.rbgMaxBlueSliderGreen.getValue());
+
     }
 
 
