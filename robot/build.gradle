@@ -40,7 +40,7 @@ jar {
     }
 }
 
-task deploy(dependsOn: [jar, project(":forward").jar, project(":backward").jar]) {
+task deploy(dependsOn: jar) {
     ant.taskdef(name: "scp", classname: "org.apache.tools.ant.taskdefs.optional.ssh.Scp", classpath: configurations.sshAntTask.asPath)
 
     doLast {
@@ -58,72 +58,5 @@ task deployAndRun(dependsOn: deploy) {
     doLast {
         ant.ssh(host: ev3host, username: ev3user, password: ev3pass, command: "/home/root/lejos/ejre1.7.0_60/bin/java -cp /home/lejos/programs/robot-1.0-SNAPSHOT.jar:/home/root/lejos/lib/ev3classes.jar:/home/root/lejos/lib/dbusjava.jar:/home/root/lejos/lib/opencv-2411.jar:/home/root/lejos/libjna/usr/share/java/jna.jar:. -jar /home/lejos/programs/${jar.archiveName}")
 //        ant.ssh(host: ev3host, username: ev3user, password: ev3pass, command: "jrun -jar /home/lejos/programs/${jar.archiveName}")
-    }
-}
-
-
-/**
- * Sub-projects
- */
-
-// Forward
-project(":forward") {
-    buildDir = new File("../build")
-    version = rootProject.version
-
-    sourceSets {
-        main {
-            java {
-                srcDir 'src'
-            }
-        }
-    }
-
-    compileJava {
-        sourceCompatibility = 1.7
-        targetCompatibility = 1.7
-        options.encoding = "UTF-8"
-    }
-
-    jar {
-        archivesBaseName = 'forward'
-        manifest {
-            attributes(
-                    "Implementation-Title": project.name,
-                    "Implementation-Version": version,
-                    "Main-Class": "Forward",
-            )
-        }
-    }
-}
-
-// Backward
-project(":backward") {
-    buildDir = new File("../build")
-    version = rootProject.version
-
-    sourceSets {
-        main {
-            java {
-                srcDir 'src'
-            }
-        }
-    }
-
-    compileJava {
-        sourceCompatibility = 1.7
-        targetCompatibility = 1.7
-        options.encoding = "UTF-8"
-    }
-
-    jar {
-        archivesBaseName = 'backward'
-        manifest {
-            attributes(
-                    "Implementation-Title": project.name,
-                    "Implementation-Version": version,
-                    "Main-Class": "Backward",
-            )
-        }
     }
 }
