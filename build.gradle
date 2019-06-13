@@ -21,7 +21,7 @@ dependencies {
     implementation("com.google.inject:guice:4.0")
 
     // OpenCV
-    implementation(fileTree(dir: opencvProperties["libDir"], includes: ["*.jar"]))
+    implementation(fileTree(dir: opencvProperties["jarDir"], includes: ["*.jar"]))
 }
 
 compileJava {
