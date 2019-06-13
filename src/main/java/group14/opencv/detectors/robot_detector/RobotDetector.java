@@ -14,18 +14,18 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
 
     public static class Config {
         // Color 2 - Green
-        public AtomicInteger minRedColorGreen = new AtomicInteger(70);
+        public AtomicInteger minRedColorGreen = new AtomicInteger(69);
         public AtomicInteger maxRedColorGreen = new AtomicInteger(150);
-        public AtomicInteger minGreenColorGreen = new AtomicInteger(150);
+        public AtomicInteger minGreenColorGreen = new AtomicInteger(163);
         public AtomicInteger maxGreenColorGreen = new AtomicInteger(255);
-        public AtomicInteger minBlueColorGreen = new AtomicInteger(70);
+        public AtomicInteger minBlueColorGreen = new AtomicInteger(69);
         public AtomicInteger maxBlueColorGreen = new AtomicInteger(150);
 
         // Color 1 - Blue
         public AtomicInteger minRedColorBlue = new AtomicInteger(0);
         public AtomicInteger maxRedColorBlue = new AtomicInteger(130);
         public AtomicInteger minGreenColorBlue = new AtomicInteger(0);
-        public AtomicInteger maxGreenColorBlue = new AtomicInteger(130);
+        public AtomicInteger maxGreenColorBlue = new AtomicInteger(120);
         public AtomicInteger minBlueColorBlue = new AtomicInteger(160);
         public AtomicInteger maxBlueColorBlue = new AtomicInteger(255);
     }
