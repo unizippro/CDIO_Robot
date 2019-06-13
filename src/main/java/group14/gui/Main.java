@@ -61,6 +61,8 @@ public class Main {
     public Slider cornerMarginSlider;
     @FXML
     public ImageView imageRobot;
+    @FXML
+    public ImageView imageThreshBalls;
 
 
 //    private Timer timer = new Timer();
@@ -116,7 +118,7 @@ public class Main {
         this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
 
         if (Application.openCvLoaded) {
-            this.cameraController.start(0, 60);
+            this.cameraController.start(1, 60);
         }
     }
 
@@ -198,11 +200,15 @@ public class Main {
         var resultRobot = this.robotDetector.run(source);
         var imageRobot = this.cameraController.matToImageFX(resultRobot.getOutput());
 
+        var imageBallsThresh = this.cameraController.matToImageFX(resultBalls.getOutputThresh());
+
         Platform.runLater(() -> {
             this.image.setImage(imageSource);
             this.imageBalls.setImage(imageBalls);
             this.imageBoard.setImage(imageBoard);
             this.imageRobot.setImage(imageRobot);
+            this.imageThreshBalls.setImage(imageBallsThresh);
+
         });
     }
 
