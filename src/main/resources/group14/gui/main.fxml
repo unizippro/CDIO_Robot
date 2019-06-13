@@ -70,12 +70,10 @@
 
                                 <Label layoutX="757.0" layoutY="15.0" text="Blur size" />
                                 <Slider fx:id="blurSizeSlider" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="3" max="9" majorTickUnit="2" minorTickCount="0" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="85.0" text="Threshold amount" />
-                                <Slider fx:id="lowerThresholdSlider" layoutX="757.0" layoutY="105.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="145.0" text="Param 1" />
-                                <Slider fx:id="houghParam1" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="205.0" text="Param 2" />
-                                <Slider fx:id="houghParam2" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="85.0" text="Param 1" />
+                                <Slider fx:id="houghParam1" layoutX="757.0" layoutY="105.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="145.0" text="Param 2" />
+                                <Slider fx:id="houghParam2" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                             </children>
                         </AnchorPane>
                     </content>
@@ -115,6 +113,28 @@
                                            AnchorPane.topAnchor="35.0"
                                            fitHeight="480" fitWidth="600"
                                 />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Thresh Balls">
+                    <content>
+                        <AnchorPane>
+                            <children>
+                                <ImageView fx:id="imageThreshBalls"
+                                           style="-fx-background-color: rgb(0,41,52);"
+                                           pickOnBounds="true"
+                                           preserveRatio="true"
+                                           AnchorPane.bottomAnchor="35.0"
+                                           AnchorPane.leftAnchor="35.0"
+                                           AnchorPane.rightAnchor="35.0"
+                                           AnchorPane.topAnchor="35.0"
+                                           fitHeight="480" fitWidth="600"
+                                />
+
+                                <Label layoutX="757.0" layoutY="15.0" text="Threshold amount" />
+                                <Slider fx:id="lowerThresholdSlider" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+
                             </children>
                         </AnchorPane>
                     </content>
