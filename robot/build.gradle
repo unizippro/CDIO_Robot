@@ -6,7 +6,7 @@ group 'cdio'
 version '1.0-SNAPSHOT'
 
 ext {
-    ev3host = "192.168.2.6"
+    ev3host = "192.168.0.102"
     ev3user = "root"
     ev3pass = ""
 }

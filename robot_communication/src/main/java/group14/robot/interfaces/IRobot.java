@@ -7,4 +7,6 @@ public interface IRobot extends Remote {
     void start() throws RemoteException;
     void stop() throws RemoteException;
     void shutdown() throws RemoteException;
+    void playSound(String path) throws RemoteException;
+    void playMarch() throws RemoteException;
 }

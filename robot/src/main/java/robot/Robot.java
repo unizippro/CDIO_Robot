@@ -1,10 +1,12 @@
 package robot;
 
+import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import group14.robot.interfaces.IRobot;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
@@ -60,6 +62,19 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
     @Override
     public void shutdown() {
         this.shutdownTimer.schedule(this.shutdownApp, new Date(System.currentTimeMillis() + 1000 * SHUTDOWN_DELAY));
+    }
+
+    @Override
+    public void playSound(String path) throws RemoteException {
+        Sound.setVolume(Sound.VOL_MAX);
+        Sound.playSample(new File(path), 100);
+
+    }
+
+    @Override
+    public void playMarch() throws RemoteException {
+        Sound.setVolume(Sound.VOL_MAX);
+        Sound.playSample(new File("/home/lejos/sound/Imperial_March.wav"), 100);
     }
 
 
