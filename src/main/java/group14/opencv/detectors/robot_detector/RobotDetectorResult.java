@@ -3,6 +3,8 @@ package group14.opencv.detectors.robot_detector;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RobotDetectorResult {
@@ -38,5 +40,9 @@ public class RobotDetectorResult {
 
     public List<Point> getPointsBack() {
         return this.pointsBack;
+    }
+
+    public List<Point> getPoints() {
+        return new ArrayList<>(Arrays.asList(this.pointsFront.get(0), this.pointsBack.get(0)));
     }
 }
