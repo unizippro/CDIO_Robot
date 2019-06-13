@@ -17,4 +17,6 @@ public interface IController extends Remote {
     boolean gateIsOpen() throws RemoteException;
     boolean getVibStatus() throws RemoteException;
     boolean getFanStatus() throws RemoteException;
+
+    void deposit() throws RemoteException;
 }
