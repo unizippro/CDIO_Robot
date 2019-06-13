@@ -2,7 +2,7 @@ package group14;
 
 import lejos.hardware.BrickFinder;
 import lejos.hardware.BrickInfo;
-import robot.rmi_interfaces.IRobot;
+import group14.robot.interfaces.IRobot;
 
 import java.rmi.Naming;
 

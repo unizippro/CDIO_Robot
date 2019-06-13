@@ -4,7 +4,7 @@ import lejos.hardware.sensor.EV3IRSensor;
 import lejos.robotics.RangeFinder;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.AbstractFilter;
-import robot.rmi_interfaces.ISensors;
+import group14.robot.interfaces.ISensors;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

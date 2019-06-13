@@ -2,8 +2,8 @@ package group14.network;
 
 import lejos.hardware.BrickFinder;
 import lejos.hardware.BrickInfo;
-import robot.rmi_interfaces.IController;
-import robot.rmi_interfaces.IMovement;
+import group14.robot.interfaces.IController;
+import group14.robot.interfaces.IMovement;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;

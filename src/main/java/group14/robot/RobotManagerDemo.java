@@ -1,9 +1,10 @@
 package group14.robot;
 
+import group14.robot.data.Instruction;
 import lejos.hardware.BrickInfo;
-import robot.rmi_interfaces.IController;
-import robot.rmi_interfaces.IMovement;
-import robot.rmi_interfaces.ISensors;
+import group14.robot.interfaces.IController;
+import group14.robot.interfaces.IMovement;
+import group14.robot.interfaces.ISensors;
 
 import java.rmi.RemoteException;
 
@@ -40,6 +41,11 @@ public class RobotManagerDemo implements IRobotManager {
     @Override
     public IMovement getMovement() {
         return new IMovement() {
+            @Override
+            public void runInstruction(Instruction instruction) throws RemoteException {
+
+            }
+
             @Override
             public void forward() throws RemoteException {
 
