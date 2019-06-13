@@ -6,6 +6,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 
 import java.io.ByteArrayInputStream;
 import java.util.concurrent.Executors;
@@ -33,6 +34,9 @@ public class CameraController implements ICameraController {
         if (! this.camera.isOpened()) {
             throw new RuntimeException("Camera at index " + cameraIndex + " is not usable");
         }
+
+        this.camera.set(Videoio.CAP_PROP_FRAME_WIDTH, 1920);
+        this.camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, 1080);
 
         this.currentFuture = this.exec.scheduleAtFixedRate(() -> {
             Mat mat = new Mat();
