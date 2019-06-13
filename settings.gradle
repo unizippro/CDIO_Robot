@@ -1,4 +1,3 @@
 rootProject.name = 'cdio'
 
 include 'robot'
-include 'robot_communication'

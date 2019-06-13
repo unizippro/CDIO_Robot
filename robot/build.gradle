@@ -17,8 +17,6 @@ configurations {
 
 
 dependencies {
-    implementation project(":robot_communication")
-
     sshAntTask 'org.apache.ant:ant-jsch:1.10.5', 'jsch:jsch:0.1.29'
 }
 
