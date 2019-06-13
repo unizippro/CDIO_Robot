@@ -4,6 +4,7 @@ package group14;
 import group14.robot.RobotManager;
 import group14.robot.interfaces.IController;
 import group14.robot.interfaces.IMovement;
+import group14.robot.interfaces.IRobot;
 
 public class HardwareTest {
 
@@ -23,7 +24,9 @@ public class HardwareTest {
             //cont.fanOn();
             System.out.println("Start: ");
 
-            cont.gateCalibration(0, false);
+            robotManager.playSound("/home/lejos/sound/R2_beeping.wav");
+            System.out.println("End.");
+
             //cont.gateClose();
             //System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
             //Thread.sleep(delaytime);

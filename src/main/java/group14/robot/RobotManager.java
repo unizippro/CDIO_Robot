@@ -75,6 +75,30 @@ public class RobotManager implements IRobotManager {
         }
     }
 
+    public void playSound(String path){
+        if (this.robot == null) {
+            return;
+        }
+
+        try {
+            this.robot.playSound(path);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void playMarch(){
+        if (this.robot == null) {
+            return;
+        }
+
+        try {
+            this.robot.playMarch();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public IMovement getMovement() {
         if (this.brick == null) {
