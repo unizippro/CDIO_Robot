@@ -73,12 +73,27 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
 
 
         // Color 1 - blue
-        var frontPoints = this.getPointsWithColor(threshBlue, out);
+        var frontPoints = this.getPointsWithColor(threshBlue);
 
         // Color 2 - green
-        var backPoints = this.getPointsWithColor(threshGreen, out);
+        var backPoints = this.getPointsWithColor(threshGreen);
 
-        return new RobotDetectorResult(out, threshBlue, threshGreen, frontPoints, backPoints);
+        //front is index 0
+
+        Point front = null;
+        Point back = null;
+        if (! frontPoints.isEmpty() && ! backPoints.isEmpty()) {
+            front = frontPoints.get(0);
+            back = backPoints.get(0);
+
+            Imgproc.circle(out, front, 1, new Scalar(0, 100, 100), 3, 8, 0);
+            Imgproc.circle(out, front, 5, new Scalar(255, 0, 255), 3, 8, 0);
+
+            Imgproc.circle(out, back, 1, new Scalar(0, 100, 100), 3, 8, 0);
+            Imgproc.circle(out, back, 5, new Scalar(255, 0, 255), 3, 8, 0);
+        }
+
+        return new RobotDetectorResult(out, threshBlue, threshGreen, front, back);
     }
 
     @Override
@@ -86,10 +101,7 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         return new Config();
     }
 
-    private List<Point> getPointsWithColor(Mat frame, Mat out) {
-
-        //Core.inRange(frame, lower, upper, backgroundThresholdFrame);
-
+    private List<Point> getPointsWithColor(Mat frame) {
         //! [houghcircles]
         Mat circlesFrame = new Mat();
         Imgproc.HoughCircles(frame, circlesFrame, Imgproc.HOUGH_GRADIENT, 2, 10, 80, 34, 10, 40);
@@ -102,11 +114,6 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
             double[] c = circlesFrame.get(0, x);
             Point center = new Point(Math.round(c[0]), Math.round(c[1]));
             Point finalCenter = projectPoint(camHeight, robotFrontHeight, imgCenter, center);
-            // circle center
-            Imgproc.circle(out, finalCenter, 1, new Scalar(0, 100, 100), 3, 8, 0);
-            // circle outline
-            int radius = (int) Math.round(c[2]);
-            Imgproc.circle(out, finalCenter, radius, new Scalar(255, 0, 255), 3, 8, 0);
 
             points.add(finalCenter);
         }
