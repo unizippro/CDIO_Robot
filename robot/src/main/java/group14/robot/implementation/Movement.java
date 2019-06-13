@@ -1,4 +1,4 @@
-package robot;
+package group14.robot.implementation;
 
 import group14.robot.data.Instruction;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;

@@ -1,5 +1,5 @@
 import lejos.hardware.Sound;
-import robot.Robot;
+import group14.robot.implementation.Robot;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
