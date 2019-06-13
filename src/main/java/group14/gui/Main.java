@@ -116,7 +116,7 @@ public class Main {
         this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
 
         if (Application.openCvLoaded) {
-            this.cameraController.start(0, 60);
+            this.cameraController.start(1, 60);
         }
     }
 
