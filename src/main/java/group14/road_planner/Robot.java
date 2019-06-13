@@ -47,6 +47,7 @@ public class Robot {
         calcVector();
         calcRobotPositions();
         calcRotationalPoint();
+        calcBackPoint();
     }
 
     public Compas getCompas() {
