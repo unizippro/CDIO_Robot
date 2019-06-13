@@ -3,6 +3,7 @@ package group14.opencv.detectors.robot_detector;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RobotDetectorResult {
@@ -34,11 +35,15 @@ public class RobotDetectorResult {
     }
 
     public List<Point> getPoints() {
-        
-        robotPoints.add(pointsFront.get(0));
-        robotPoints.add(pointsBack.get(0));
+        if (!pointsBack.isEmpty() && !pointsFront.isEmpty()) {
 
+            this.robotPoints = new ArrayList<>();
+            robotPoints.add(pointsFront.get(0));
+            robotPoints.add(pointsBack.get(0));
+            return this.robotPoints;
+        }
         return this.robotPoints;
+
     }
 
     public Mat getOutputThreshBlue() {

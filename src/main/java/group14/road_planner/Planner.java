@@ -71,11 +71,12 @@ public class Planner {
      */
     private Instruction travelToNextSafePoint() {
         var exitSafePoint = this.roadController.getCurrentQuadrant().getExitSafePoint();
-        if (this.plannerHelper.isNearPoint(this.roadController.getRobot(), exitSafePoint)) {
-//            this.travelToNextQuadrant = false;
-            return this.travelToPoint(this.roadController.getNextQuadrant().getEntrySafePoint());
-        }
-        return this.travelOwnExitSafePoint();
+//        if (this.plannerHelper.isNearPoint(this.roadController.getRobot(), exitSafePoint)) {
+////            this.travelToNextQuadrant = false;
+//            return this.travelToPoint(this.roadController.getNextQuadrant().getEntrySafePoint());
+//        }
+//        return this.travelOwnExitSafePoint();
+        return this.travelToPoint(this.roadController.getNextQuadrant().getEntrySafePoint());
     }
 
     /**

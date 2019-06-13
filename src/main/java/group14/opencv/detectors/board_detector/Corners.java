@@ -4,6 +4,8 @@ import org.opencv.core.*;
 import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Corners {
@@ -61,6 +63,16 @@ public class Corners {
                 }
             }
         }
+    }
+
+    public List<Point> toList() {
+        List<Point> cornerList = new ArrayList<>();
+        cornerList.add(upperLeftPoint);
+        cornerList.add(upperRightPoint);
+        cornerList.add(lowerLeftPoint);
+        cornerList.add(lowerRightPoint);
+
+        return cornerList;
     }
 
     protected void draw(Mat image) {

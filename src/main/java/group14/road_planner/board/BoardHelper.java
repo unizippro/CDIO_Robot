@@ -78,6 +78,6 @@ public class BoardHelper {
             return 3;
         }
         //shouldnt happen
-        return -1;
+        return 2;
     }
 }
