@@ -2,6 +2,8 @@ package group14;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import group14.opencv.CameraController;
+import group14.opencv.ICameraController;
 import group14.robot.IRobotManager;
 import group14.robot.RobotManager;
 import group14.robot.RobotManagerDemo;
@@ -20,5 +22,7 @@ public class Container extends AbstractModule {
         } else {
             this.bind(IRobotManager.class).to(RobotManager.class).in(Singleton.class);
         }
+
+        this.bind(ICameraController.class).to(CameraController.class).in(Singleton.class);
     }
 }

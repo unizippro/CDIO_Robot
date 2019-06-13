@@ -1,12 +1,25 @@
 package group14;
 
+import group14.opencv.ICameraController;
 import javafx.stage.Stage;
+import org.opencv.core.Core;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 
 public class Application extends javafx.application.Application {
+    public static boolean openCvLoaded = false;
+
+    static {
+        try {
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            openCvLoaded = true;
+        } catch (UnsatisfiedLinkError error) {
+            System.out.println("OpenCV is not accessible");
+        }
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -33,5 +46,18 @@ public class Application extends javafx.application.Application {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+
+        SceneManager.getInstance()
+                .getInjector()
+                .getInstance(ICameraController.class)
+                .stop();
+
+        System.exit(0);
     }
 }
