@@ -79,6 +79,7 @@ public class Robot {
         calcVector();
         calcRobotPositions();
         calcRotationalPoint();
+        calcBackPoint();
     }
 
     public void calcCompas(Board board) {
