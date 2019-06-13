@@ -75,6 +75,11 @@ public class RobotManager implements IRobotManager {
         }
     }
 
+    /**
+     * Method plays a sound from a wav file
+     * Might hang.
+     * @param path - Recives a full path to a sound
+     */
     public void playSound(String path){
         if (this.robot == null) {
             return;

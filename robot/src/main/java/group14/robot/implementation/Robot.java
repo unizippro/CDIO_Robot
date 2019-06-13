@@ -1,10 +1,13 @@
 package group14.robot.implementation;
 
+import lejos.hardware.Audio;
 import lejos.hardware.Sound;
+import lejos.hardware.ev3.EV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import group14.robot.interfaces.IRobot;
+import lejos.remote.ev3.RemoteAudio;
 
 import java.io.File;
 import java.rmi.RemoteException;
@@ -30,6 +33,8 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
 
     private AtomicBoolean running = new AtomicBoolean(false);
     private Thread runningThread = null;
+    private Object soundSema = new Object();
+    private File soundFile;
 
 
     public Robot() throws RemoteException { }
@@ -64,29 +69,29 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
         this.shutdownTimer.schedule(this.shutdownApp, new Date(System.currentTimeMillis() + 1000 * SHUTDOWN_DELAY));
     }
 
+    /**
+     * Method plays a sound from a wav file
+     * Might hang.
+     * @param path - Recives a full path to a sound
+     */
     @Override
-    public void playSound(String path) throws RemoteException {
-        Sound.setVolume(Sound.VOL_MAX);
-        try {
-            System.out.print(".");
-            int i = Sound.playSample(new File(path), 100);
-            System.out.print(i);
-        } catch (Exception e){
-            System.err.println("File not found; Sound not played.");
-            e.printStackTrace();
-        }
-
+    synchronized public void playSound(String path) throws RemoteException {
+            Sound.setVolume(Sound.VOL_MAX);
+            try {
+                System.out.print(".");
+                soundFile = new File(path);
+                int i = Sound.playSample(soundFile, 100);
+                soundFile = null;
+                System.out.print(i);
+            } catch (Exception e) {
+                System.err.println("File not found; Sound not played.");
+                e.printStackTrace();
+            }
     }
 
     @Override
-    public void playMarch() throws RemoteException {
-        Sound.setVolume(Sound.VOL_MAX);
-        try{
-            Sound.playSample(new File("/home/lejos/sound/Imperial_March.wav"), 100);
-        } catch (Exception e){
-            System.err.println("File not found; Sound not played.");
-            e.printStackTrace();
-        }
+    synchronized public void playMarch() throws RemoteException {
+        this.playSound("/home/lejos/sound/Imperial_March.wav");
     }
 
 
