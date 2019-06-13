@@ -1,11 +1,6 @@
 package group14;
 
-import group14.movement_queue.ControllerController;
-import group14.movement_queue.MovementController;
 import group14.road_planner.*;
-import group14.road_planner.Robot;
-import group14.road_planner.board.SmartConverter;
-import robot.Controller;
 
 import java.awt.*;
 import java.util.ArrayList;
