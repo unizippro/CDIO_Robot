@@ -25,7 +25,9 @@ public class Robot {
     private Vector vector;
     private Compas compas;
     private Point front;
+    private Point back;
     private Point rotationalPoint;
+    private double distanceFromBackPointToRear = 5 * SmartConverter.getPixelsPerCm();
     private double distanceFromBackToFront = 29.5 * SmartConverter.getPixelsPerCm();
     private double distanceFromBackToRotational = 11 * SmartConverter.getPixelsPerCm();
 
@@ -44,7 +46,7 @@ public class Robot {
 //        calcMid();
         calcVector();
         calcRobotPositions();
-        calcPositionalPoint();
+        calcRotationalPoint();
     }
 
     public Compas getCompas() {
@@ -76,7 +78,7 @@ public class Robot {
         this.rearOpenCVPoint = back;
         calcVector();
         calcRobotPositions();
-        calcPositionalPoint();
+        calcRotationalPoint();
     }
 
     public void calcCompas(Board board) {
@@ -115,7 +117,7 @@ public class Robot {
         this.front = new Point((int) xPoint, (int) yPoint);
     }
 
-    private void calcPositionalPoint() {
+    private void calcRotationalPoint() {
         double angle = Math.atan2(this.frontOpenCVPoint.y - this.rearOpenCVPoint.y,
                 this.frontOpenCVPoint.x - this.rearOpenCVPoint.x);
         double xPoint = this.rearOpenCVPoint.x + this.distanceFromBackToRotational * Math.cos(angle);
@@ -136,6 +138,18 @@ public class Robot {
 
     public double getDistanceRotationalToFront() {
         return this.distanceFromBackToFront - this.distanceFromBackToRotational;
+    }
+
+    private void calcBackPoint() {
+        double angle = Math.atan2(this.rearOpenCVPoint.y - this.frontOpenCVPoint.y,
+                this.rearOpenCVPoint.x - this.frontOpenCVPoint.x);
+        double xPoint = this.rearOpenCVPoint.x + this.distanceFromBackPointToRear * Math.cos(angle);
+        double yPoint = this.rearOpenCVPoint.y + this.distanceFromBackPointToRear * Math.sin(angle);
+        this.back = new Point((int) xPoint, (int) yPoint);
+    }
+
+    public Point getBack() {
+        return this.back;
     }
 
 }
