@@ -65,4 +65,28 @@ public class PlannerHelper {
             return 1;
         }
     }
+
+    /**
+     * Checks if the distance from rotational point to wall is less than the distance from back to rotational.
+     * The robot will and should not turn if the distance from rotational point to back is more, as it will touch
+     * the wall
+     * @param robot
+     * @param board
+     * @return
+     */
+    public boolean safeToTurn(Robot robot, Board board) {
+        var distanceRotationalToBack = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getBack().x, robot.getBack().y);
+        var distanceToBoardSouth = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getRotationalPoint().x, board.getLowerLeft().y);
+        var distanceToBoardNorth = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getRotationalPoint().x, board.getUpperLeft().y);
+        var distanceToBoardEast = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, board.getLowerRight().x, robot.getRotationalPoint().y);
+        var distanceToBoardWest = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, board.getLowerLeft().x, robot.getRotationalPoint().y);
+        if (distanceRotationalToBack >= distanceToBoardEast &&
+            distanceRotationalToBack >= distanceToBoardNorth &&
+            distanceRotationalToBack >= distanceToBoardSouth &&
+            distanceRotationalToBack >= distanceToBoardWest) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

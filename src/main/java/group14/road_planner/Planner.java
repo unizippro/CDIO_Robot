@@ -46,7 +46,11 @@ public class Planner {
             depositPoint = new DepositPlanner().getSmallGoal(this.roadController.getBoard());
         }
         if (this.roadController.getBallsWithinArea().size() > 0) {
-            return this.travelToPoint(this.getClosestBall().getPos());
+            if (this.plannerHelper.safeToTurn(this.roadController.getRobot(), this.roadController.getBoard())){
+                return this.travelToPoint(this.getClosestBall().getPos());
+            } else {
+                return this.backOff();
+            }
         } else {
             return this.travelToNextSafePoint();
         }
@@ -183,6 +187,11 @@ public class Planner {
 //            // The ball is behind us
 //            return new Instruction(180, 0);  // turn 180 deg.
 //        }
+    }
+
+    private Instruction backOff() {
+        System.out.println("It is not safe to turn, I am backing off! \n Planner.java");
+        return new Instruction(0, -20);
     }
 
     /**
