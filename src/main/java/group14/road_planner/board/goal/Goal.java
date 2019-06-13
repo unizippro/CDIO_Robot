@@ -27,4 +27,15 @@ public class Goal  {
         this.goalPoint.y = board.getUpperLeft().y + (board.getLowerLeft().y - board.getUpperLeft().y) / 2;
     }
 
+    public void swapGoalType() {
+        if (getGoalType() == GoalType.SMALL) {
+            this.goalType = GoalType.LARGE;
+        } else {
+            this.goalType = GoalType.SMALL;
+        }
+    }
+
+    public Point getPos() {
+        return this.goalPoint;
+    }
 }
