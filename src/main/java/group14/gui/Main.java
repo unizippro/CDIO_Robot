@@ -65,6 +65,34 @@ public class Main {
     public ImageView imageRobot;
     @FXML
     public ImageView imageThreshBalls;
+    @FXML
+    public ImageView imageThreshRobotGreen;
+    @FXML
+    public ImageView imageThreshRobotBlue;
+    @FXML
+    public Slider rbgMinRedSliderGreen;
+    @FXML
+    public Slider rbgMaxRedSliderGreen;
+    @FXML
+    public Slider rbgMinBlueSliderGreen;
+    @FXML
+    public Slider rbgMaxBlueSliderGreen;
+    @FXML
+    public Slider rbgMinGreenSliderGreen;
+    @FXML
+    public Slider rbgMaxGreenSliderGreen;
+    @FXML
+    public Slider rbgMinRedSliderBlue;
+    @FXML
+    public Slider rbgMaxRedSliderBlue;
+    @FXML
+    public Slider rbgMinBlueSliderBlue;
+    @FXML
+    public Slider rbgMaxBlueSliderBlue;
+    @FXML
+    public Slider rbgMinGreenSliderBlue;
+    @FXML
+    public Slider rbgMaxGreenSliderBlue;
 
 
 //    private Timer timer = new Timer();
@@ -115,6 +143,24 @@ public class Main {
         this.lowerThresholdSlider.setValue(ballDetectorConfig.lowerThreshold.get());
         this.houghParam1.setValue(ballDetectorConfig.houghParam1.get());
         this.houghParam2.setValue(ballDetectorConfig.houghParam2.get());
+
+        var robotDetectorConfig = this.robotDetector.getConfig();
+
+        // Color 1 - Blue
+        this.rbgMinRedSliderBlue.setValue(robotDetectorConfig.minRedColorBlue.get());
+        this.rbgMaxRedSliderBlue.setValue(robotDetectorConfig.maxRedColorBlue.get());
+        this.rbgMinBlueSliderBlue.setValue(robotDetectorConfig.minGreenColorBlue.get());
+        this.rbgMaxBlueSliderBlue.setValue(robotDetectorConfig.maxGreenColorBlue.get());
+        this.rbgMinGreenSliderBlue.setValue(robotDetectorConfig.minBlueColorBlue.get());
+        this.rbgMaxGreenSliderBlue.setValue(robotDetectorConfig.maxBlueColorBlue.get());
+
+        // Color 2 - Green
+        this.rbgMinRedSliderGreen.setValue(robotDetectorConfig.minRedColorGreen.get());
+        this.rbgMaxRedSliderGreen.setValue(robotDetectorConfig.maxRedColorGreen.get());
+        this.rbgMinBlueSliderGreen.setValue(robotDetectorConfig.minGreenColorGreen.get());
+        this.rbgMaxBlueSliderGreen.setValue(robotDetectorConfig.maxGreenColorGreen.get());
+        this.rbgMinGreenSliderGreen.setValue(robotDetectorConfig.minBlueColorGreen.get());
+        this.rbgMaxGreenSliderGreen.setValue(robotDetectorConfig.maxBlueColorGreen.get());
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
@@ -203,13 +249,17 @@ public class Main {
 
         var imageBallsThresh = ImageConverter.matToImageFX(resultBalls.getOutputThresh());
 
+        var imageRobotThreshGreen = ImageConverter.matToImageFX(resultRobot.getOutputThreshGreen());
+        var imageRobotThreshBlue = ImageConverter.matToImageFX(resultRobot.getOutputThreshBlue());
+
         Platform.runLater(() -> {
             this.image.setImage(image);
             this.imageBalls.setImage(imageBalls);
             this.imageBoard.setImage(imageBoard);
             this.imageRobot.setImage(imageRobot);
             this.imageThreshBalls.setImage(imageBallsThresh);
-
+            this.imageThreshRobotGreen.setImage(imageRobotThreshGreen);
+            this.imageThreshRobotBlue.setImage(imageRobotThreshBlue);
         });
     }
 
