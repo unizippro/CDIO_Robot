@@ -2,10 +2,8 @@ package group14;
 
 
 import group14.robot.RobotManager;
-import robot.rmi_interfaces.IController;
-import robot.rmi_interfaces.IMovement;
-
-import java.io.File;
+import group14.robot.interfaces.IController;
+import group14.robot.interfaces.IMovement;
 
 public class HardwareTest {
 
