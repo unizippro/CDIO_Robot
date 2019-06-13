@@ -67,14 +67,26 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
     @Override
     public void playSound(String path) throws RemoteException {
         Sound.setVolume(Sound.VOL_MAX);
-        Sound.playSample(new File(path), 100);
+        try {
+            System.out.print(".");
+            int i = Sound.playSample(new File(path), 100);
+            System.out.print(i);
+        } catch (Exception e){
+            System.err.println("File not found; Sound not played.");
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     public void playMarch() throws RemoteException {
         Sound.setVolume(Sound.VOL_MAX);
-        Sound.playSample(new File("/home/lejos/sound/Imperial_March.wav"), 100);
+        try{
+            Sound.playSample(new File("/home/lejos/sound/Imperial_March.wav"), 100);
+        } catch (Exception e){
+            System.err.println("File not found; Sound not played.");
+            e.printStackTrace();
+        }
     }
 
 

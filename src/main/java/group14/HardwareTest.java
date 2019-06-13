@@ -4,6 +4,7 @@ package group14;
 import group14.robot.RobotManager;
 import group14.robot.interfaces.IController;
 import group14.robot.interfaces.IMovement;
+import group14.robot.interfaces.IRobot;
 
 public class HardwareTest {
 
