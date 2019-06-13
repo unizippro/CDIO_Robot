@@ -9,18 +9,26 @@ import group14.opencv.detectors.ball_detector.BallDetector;
 import group14.opencv.detectors.board_detector.BoardDetector;
 import group14.opencv.detectors.robot_detector.RobotDetector;
 import group14.opencv.utils.ImageConverter;
+import group14.road_planner.RoadController;
 import group14.robot.IRobotManager;
+import group14.robot.data.Instruction;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.opencv.core.Mat;
 
+import java.awt.Point;
+import java.rmi.RemoteException;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -31,6 +39,8 @@ public class Main {
     private BallDetector ballDetector = new BallDetector();
     private BoardDetector boardDetector = new BoardDetector();
     private RobotDetector robotDetector = new RobotDetector();
+    private RoadController roadController = new RoadController();
+    private boolean isInitialized = false;
 
 
     @FXML
@@ -280,6 +290,7 @@ public class Main {
 
         var imageThreshCorners = this.cameraController.matToImageFX(resultBoard.getBgrThresh());
 
+
         Platform.runLater(() -> {
             this.image.setImage(image);
             this.imageBalls.setImage(imageBalls);
@@ -291,6 +302,28 @@ public class Main {
             this.imageThreshCorners.setImage(imageThreshCorners);
 
         });
+
+        if (!isInitialized) {
+            List<Point> crossPoints = new ArrayList<>();
+            crossPoints.add(new Point(1920/2-200, 1080/2));
+            crossPoints.add(new Point(1920/2+200, 1080/2));
+            crossPoints.add(new Point(1920/2, 1080/2+100));
+            crossPoints.add(new Point(1920/2, 1080/2-100));
+
+            this.roadController.initialize(
+                    resultBoard.getCorners().toList().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
+                    resultBalls.getBalls().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
+                    crossPoints,
+                    //resultBoard.getCross().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
+                    resultRobot.getPoints().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList())
+            );
+
+            isInitialized = true;
+        }
+
+        this.roadController.updateRobot(resultRobot.getPoints().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
+        this.roadController.setBalls(resultBalls.getBalls().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
+
     }
 
     private void cameraCalibrationChanged(boolean canCalibrate) {
@@ -372,5 +405,27 @@ public class Main {
 
             return parts[parts.length - 1];
         }
+    }
+
+    @FXML
+    private void startRobotRun() {
+        new Thread(() -> {
+            while(this.roadController.getBalls().size() > 0 ){
+                System.out.println("robot: " + this.roadController.getRobot().getRotationalPoint());
+
+                System.out.println("lowerleft i kvadrant m robot: " + this.roadController.getCurrentQuadrant().getLowerLeft());
+
+                try {
+                    Instruction temp = this.roadController.getNextInstruction();
+                    Instruction ins = new Instruction(temp.getAngle(), temp.getDistance()/5) ;
+                    this.robotManager.getMovement().runInstruction(ins);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
+//        this.roadController.getNextInstruction();
     }
 }

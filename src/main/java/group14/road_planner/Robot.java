@@ -38,7 +38,6 @@ public class Robot {
         this.frontOpenCVPoint = robotPoints.get(0);
         this.rearOpenCVPoint = robotPoints.get(1);double angle = Math.atan2(this.frontOpenCVPoint.y - this.rearOpenCVPoint.y,
                 this.frontOpenCVPoint.x - this.rearOpenCVPoint.x);
-        System.out.println(Math.cos(angle));
         double xPoint = this.rearOpenCVPoint.x + this.distanceFromBackToFront * Math.cos(angle);
         double yPoint = this.rearOpenCVPoint.y + this.distanceFromBackToFront * Math.sin(angle);
         this.front = new Point((int) xPoint, (int) yPoint);
@@ -82,9 +81,6 @@ public class Robot {
 
     public void calcCompas(Board board) {
         double temp = Calculator.CALCULATE_ANGLE(this.getVector(), board.getxAxis());
-        System.out.println("The robot's direction is " + temp +
-                "\n-------------------------------------");
-
         if (temp <= 45 && temp >= -45) {
             this.setCompas(Robot.Compas.RIGHT);
         } else if (temp < 135 && temp > 45) {

@@ -100,10 +100,8 @@ public class RoadController {
         this.initializeBalls(ballList);
     }
 
-    public void updateRobot(Point pointFront, Point pointBack) {
-        this.robot.update(pointFront, pointBack);
-        //TODO update quadrant!
-        this.robot.calcCompas(this.getBoard());
+    public void updateRobot(List<Point> pointList) {
+        this.initializeRobot(pointList);
     }
 
     /**
