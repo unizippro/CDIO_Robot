@@ -7,11 +7,15 @@ import java.util.List;
 
 public class RobotDetectorResult {
     private Mat output;
+    private Mat outputThreshBlue;
+    private Mat outputThreshGreen;
     private List<Point> pointsFront;
     private List<Point> pointsBack;
 
-    RobotDetectorResult(Mat output, List<Point> pointsFront, List<Point> pointsBack) {
+    RobotDetectorResult(Mat output, Mat outputThreshBlue, Mat outputThreshGreen, List<Point> pointsFront, List<Point> pointsBack) {
         this.output = output;
+        this.outputThreshBlue = outputThreshBlue;
+        this.outputThreshGreen = outputThreshGreen;
         this.pointsFront = pointsFront;
         this.pointsBack = pointsBack;
     }
@@ -22,6 +26,14 @@ public class RobotDetectorResult {
 
     public List<Point> getPointsFront() {
         return this.pointsFront;
+    }
+
+    public Mat getOutputThreshBlue() {
+        return this.outputThreshBlue;
+    }
+
+    public Mat getOutputThreshGreen() {
+        return this.outputThreshGreen;
     }
 
     public List<Point> getPointsBack() {

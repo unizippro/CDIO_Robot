@@ -5,7 +5,9 @@ import javafx.scene.image.Image;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
+import org.opencv.highgui.*;
 
 import java.io.ByteArrayInputStream;
 import java.util.concurrent.Executors;
