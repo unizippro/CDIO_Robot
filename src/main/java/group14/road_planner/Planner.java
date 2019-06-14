@@ -3,6 +3,7 @@ package group14.road_planner;
 import group14.road_planner.ball.Ball;
 import group14.road_planner.board.Quadrant;
 import group14.road_planner.board.SafePointTravel;
+import group14.road_planner.board.SmartConverter;
 import group14.robot.data.Instruction;
 import group14.road_planner.deposit.DepositPlanner;
 
@@ -13,6 +14,8 @@ public class Planner {
     private RoadController roadController;
     private PlannerHelper plannerHelper = new PlannerHelper();
     private Point depositPoint;
+    private boolean travelledToDepositPoint = false;
+    private boolean readyToDeposit = false;
 
     public Planner(RoadController roadController) {
         this.roadController = roadController;
@@ -46,17 +49,17 @@ public class Planner {
 
         if (this.roadController.getBalls().size() == 0 || this.roadController.getBalls() == null) {
             System.out.println("Der er ingen bolde!");
-            if (this.roadController.getBoard().isWithinBoardSafeArea(robot.getFront())){
+            if (this.roadController.getBoard().isWithinBoardSafeArea(robot.getFront())) {
                 return this.travelToGoal();
             }
-           return this.backOff();
+            return this.backOff();
 //            depositPoint = new DepositPlanner().getSmallGoal(this.roadController.getBoard());
 
         }
         if (this.roadController.getBalls().size() > 0) {
 //          if (this.roadController.getBalls().size()>0) {
             System.out.println("Der er bolde i området!");
-            if (this.roadController.getBoard().isWithinBoardSafeArea(robot.getFront())){
+            if (this.roadController.getBoard().isWithinBoardSafeArea(robot.getFront())) {
                 System.out.println("Det er sikkert at dreje");
                 return this.travelToPoint(this.getClosestBall().getPos());
             } else {
@@ -265,9 +268,11 @@ public class Planner {
     private Instruction travelToQuadrant(Quadrant quadrant) {
         if (this.roadController.getCurrentQuadrant() != quadrant) {
             //Check quadrant jumps from robot.pos
-            switch(this.plannerHelper.goBackOrForward(this.roadController, quadrant)) {
-                case 0: return this.travelToPreviousSafePoint();
-                case 1: return this.travelToNextSafePoint();
+            switch (this.plannerHelper.goBackOrForward(this.roadController, quadrant)) {
+                case 0:
+                    return this.travelToPreviousSafePoint();
+                case 1:
+                    return this.travelToNextSafePoint();
             }
             return travelToNextSafePoint();
         }
@@ -276,11 +281,29 @@ public class Planner {
 
     private Instruction travelToGoal() {
         var smallGoal = this.roadController.getBoard().getGoals().get(0);
-        if (this.plannerHelper.robotWithinGoal(this.roadController.getRobot().getFront(), smallGoal.getGoalPoint())) {
-            Point p = new Point(smallGoal.getPos().x+100, smallGoal.getPos().y);
-            return this.travelToPoint(p);
+        if (this.readyToDeposit) {
+            this.roadController.readyToDeposit = true;
+            this.readyToDeposit = false;
+            return new Instruction(180, 0);
         }
-        return this.travelToPoint(this.roadController.getBoard().getGoals().get(0).getGoalPoint());
+        if (!this.travelledToDepositPoint) {
+            Point p = new Point(smallGoal.getPos().x + 30 * (int) SmartConverter.getPixelsPerCm(), smallGoal.getPos().y);
+            this.travelledToDepositPoint = true;
+            return this.travelToPoint(p);
+        } else {
+            Point p = new Point(smallGoal.getPos().x + 25 * (int) SmartConverter.getPixelsPerCm(), smallGoal.getPos().y);
+            this.travelledToDepositPoint = false;
+            this.readyToDeposit = true;
+            return this.travelToPoint(p);
+
+        }
+//        if (this.plannerHelper.robotWithinGoal(this.roadController.getRobot().getFront(), smallGoal.getGoalPoint())) {
+//            Point p = new Point(smallGoal.getPos().x+100, smallGoal.getPos().y);
+//            this.roadController.readyToDeposit = true;
+//            return this.travelToPoint(p);
+//
+//        }
+//        return this.travelToPoint(this.roadController.getBoard().getGoals().get(0).getGoalPoint());
     }
 
 }
