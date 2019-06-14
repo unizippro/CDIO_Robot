@@ -4,10 +4,11 @@ import com.google.inject.Inject;
 import group14.Application;
 import group14.Resources;
 import group14.gui.components.CoordinateSystem;
-import group14.opencv.ICameraController;
+import group14.opencv.Camera;
 import group14.opencv.detectors.ball_detector.BallDetector;
 import group14.opencv.detectors.board_detector.BoardDetector;
 import group14.opencv.detectors.robot_detector.RobotDetector;
+import group14.opencv.utils.ImageConverter;
 import group14.robot.IRobotManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -20,13 +21,15 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import org.opencv.core.Mat;
 
 import java.util.*;
 
 public class Main {
 
     private IRobotManager robotManager;
-    private ICameraController cameraController;
+
+    private Camera camera = new Camera(0);
 
     private BallDetector ballDetector = new BallDetector();
     private BoardDetector boardDetector = new BoardDetector();
@@ -83,10 +86,8 @@ public class Main {
 
 
     @Inject
-    public Main(IRobotManager robotManager, ICameraController cameraController) {
+    public Main(IRobotManager robotManager) {
         this.robotManager = robotManager;
-        this.cameraController = cameraController;
-        this.cameraController.addUpdateListener(this::cameraControllerUpdated);
     }
 
 
@@ -116,7 +117,7 @@ public class Main {
         this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
 
         if (Application.openCvLoaded) {
-            this.cameraController.start(1, 60);
+            this.camera.start(this::cameraFrameUpdated);
         }
     }
 
@@ -181,25 +182,24 @@ public class Main {
 
     @FXML
     public void onTestImageChanged(ActionEvent actionEvent) {
-        this.cameraController.stop();
-        this.cameraController.updateWithImage(((FileSelectItem) this.testImages.getValue()).filePath);
+//        this.camera.stop();
+//        this.camera.updateWithImage(((FileSelectItem) this.testImages.getValue()).filePath);
     }
 
-    private void cameraControllerUpdated() {
-        var source = this.cameraController.getSource();
-        var imageSource = this.cameraController.getSourceAsImageFX();
+    private void cameraFrameUpdated(Mat frame) {
+        var image = ImageConverter.matToImageFX(frame);
 
-        var resultBalls = this.ballDetector.run(source);
-        var imageBalls = this.cameraController.matToImageFX(resultBalls.getOutput());
+        var resultBalls = this.ballDetector.run(frame);
+        var imageBalls = ImageConverter.matToImageFX(resultBalls.getOutput());
 
-        var resultBoard = this.boardDetector.run(source);
-        var imageBoard = this.cameraController.matToImageFX(resultBoard.getOutput());
+        var resultBoard = this.boardDetector.run(frame);
+        var imageBoard = ImageConverter.matToImageFX(resultBoard.getOutput());
 
-        var resultRobot = this.robotDetector.run(source);
-        var imageRobot = this.cameraController.matToImageFX(resultRobot.getOutput());
+        var resultRobot = this.robotDetector.run(frame);
+        var imageRobot = ImageConverter.matToImageFX(resultRobot.getOutput());
 
         Platform.runLater(() -> {
-            this.image.setImage(imageSource);
+            this.image.setImage(image);
             this.imageBalls.setImage(imageBalls);
             this.imageBoard.setImage(imageBoard);
             this.imageRobot.setImage(imageRobot);
