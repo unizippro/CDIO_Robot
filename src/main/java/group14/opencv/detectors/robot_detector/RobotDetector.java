@@ -13,20 +13,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.Config> {
 
     public static class Config {
-        // Color 2 - Green
-        public AtomicInteger minRedColorGreen = new AtomicInteger(69);
-        public AtomicInteger maxRedColorGreen = new AtomicInteger(150);
-        public AtomicInteger minGreenColorGreen = new AtomicInteger(163);
-        public AtomicInteger maxGreenColorGreen = new AtomicInteger(255);
-        public AtomicInteger minBlueColorGreen = new AtomicInteger(69);
-        public AtomicInteger maxBlueColorGreen = new AtomicInteger(150);
+        // Color 2 - Light green
+        public AtomicInteger minRedColorGreen = new AtomicInteger(90);
+        public AtomicInteger maxRedColorGreen = new AtomicInteger(190);
 
-        // Color 1 - Blue
+        public AtomicInteger minGreenColorGreen = new AtomicInteger(205);
+        public AtomicInteger maxGreenColorGreen = new AtomicInteger(255);
+
+        public AtomicInteger minBlueColorGreen = new AtomicInteger(165);
+        public AtomicInteger maxBlueColorGreen = new AtomicInteger(255);
+
+        // Color 1 - Light blue
         public AtomicInteger minRedColorBlue = new AtomicInteger(0);
-        public AtomicInteger maxRedColorBlue = new AtomicInteger(130);
-        public AtomicInteger minGreenColorBlue = new AtomicInteger(0);
-        public AtomicInteger maxGreenColorBlue = new AtomicInteger(120);
-        public AtomicInteger minBlueColorBlue = new AtomicInteger(160);
+        public AtomicInteger maxRedColorBlue = new AtomicInteger(63);
+        public AtomicInteger minGreenColorBlue = new AtomicInteger(94);
+        public AtomicInteger maxGreenColorBlue = new AtomicInteger(255);
+        public AtomicInteger minBlueColorBlue = new AtomicInteger(157);
         public AtomicInteger maxBlueColorBlue = new AtomicInteger(255);
     }
 
