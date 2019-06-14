@@ -9,16 +9,20 @@ public class BoardDetectorResult {
     private Mat output;
     private Corners corners;
     private List<Point> cross;
+    private Mat bgrThresh;
 
-    BoardDetectorResult(Mat output, Corners corners, List<Point> cross) {
+    BoardDetectorResult(Mat output, Mat bgrThresh, Corners corners, List<Point> cross) {
         this.output = output;
         this.corners = corners;
         this.cross = cross;
+        this.bgrThresh = bgrThresh;
     }
 
     public Mat getOutput() {
         return this.output;
     }
+
+    public Mat getBgrThresh(){return this.bgrThresh;}
 
     public Corners getCorners() {
         return this.corners;
