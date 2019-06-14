@@ -7,7 +7,7 @@ import java.rmi.registry.LocateRegistry;
 
 
 public class Program {
-    private final String IP_ADDRESS = "192.168.0.102";
+    private final String IP_ADDRESS = "192.168.0.100";
     public static void main(String[] args) throws Exception {
 
         System.out.println("Robot starting");

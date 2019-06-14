@@ -75,18 +75,14 @@ public class PlannerHelper {
      * @return
      */
     public boolean safeToTurn(Robot robot, Board board) {
-        var distanceRotationalToBack = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getBack().x, robot.getBack().y);
-        var distanceToBoardSouth = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getRotationalPoint().x, board.getLowerLeft().y);
-        var distanceToBoardNorth = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getRotationalPoint().x, board.getUpperLeft().y);
-        var distanceToBoardEast = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, board.getLowerRight().x, robot.getRotationalPoint().y);
-        var distanceToBoardWest = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, board.getLowerLeft().x, robot.getRotationalPoint().y);
-        if (distanceRotationalToBack >= distanceToBoardEast &&
-            distanceRotationalToBack >= distanceToBoardNorth &&
-            distanceRotationalToBack >= distanceToBoardSouth &&
-            distanceRotationalToBack >= distanceToBoardWest) {
-            return false;
-        } else {
-            return true;
-        }
+        var distanceRotationalToBack = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getBack().x, robot.getBack().y)*10;
+        var distanceToBoardSouth = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getRotationalPoint().x, board.getLowerLeft().y)*3;
+        var distanceToBoardNorth = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getRotationalPoint().x, board.getUpperLeft().y)*3;
+        var distanceToBoardEast = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, board.getLowerRight().x, robot.getRotationalPoint().y)*3;
+        var distanceToBoardWest = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, board.getLowerLeft().x, robot.getRotationalPoint().y)*3;
+        return !(distanceRotationalToBack >= distanceToBoardEast) ||
+                !(distanceRotationalToBack>= distanceToBoardNorth) ||
+                !(distanceRotationalToBack>= distanceToBoardSouth) ||
+                !(distanceRotationalToBack>= distanceToBoardWest);
     }
 }
