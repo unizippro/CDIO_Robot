@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import group14.Application;
 import group14.Resources;
 import group14.gui.components.CoordinateSystem;
-import group14.opencv.Camera;
+import group14.opencv.CalibratedCamera;
 import group14.opencv.detectors.ball_detector.BallDetector;
 import group14.opencv.detectors.board_detector.BoardDetector;
 import group14.opencv.detectors.robot_detector.RobotDetector;
@@ -15,10 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.opencv.core.Mat;
@@ -29,7 +26,7 @@ public class Main {
 
     private IRobotManager robotManager;
 
-    private Camera camera = new Camera(0);
+    private CalibratedCamera camera = new CalibratedCamera(0, 7, 9);
 
     private BallDetector ballDetector = new BallDetector();
     private BoardDetector boardDetector = new BoardDetector();
@@ -48,6 +45,8 @@ public class Main {
     public CoordinateSystem plot;
     @FXML
     public ImageView image;
+    @FXML
+    public Button imageCalibrateSnapshot;
     @FXML
     public ImageView imageBalls;
     @FXML
@@ -88,6 +87,8 @@ public class Main {
     @Inject
     public Main(IRobotManager robotManager) {
         this.robotManager = robotManager;
+
+        this.camera.setCalibrationPossibleListener(this::cameraCalibrationChanged);
     }
 
 
@@ -206,6 +207,10 @@ public class Main {
         });
     }
 
+    private void cameraCalibrationChanged(boolean canCalibrate) {
+        this.imageCalibrateSnapshot.setDisable(! canCalibrate);
+    }
+
     public void setPoints(List<Point2D> points) {
         this.plot.clearPoints();
         points.forEach(coordinate -> this.plot.setPoint(coordinate));
@@ -233,6 +238,11 @@ public class Main {
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         boardDetectorConfig.cornerMarginPercentage.set(this.cornerMarginSlider.getValue());
+    }
+
+    @FXML
+    public void takeCalibrationSnapshot(MouseEvent mouseEvent) {
+        this.camera.saveCalibrationData();
     }
 
 
