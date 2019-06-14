@@ -19,14 +19,14 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         public AtomicInteger maxRedColorGreen = new AtomicInteger(150);
         public AtomicInteger minGreenColorGreen = new AtomicInteger(163);
         public AtomicInteger maxGreenColorGreen = new AtomicInteger(255);
-        public AtomicInteger minBlueColorGreen = new AtomicInteger(69);
-        public AtomicInteger maxBlueColorGreen = new AtomicInteger(150);
+        public AtomicInteger minBlueColorGreen = new AtomicInteger(150);
+        public AtomicInteger maxBlueColorGreen = new AtomicInteger(255);
 
         // Color 1 - Blue
         public AtomicInteger minRedColorBlue = new AtomicInteger(0);
-        public AtomicInteger maxRedColorBlue = new AtomicInteger(130);
-        public AtomicInteger minGreenColorBlue = new AtomicInteger(0);
-        public AtomicInteger maxGreenColorBlue = new AtomicInteger(120);
+        public AtomicInteger maxRedColorBlue = new AtomicInteger(75);
+        public AtomicInteger minGreenColorBlue = new AtomicInteger(70);
+        public AtomicInteger maxGreenColorBlue = new AtomicInteger(255);
         public AtomicInteger minBlueColorBlue = new AtomicInteger(160);
         public AtomicInteger maxBlueColorBlue = new AtomicInteger(255);
     }

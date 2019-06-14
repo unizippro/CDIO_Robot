@@ -367,8 +367,12 @@ public class Main {
                 if (this.roadController.readyToDeposit) {
                     try {
                         this.robotManager.getController().fanOff();
+                        Thread.sleep(500);
                         this.robotManager.getController().deposit();
+                        this.roadController.readyToDeposit = false;
                     } catch (RemoteException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }

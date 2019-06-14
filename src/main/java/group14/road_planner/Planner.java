@@ -149,19 +149,64 @@ public class Planner {
     private Instruction travelToGoal() {
         var smallGoal = this.roadController.getBoard().getGoals().get(0);
         if (this.readyToDeposit) {
-            this.roadController.readyToDeposit = true;
+
+            Instruction dist = this.travelToPoint(smallGoal.getGoalPoint());
+
+            //Transform to turn ass to goal
+            if (dist.getAngle() > 0){
+                dist = new Instruction(-180+dist.getAngle(), 0);
+            } else {
+                dist = new Instruction(180+dist.getAngle(), 0);
+            }
+
+
+            //Check angle to point. If too big turn
+            if ((dist.getAngle() > 7 && dist.getAngle() > 0) || (dist.getAngle() < -7 && dist.getAngle() < 0) ){
+
+                //never turn more than 20 deg
+                if (dist.getAngle() > 20 && dist.getAngle() >0 ){
+                    return new Instruction(20,0);
+                } else if (dist.getAngle() < -20 && dist.getAngle() < 0){
+                    return new Instruction(-20,0);
+                }
+
+                return new Instruction(dist.getAngle(), 0);
+            }
+
+
+            this.roadController.readyToDeposit = true;                              //This causes deposit
             this.readyToDeposit = false;
-            return new Instruction(180, 0);
+            return new Instruction(0, 0);
         }
+
         if (!this.travelledToDepositPoint) {
-            Point p = new Point(smallGoal.getPos().x + 30 * (int) SmartConverter.getPixelsPerCm(), smallGoal.getPos().y);
+            //Point p = new Point(smallGoal.getPos().x + 30 * (int) SmartConverter.getPixelsPerCm(), smallGoal.getPos().y);
+            Point p = new Point(495,523);
+
+            Instruction dist = this.travelToPoint(p);
+
+            if (dist.getDistance() > 35){
+                return dist;
+            }
+
+            System.out.println("Travel to point 1 complete!");
             this.travelledToDepositPoint = true;
-            return this.travelToPoint(p);
+            return new Instruction(0,0);
         } else {
-            Point p = new Point(smallGoal.getPos().x + 25 * (int) SmartConverter.getPixelsPerCm(), smallGoal.getPos().y);
+            //Point p = new Point(smallGoal.getPos().x + 25 * (int) SmartConverter.getPixelsPerCm(), smallGoal.getPos().y);
+            Point p = new Point(569,529);
+
+            Instruction dist = this.travelToPoint(p);
+
+            //Check distance to point
+            if (dist.getDistance() > 35){
+                return dist;
+            }
+            System.out.println("Travel to point 2 complete!");
+
             this.travelledToDepositPoint = false;
             this.readyToDeposit = true;
-            return this.travelToPoint(p);
+            return new Instruction(0,0);
 
         }
 //        if (this.plannerHelper.robotWithinGoal(this.roadController.getRobot().getFront(), smallGoal.getGoalPoint())) {
