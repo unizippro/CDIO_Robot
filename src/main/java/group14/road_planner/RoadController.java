@@ -18,6 +18,7 @@ import java.util.List;
  *
  */
 public class RoadController {
+    public boolean readyToDeposit = false;
     private List<Ball> balls = new ArrayList<>();
     private Board board = new Board();
     private Robot robot;

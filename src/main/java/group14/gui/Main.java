@@ -277,10 +277,10 @@ public class Main {
 
         if (!isInitialized) {
             List<Point> crossPoints = new ArrayList<>();
-            crossPoints.add(new Point(1920/2-200, 1080/2));
-            crossPoints.add(new Point(1920/2+200, 1080/2));
-            crossPoints.add(new Point(1920/2, 1080/2+100));
-            crossPoints.add(new Point(1920/2, 1080/2-100));
+            crossPoints.add(new Point(1920/2-70, 1080/2));
+            crossPoints.add(new Point(1920/2+70, 1080/2));
+            crossPoints.add(new Point(1920/2, 1080/2+70));
+            crossPoints.add(new Point(1920/2, 1080/2-70));
 
             this.roadController.initialize(
                     resultBoard.getCorners().toList().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
@@ -363,7 +363,15 @@ public class Main {
     @FXML
     private void startRobotRun() {
         new Thread(() -> {
-            while(this.roadController.getBalls().size() > 0 ){
+            while(this.roadController.getBalls().size() > -1 ){
+                if (this.roadController.readyToDeposit) {
+                    try {
+                        this.robotManager.getController().fanOff();
+                        this.robotManager.getController().deposit();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
                 System.out.println("robot: " + this.roadController.getRobot().getRotationalPoint());
 
                 System.out.println("lowerleft i kvadrant m robot: " + this.roadController.getCurrentQuadrant().getLowerLeft());
@@ -378,7 +386,5 @@ public class Main {
 
             }
         }).start();
-
-        this.roadController.getNextInstruction();
     }
 }

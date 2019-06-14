@@ -2,6 +2,7 @@ package group14.road_planner;
 
 import group14.road_planner.board.Board;
 import group14.road_planner.board.Quadrant;
+import group14.road_planner.board.SmartConverter;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -75,7 +76,7 @@ public class PlannerHelper {
      * @return
      */
     public boolean safeToTurn(Robot robot, Board board) {
-        var distanceRotationalToBack = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getBack().x, robot.getBack().y)*10;
+        var distanceRotationalToBack = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getBack().x, robot.getBack().y)*25;
         var distanceToBoardSouth = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getRotationalPoint().x, board.getLowerLeft().y)*3;
         var distanceToBoardNorth = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, robot.getRotationalPoint().x, board.getUpperLeft().y)*3;
         var distanceToBoardEast = Point2D.distance(robot.getRotationalPoint().x, robot.getRotationalPoint().y, board.getLowerRight().x, robot.getRotationalPoint().y)*3;
@@ -84,5 +85,12 @@ public class PlannerHelper {
                 !(distanceRotationalToBack>= distanceToBoardNorth) ||
                 !(distanceRotationalToBack>= distanceToBoardSouth) ||
                 !(distanceRotationalToBack>= distanceToBoardWest);
+    }
+
+    public boolean robotWithinGoal(Point robotFront, Point goalPoint) {
+        if (robotFront.y > (goalPoint.y - 5* SmartConverter.getPixelsPerCm()) && robotFront.y < (goalPoint.y + 5*SmartConverter.getPixelsPerCm())) {
+            return robotFront.x > goalPoint.x && robotFront.x < (goalPoint.x + 25 * SmartConverter.getPixelsPerCm());
+        }
+        return false;
     }
 }
