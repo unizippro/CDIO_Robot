@@ -102,20 +102,6 @@ public class Main {
     public Slider rbgMinGreenSliderBlue;
     @FXML
     public Slider rbgMaxGreenSliderBlue;
-    @FXML
-    public ImageView imageThreshCorners;
-    @FXML
-    public Slider rbgMinRedSliderCorners;
-    @FXML
-    public Slider rbgMaxRedSliderCorners;
-    @FXML
-    public Slider rbgMinBlueSliderCorners;
-    @FXML
-    public Slider rbgMaxBlueSliderCorners;
-    @FXML
-    public Slider rbgMinGreenSliderCorners;
-    @FXML
-    public Slider rbgMaxGreenSliderCorners;
 
 
 //    private Timer timer = new Timer();
@@ -188,12 +174,6 @@ public class Main {
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
-        this.rbgMinRedSliderCorners.setValue(boardDetectorConfig.minRed.get());
-        this.rbgMaxRedSliderCorners.setValue(boardDetectorConfig.maxRed.get());
-        this.rbgMinBlueSliderCorners.setValue(boardDetectorConfig.minBlue.get());
-        this.rbgMaxBlueSliderCorners.setValue(boardDetectorConfig.maxBlue.get());
-        this.rbgMinGreenSliderCorners.setValue(boardDetectorConfig.minGreen.get());
-        this.rbgMaxGreenSliderCorners.setValue(boardDetectorConfig.maxGreen.get());
 
         if (Application.openCvLoaded) {
             this.cameraController.start(1, 60);

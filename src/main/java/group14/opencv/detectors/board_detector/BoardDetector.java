@@ -3,7 +3,6 @@ package group14.opencv.detectors.board_detector;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import group14.opencv.detectors.Detector;
@@ -14,28 +13,22 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
 
     public static class Config {
         public AtomicDouble cornerMarginPercentage = new AtomicDouble(30);
-        public AtomicInteger minRed = new AtomicInteger(160);
-        public AtomicInteger maxRed = new AtomicInteger(255);
-        public AtomicInteger minGreen = new AtomicInteger(0);
-        public AtomicInteger maxGreen = new AtomicInteger(120);
-        public AtomicInteger minBlue = new AtomicInteger(0);
-        public AtomicInteger maxBlue = new AtomicInteger(120);
     }
 
-    //int minRed = 160;
-    //int minGreen = 0;
-    //int minBlue = 0;
-    //int maxRed = 255;
-    //int maxGreen = 120;
-    //int maxBlue = 120;
+    int minRed = 160;
+    int minGreen = 0;
+    int minBlue = 0;
+    int maxRed = 255;
+    int maxGreen = 120;
+    int maxBlue = 120;
 
     public BoardDetectorResult run(Mat src) {
         var out = new Mat();
         src.copyTo(out);
 
-        var config = this.getConfig();
-
-        var bgrThresh = this.threshold(src, new Scalar(config.minBlue.get(), config.minGreen.get(), config.minRed.get()), new Scalar(config.maxBlue.get(), config.maxGreen.get(), config.maxRed.get()));
+        //Bgrthresh overvejes hvis hsv ikke er tilstrækkeligt
+        Mat bgrThresh = new Mat();
+        Core.inRange(src, new Scalar(minBlue, minGreen, minRed), new Scalar(maxBlue, maxGreen, maxRed), bgrThresh);
 
         Mat dest = Mat.zeros(bgrThresh.size(), CvType.CV_8UC3);
         Mat destNorm = new Mat();
@@ -80,7 +73,7 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
         }
         Imgproc.rectangle(out, centerRect, new Scalar(255, 255, 0), 3);
 
-        return new BoardDetectorResult(out, bgrThresh, cornerPoints, finalCrossPointList);
+        return new BoardDetectorResult(out, cornerPoints, finalCrossPointList);
     }
 
     @Override
@@ -124,13 +117,6 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
         ySortedList.sort(Comparator.comparingInt(o -> (int) o.y));
 
         return ySortedList;
-    }
-
-    private Mat threshold(Mat src, Scalar lower, Scalar upper) {
-        Mat out = new Mat();
-        Core.inRange(src, lower, upper, out);
-
-        return out;
     }
 
 }

@@ -10,28 +10,28 @@ public class RobotDetectorResult {
     private Mat output;
     private Mat outputThreshBlue;
     private Mat outputThreshGreen;
+    private List<Point> pointsFront;
+    private List<Point> pointsBack;
+    private List<Point> robotPoints;
 
-    private Point pointFront;
-    private Point pointBack;
-
-    RobotDetectorResult(Mat output, Mat outputThreshBlue, Mat outputThreshGreen, Point pointFront, Point pointBack) {
+    RobotDetectorResult(Mat output, Mat outputThreshBlue, Mat outputThreshGreen, List<Point> pointsFront, List<Point> pointsBack) {
         this.output = output;
         this.outputThreshBlue = outputThreshBlue;
         this.outputThreshGreen = outputThreshGreen;
-        this.pointFront = pointFront;
-        this.pointBack = pointBack;
+        this.pointsFront = pointsFront;
+        this.pointsBack = pointsBack;
     }
 
     public Mat getOutput() {
         return this.output;
     }
 
-    public Point getPointFront() {
-        return this.pointFront;
+    public List<Point> getPointsFront() {
+        return this.pointsFront;
     }
 
-    public Point getPointBack() {
-        return this.pointBack;
+    public List<Point> getPointsBack() {
+        return this.pointsBack;
     }
 
     public List<Point> getPoints() {
