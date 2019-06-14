@@ -37,28 +37,33 @@ public class Planner {
 
     //TODO
     public Instruction nextInstruction() {
-//        var robot = this.roadController.getRobot();
+        var robot = this.roadController.getRobot();
 
         //ballsleft?
         //ballswithinarea?
-        System.out.println("Robotpos: " + this.roadController.getRobot().getFront());
+        System.out.println("Robotpos: " + robot.getFront());
         System.out.println("Robot quadrant: " + this.roadController.getQuadrants().indexOf(this.roadController.getCurrentQuadrant()));
 
-        if (this.roadController.getBalls().size() == 0) {
+        if (this.roadController.getBalls().size() == 0 || this.roadController.getBalls() == null) {
             System.out.println("Der er ingen bolde!");
-            depositPoint = new DepositPlanner().getSmallGoal(this.roadController.getBoard());
+            if (this.roadController.getBoard().isWithinBoardSafeArea(robot.getFront())){
+                return this.travelToGoal();
+            }
+           return this.backOff();
+//            depositPoint = new DepositPlanner().getSmallGoal(this.roadController.getBoard());
+
         }
-        //if (this.roadController.getBallsWithinArea().size() > 0) {
-          if (this.roadController.getBalls().size()>0) {
+        if (this.roadController.getBalls().size() > 0) {
+//          if (this.roadController.getBalls().size()>0) {
             System.out.println("Der er bolde i området!");
-            if (this.plannerHelper.safeToTurn(this.roadController.getRobot(), this.roadController.getBoard())){
+            if (this.roadController.getBoard().isWithinBoardSafeArea(robot.getFront())){
                 System.out.println("Det er sikkert at dreje");
                 return this.travelToPoint(this.getClosestBall().getPos());
             } else {
                 return this.backOff();
             }
         } else {
-            if (this.plannerHelper.safeToTurn(this.roadController.getRobot(), this.roadController.getBoard())) {
+            if (this.roadController.getBoard().isWithinBoardSafeArea(robot.getFront())) {
                 System.out.println("Det er sikkert at dreje til kvadrant");
                 return this.travelToNextSafePoint();
             } else {
@@ -267,6 +272,15 @@ public class Planner {
             return travelToNextSafePoint();
         }
         return null;
+    }
+
+    private Instruction travelToGoal() {
+        var smallGoal = this.roadController.getBoard().getGoals().get(0);
+        if (this.plannerHelper.robotWithinGoal(this.roadController.getRobot().getFront(), smallGoal.getGoalPoint())) {
+            Point p = new Point(smallGoal.getPos().x+100, smallGoal.getPos().y);
+            return this.travelToPoint(p);
+        }
+        return this.travelToPoint(this.roadController.getBoard().getGoals().get(0).getGoalPoint());
     }
 
 }

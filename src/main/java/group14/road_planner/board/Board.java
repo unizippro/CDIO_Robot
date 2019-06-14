@@ -19,9 +19,11 @@ public class Board {
      */
     private List<Point> corners = new ArrayList<>();
     private Vector xAxis;
+    private int safetyMargin = 10 * (int)SmartConverter.getPixelsPerCm();
     private List<Quadrant> quadrants = new ArrayList<>();
     private BoardHelper boardHelper = new BoardHelper();
     private int robotQuadrantPlacement;
+    private SafetyArea safetyArea;
     private List<Goal> goals = new ArrayList<>();
     public Board(List<Point> boardList) {
         this.update(boardList);
@@ -43,6 +45,16 @@ public class Board {
         this.assignPoints(boardList);
         new SmartConverter().calculateBoard(boardList);
         this.xAxis.update(this.corners.get(2), this.corners.get(3));
+        this.calcSafeArea();
+    }
+
+    private void calcSafeArea() {
+        Quadrant q = new Quadrant();
+        q.setUpperLeft(this.getUpperLeft());
+        q.setUpperRight(this.getUpperRight());
+        q.setLowerLeft(this.getLowerLeft());
+        q.setLowerRight(this.getLowerRight());
+        this.safetyArea = new SafetyArea(q);
     }
 
     private void assignPoints(List<Point> boardList) {
@@ -147,5 +159,9 @@ public class Board {
 
     public List<Goal> getGoals() {
         return this.goals;
+    }
+
+    public boolean isWithinBoardSafeArea(Point robotPoint) {
+        return this.safetyArea.isWithinSafetyArea(robotPoint);
     }
 }
