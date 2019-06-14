@@ -48,7 +48,7 @@ public class CameraController implements ICameraController {
                 try {
                     this.cameraUpdatedHandler.updated();
                 } catch (Exception e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
             }
         }, 0, 1000 / fps, TimeUnit.MILLISECONDS);

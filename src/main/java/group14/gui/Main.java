@@ -11,6 +11,7 @@ import group14.opencv.detectors.robot_detector.RobotDetector;
 import group14.road_planner.RoadController;
 import group14.road_planner.ball.Ball;
 import group14.road_planner.board.Quadrant;
+import group14.road_planner.board.SmartConverter;
 import group14.robot.IRobotManager;
 import group14.robot.data.Instruction;
 import group14.robot.implementation.Movement;
@@ -288,13 +289,12 @@ public class Main {
                     //resultBoard.getCross().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
                     resultRobot.getPoints().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList())
             );
-
+            new SmartConverter().calculateBoard(resultBoard.getCorners().toList().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
             isInitialized = true;
         }
 
         this.roadController.updateRobot(resultRobot.getPoints().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
         this.roadController.setBalls(resultBalls.getBalls().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
-
     }
 
     public void setPoints(List<Point2D> points) {
@@ -370,7 +370,7 @@ public class Main {
 
                 try {
                     Instruction temp = this.roadController.getNextInstruction();
-                    Instruction ins = new Instruction(temp.getAngle(), temp.getDistance()/5) ;
+                    Instruction ins = new Instruction(temp.getAngle(), temp.getDistance()/SmartConverter.getPixelsPerCm()) ;
                     this.robotManager.getMovement().runInstruction(ins);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -379,6 +379,6 @@ public class Main {
             }
         }).start();
 
-//        this.roadController.getNextInstruction();
+        this.roadController.getNextInstruction();
     }
 }

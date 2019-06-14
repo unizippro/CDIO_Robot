@@ -11,7 +11,6 @@ import java.awt.*;
 
 public class Planner {
     private RoadController roadController;
-    private boolean travelToNextQuadrant = false;
     private PlannerHelper plannerHelper = new PlannerHelper();
     private Point depositPoint;
 
@@ -21,7 +20,8 @@ public class Planner {
 
     private Ball getClosestBall() {
 
-        var balls = this.roadController.getBallsWithinArea();
+//        var balls = this.roadController.getBallsWithinArea();
+        var balls = this.roadController.getBalls();
         Ball max = balls.get(0);
         double minLength = Integer.MAX_VALUE;
         for (int i = 0; i < balls.size(); i++) {
@@ -41,18 +41,29 @@ public class Planner {
 
         //ballsleft?
         //ballswithinarea?
+        System.out.println("Robotpos: " + this.roadController.getRobot().getFront());
+        System.out.println("Robot quadrant: " + this.roadController.getQuadrants().indexOf(this.roadController.getCurrentQuadrant()));
 
         if (this.roadController.getBalls().size() == 0) {
+            System.out.println("Der er ingen bolde!");
             depositPoint = new DepositPlanner().getSmallGoal(this.roadController.getBoard());
         }
-        if (this.roadController.getBallsWithinArea().size() > 0) {
+        //if (this.roadController.getBallsWithinArea().size() > 0) {
+          if (this.roadController.getBalls().size()>0) {
+            System.out.println("Der er bolde i området!");
             if (this.plannerHelper.safeToTurn(this.roadController.getRobot(), this.roadController.getBoard())){
+                System.out.println("Det er sikkert at dreje");
                 return this.travelToPoint(this.getClosestBall().getPos());
             } else {
                 return this.backOff();
             }
         } else {
-            return this.travelToNextSafePoint();
+            if (this.plannerHelper.safeToTurn(this.roadController.getRobot(), this.roadController.getBoard())) {
+                System.out.println("Det er sikkert at dreje til kvadrant");
+                return this.travelToNextSafePoint();
+            } else {
+                return this.backOff();
+            }
         }
     }
 
@@ -109,7 +120,7 @@ public class Planner {
     }
 
     private Instruction travelOwnEntrySafePoint() {
-        this.travelToNextQuadrant = true;
+//        this.travelToNextQuadrant = true;
         return this.travelToPoint(this.roadController.getCurrentQuadrant().getEntrySafePoint());
     }
 
