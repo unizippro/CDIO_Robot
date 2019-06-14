@@ -97,6 +97,10 @@
 
                                 <Label layoutX="757.0" layoutY="15.0" text="Corner margin area (%)" />
                                 <Slider fx:id="cornerMarginSlider" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="10" max="50" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="85.0" text="blockSize slider" />
+                                <Slider fx:id="blockSizeSlider" layoutX="757.0" layoutY="105.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" max="13" minorTickCount="0" majorTickUnit="2" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="145.0" text="kSize slider" />
+                                <Slider fx:id="kSizeSlider" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" max="13" minorTickCount="0" majorTickUnit="2" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                             </children>
                         </AnchorPane>
                     </content>

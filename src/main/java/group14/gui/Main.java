@@ -107,6 +107,10 @@ public class Main {
     public Slider rbgMinGreenSliderCorners;
     @FXML
     public Slider rbgMaxGreenSliderCorners;
+    @FXML
+    public Slider blockSizeSlider;
+    @FXML
+    public Slider kSizeSlider;
 
 
 //    private Timer timer = new Timer();
@@ -178,6 +182,8 @@ public class Main {
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
+        this.blockSizeSlider.setValue(boardDetectorConfig.blockSize.get());
+        this.kSizeSlider.setValue(boardDetectorConfig.kSize.get());
         this.rbgMinRedSliderCorners.setValue(boardDetectorConfig.minRed.get());
         this.rbgMaxRedSliderCorners.setValue(boardDetectorConfig.maxRed.get());
         this.rbgMinBlueSliderCorners.setValue(boardDetectorConfig.minBlue.get());
@@ -318,6 +324,8 @@ public class Main {
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         boardDetectorConfig.cornerMarginPercentage.set(this.cornerMarginSlider.getValue());
+        boardDetectorConfig.blockSize.set((int) this.blockSizeSlider.getValue());
+        boardDetectorConfig.kSize.set((int) this.kSizeSlider.getValue());
 
         var robotDetector = this.robotDetector.getConfig();
         //Blue color sliders
@@ -335,6 +343,13 @@ public class Main {
         robotDetector.maxRedColorGreen.set((int) this.rbgMaxRedSliderGreen.getValue());
         robotDetector.maxGreenColorGreen.set((int) this.rbgMaxGreenSliderGreen.getValue());
         robotDetector.maxBlueColorGreen.set((int) this.rbgMaxBlueSliderGreen.getValue());
+
+        boardDetectorConfig.minRed.set((int) this.rbgMinRedSliderCorners.getValue());
+        boardDetectorConfig.maxRed.set((int) this.rbgMaxRedSliderCorners.getValue());
+        boardDetectorConfig.minBlue.set((int) this.rbgMinBlueSliderCorners.getValue());
+        boardDetectorConfig.maxBlue.set((int) this.rbgMaxBlueSliderCorners.getValue());
+        boardDetectorConfig.minGreen.set((int) this.rbgMinGreenSliderCorners.getValue());
+        boardDetectorConfig.maxGreen.set((int) this.rbgMaxGreenSliderCorners.getValue());
 
     }
 
