@@ -63,6 +63,54 @@ public class Main {
     public Slider cornerMarginSlider;
     @FXML
     public ImageView imageRobot;
+    @FXML
+    public ImageView imageThreshBalls;
+    @FXML
+    public ImageView imageThreshRobotGreen;
+    @FXML
+    public ImageView imageThreshRobotBlue;
+    @FXML
+    public Slider rbgMinRedSliderGreen;
+    @FXML
+    public Slider rbgMaxRedSliderGreen;
+    @FXML
+    public Slider rbgMinBlueSliderGreen;
+    @FXML
+    public Slider rbgMaxBlueSliderGreen;
+    @FXML
+    public Slider rbgMinGreenSliderGreen;
+    @FXML
+    public Slider rbgMaxGreenSliderGreen;
+    @FXML
+    public Slider rbgMinRedSliderBlue;
+    @FXML
+    public Slider rbgMaxRedSliderBlue;
+    @FXML
+    public Slider rbgMinBlueSliderBlue;
+    @FXML
+    public Slider rbgMaxBlueSliderBlue;
+    @FXML
+    public Slider rbgMinGreenSliderBlue;
+    @FXML
+    public Slider rbgMaxGreenSliderBlue;
+    @FXML
+    public ImageView imageThreshCorners;
+    @FXML
+    public Slider rbgMinRedSliderCorners;
+    @FXML
+    public Slider rbgMaxRedSliderCorners;
+    @FXML
+    public Slider rbgMinBlueSliderCorners;
+    @FXML
+    public Slider rbgMaxBlueSliderCorners;
+    @FXML
+    public Slider rbgMinGreenSliderCorners;
+    @FXML
+    public Slider rbgMaxGreenSliderCorners;
+    @FXML
+    public Slider blockSizeSlider;
+    @FXML
+    public Slider kSizeSlider;
 
 
 //    private Timer timer = new Timer();
@@ -114,8 +162,34 @@ public class Main {
         this.houghParam1.setValue(ballDetectorConfig.houghParam1.get());
         this.houghParam2.setValue(ballDetectorConfig.houghParam2.get());
 
+        var robotDetectorConfig = this.robotDetector.getConfig();
+
+        // Color 1 - Blue
+        this.rbgMinRedSliderBlue.setValue(robotDetectorConfig.minRedColorBlue.get());
+        this.rbgMaxRedSliderBlue.setValue(robotDetectorConfig.maxRedColorBlue.get());
+        this.rbgMinGreenSliderBlue.setValue(robotDetectorConfig.minGreenColorBlue.get());
+        this.rbgMaxGreenSliderBlue.setValue(robotDetectorConfig.maxGreenColorBlue.get());
+        this.rbgMinBlueSliderBlue.setValue(robotDetectorConfig.minBlueColorBlue.get());
+        this.rbgMaxBlueSliderBlue.setValue(robotDetectorConfig.maxBlueColorBlue.get());
+
+        // Color 2 - Green
+        this.rbgMinRedSliderGreen.setValue(robotDetectorConfig.minRedColorGreen.get());
+        this.rbgMaxRedSliderGreen.setValue(robotDetectorConfig.maxRedColorGreen.get());
+        this.rbgMinBlueSliderGreen.setValue(robotDetectorConfig.minBlueColorGreen.get());
+        this.rbgMaxBlueSliderGreen.setValue(robotDetectorConfig.maxBlueColorGreen.get());
+        this.rbgMinGreenSliderGreen.setValue(robotDetectorConfig.minGreenColorGreen.get());
+        this.rbgMaxGreenSliderGreen.setValue(robotDetectorConfig.maxGreenColorGreen.get());
+
         var boardDetectorConfig = this.boardDetector.getConfig();
         this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
+        this.blockSizeSlider.setValue(boardDetectorConfig.blockSize.get());
+        this.kSizeSlider.setValue(boardDetectorConfig.kSize.get());
+        this.rbgMinRedSliderCorners.setValue(boardDetectorConfig.minRed.get());
+        this.rbgMaxRedSliderCorners.setValue(boardDetectorConfig.maxRed.get());
+        this.rbgMinBlueSliderCorners.setValue(boardDetectorConfig.minBlue.get());
+        this.rbgMaxBlueSliderCorners.setValue(boardDetectorConfig.maxBlue.get());
+        this.rbgMinGreenSliderCorners.setValue(boardDetectorConfig.minGreen.get());
+        this.rbgMaxGreenSliderCorners.setValue(boardDetectorConfig.maxGreen.get());
 
         if (Application.openCvLoaded) {
             this.camera.start(this::cameraFrameUpdated);
@@ -199,11 +273,23 @@ public class Main {
         var resultRobot = this.robotDetector.run(frame);
         var imageRobot = ImageConverter.matToImageFX(resultRobot.getOutput());
 
+        var imageBallsThresh = ImageConverter.matToImageFX(resultBalls.getOutputThresh());
+
+        var imageRobotThreshGreen = ImageConverter.matToImageFX(resultRobot.getOutputThreshGreen());
+        var imageRobotThreshBlue = ImageConverter.matToImageFX(resultRobot.getOutputThreshBlue());
+
+        var imageThreshCorners = this.cameraController.matToImageFX(resultBoard.getBgrThresh());
+
         Platform.runLater(() -> {
             this.image.setImage(image);
             this.imageBalls.setImage(imageBalls);
             this.imageBoard.setImage(imageBoard);
             this.imageRobot.setImage(imageRobot);
+            this.imageThreshBalls.setImage(imageBallsThresh);
+            this.imageThreshRobotGreen.setImage(imageRobotThreshGreen);
+            this.imageThreshRobotBlue.setImage(imageRobotThreshBlue);
+            this.imageThreshCorners.setImage(imageThreshCorners);
+
         });
     }
 
@@ -238,6 +324,33 @@ public class Main {
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         boardDetectorConfig.cornerMarginPercentage.set(this.cornerMarginSlider.getValue());
+        boardDetectorConfig.blockSize.set((int) this.blockSizeSlider.getValue());
+        boardDetectorConfig.kSize.set((int) this.kSizeSlider.getValue());
+
+        var robotDetector = this.robotDetector.getConfig();
+        //Blue color sliders
+        robotDetector.minRedColorBlue.set((int) this.rbgMinRedSliderBlue.getValue());
+        robotDetector.minGreenColorBlue.set((int) this.rbgMinGreenSliderBlue.getValue());
+        robotDetector.minBlueColorBlue.set((int) this.rbgMinBlueSliderBlue.getValue());
+        robotDetector.maxRedColorBlue.set((int) this.rbgMaxRedSliderBlue.getValue());
+        robotDetector.maxGreenColorBlue.set((int) this.rbgMaxGreenSliderBlue.getValue());
+        robotDetector.maxBlueColorBlue.set((int) this.rbgMaxBlueSliderBlue.getValue());
+
+        //Green color sliders
+        robotDetector.minRedColorGreen.set((int) this.rbgMinRedSliderGreen.getValue());
+        robotDetector.minGreenColorGreen.set((int) this.rbgMinGreenSliderGreen.getValue());
+        robotDetector.minBlueColorGreen.set((int) this.rbgMinBlueSliderGreen.getValue());
+        robotDetector.maxRedColorGreen.set((int) this.rbgMaxRedSliderGreen.getValue());
+        robotDetector.maxGreenColorGreen.set((int) this.rbgMaxGreenSliderGreen.getValue());
+        robotDetector.maxBlueColorGreen.set((int) this.rbgMaxBlueSliderGreen.getValue());
+
+        boardDetectorConfig.minRed.set((int) this.rbgMinRedSliderCorners.getValue());
+        boardDetectorConfig.maxRed.set((int) this.rbgMaxRedSliderCorners.getValue());
+        boardDetectorConfig.minBlue.set((int) this.rbgMinBlueSliderCorners.getValue());
+        boardDetectorConfig.maxBlue.set((int) this.rbgMaxBlueSliderCorners.getValue());
+        boardDetectorConfig.minGreen.set((int) this.rbgMinGreenSliderCorners.getValue());
+        boardDetectorConfig.maxGreen.set((int) this.rbgMaxGreenSliderCorners.getValue());
+
     }
 
     @FXML
