@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.List;
 
 public class SafetyArea {
-    private int safetyMargin = 10 * (int)SmartConverter.getPixelsPerCm();
+    private int safetyMargin = 16 * (int)SmartConverter.getPixelsPerCm();  // ~16 cm safety margin.
     private Point upperLeft;
     private Point upperRight;
     private Point lowerLeft;
