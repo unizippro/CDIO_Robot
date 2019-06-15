@@ -87,4 +87,28 @@ public class Controller extends UnicastRemoteObject implements IController {
     public boolean getFanStatus() {
         return fanRunning.get();
     }
+
+    @Override
+    public void deposit() throws RemoteException {
+        int delaytime = 7500;
+        this.gateOpen();
+        this.vibOn();
+
+        try {
+            Thread.sleep(delaytime/4);
+            this.vibOff();
+            Thread.sleep(delaytime/2);
+            this.vibOn();
+            Thread.sleep(delaytime/4);
+            this.vibOff();
+            Thread.sleep(delaytime/2);
+
+
+            //this.vibOff();
+            this.gateClose();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

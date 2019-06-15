@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.List;
 
 public class SafetyArea {
-    private int safetyMargin = 10;
+    private int safetyMargin = 16 * (int)SmartConverter.getPixelsPerCm();  // ~16 cm safety margin.
     private Point upperLeft;
     private Point upperRight;
     private Point lowerLeft;
@@ -47,6 +47,11 @@ public class SafetyArea {
     public void updateSafetyMargins(int margin) {
         this.safetyMargin = margin;
         this.initialize();
+    }
+
+    public boolean isWithinSafetyArea(Point robotPoint) {
+        return robotPoint.x >= this.lowerLeft.x && robotPoint.x <= this.lowerRight.x &&
+                robotPoint.y >= this.upperLeft.y && robotPoint.y <= this.lowerLeft.y;
     }
 
 }

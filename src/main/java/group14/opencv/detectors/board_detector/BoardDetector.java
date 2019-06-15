@@ -87,8 +87,8 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
         for (Point point : finalCrossPointList) {
             Imgproc.circle(out, point, 5, new Scalar(0), 2, 8, 0);
         }
-        Imgproc.rectangle(out, new Point(finalCrossPointList.get(0).x, finalCrossPointList.get(2).y), new Point(finalCrossPointList.get(1).x, finalCrossPointList.get(3).y), new Scalar(0));
-        Imgproc.rectangle(out, centerRect, new Scalar(255, 255, 0), 3);
+//        Imgproc.rectangle(out, new Point(finalCrossPointList.get(0).x, finalCrossPointList.get(2).y), new Point(finalCrossPointList.get(1).x, finalCrossPointList.get(3).y), new Scalar(0));
+//        Imgproc.rectangle(out, centerRect, new Scalar(255, 255, 0), 3);
 
         return new BoardDetectorResult(out, bgrThresh, cornerPoints, finalCrossPointList);
     }

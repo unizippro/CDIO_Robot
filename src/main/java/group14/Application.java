@@ -17,6 +17,7 @@ public class Application extends javafx.application.Application {
             openCvLoaded = true;
         } catch (UnsatisfiedLinkError error) {
             System.out.println("OpenCV is not accessible");
+            error.printStackTrace();
         }
     }
 

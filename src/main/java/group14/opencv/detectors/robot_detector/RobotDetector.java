@@ -3,6 +3,7 @@ package group14.opencv.detectors.robot_detector;
 import com.google.common.util.concurrent.AtomicDouble;
 import group14.opencv.detectors.Detector;
 import group14.opencv.utils.ImageProcessUtils;
+import group14.road_planner.board.SmartConverter;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
@@ -32,7 +33,7 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         public AtomicInteger maxBlueColorBlue = new AtomicInteger(255);
     }
 
-    double camHeight = 165;
+    double camHeight = 180;
     double robotFrontHeight = 28;
     double robotBackHeight = 27;
 
@@ -125,8 +126,8 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
 
     private Point projectPoint(double camHeight, double objectHeight, Point centerPoint, Point projectPoint) {
         //Camheight og objectHeight er angviet i pixel så de konverteres
-        camHeight = camHeight*2.8;
-        objectHeight = objectHeight*2.8;
+        camHeight = camHeight* 7.2;
+        objectHeight = objectHeight*7.2;
 
         double grundLinje = Math.sqrt(Math.pow(centerPoint.x-projectPoint.x, 2)+ Math.pow(centerPoint.y-projectPoint.y, 2));
         double vinkelProjectPoint = Math.toDegrees(Math.asin(camHeight/(Math.sqrt(Math.pow(camHeight, 2)+Math.pow(grundLinje, 2)))));

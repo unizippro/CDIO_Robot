@@ -150,6 +150,11 @@ public class RobotManagerDemo implements IRobotManager {
             public boolean getFanStatus() throws RemoteException {
                 return false;
             }
+
+            @Override
+            public void deposit() throws RemoteException {
+
+            }
         };
     }
 }

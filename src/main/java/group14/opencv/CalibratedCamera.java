@@ -80,7 +80,7 @@ public class CalibratedCamera extends Camera {
             this.imagePoints.add(imageCorners);
             this.objectPoints.add(this.objects);
 
-            this.numberOfCalibrations++;
+            this.numberOfSuccess++;
         } else {
             this.intrinsic.put(0, 0, 1);
             this.intrinsic.put(1, 1, 1);

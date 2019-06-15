@@ -23,7 +23,7 @@ public class HardwareTest {
             //cont.fanOn();
             System.out.println("Start: ");
 
-            cont.gateCalibration(0, false);
+            cont.deposit();
             //cont.gateClose();
             //System.out.println("Gate: " + cont.gateIsOpen() +"\n\tFan: "+ cont.getFanStatus() + "\n\tVibe: " + cont.getVibStatus());
             //Thread.sleep(delaytime);

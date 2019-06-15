@@ -9,28 +9,40 @@ import group14.opencv.detectors.ball_detector.BallDetector;
 import group14.opencv.detectors.board_detector.BoardDetector;
 import group14.opencv.detectors.robot_detector.RobotDetector;
 import group14.opencv.utils.ImageConverter;
+import group14.road_planner.RoadController;
+import group14.road_planner.board.SmartConverter;
 import group14.robot.IRobotManager;
+import group14.robot.data.Instruction;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.opencv.core.Mat;
 
+import java.awt.Point;
+import java.rmi.RemoteException;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
 
     private IRobotManager robotManager;
 
-    private CalibratedCamera camera = new CalibratedCamera(0, 7, 9);
+    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
 
     private BallDetector ballDetector = new BallDetector();
     private BoardDetector boardDetector = new BoardDetector();
     private RobotDetector robotDetector = new RobotDetector();
+    private RoadController roadController = new RoadController();
+    private boolean isInitialized = false;
 
 
     @FXML
@@ -278,7 +290,8 @@ public class Main {
         var imageRobotThreshGreen = ImageConverter.matToImageFX(resultRobot.getOutputThreshGreen());
         var imageRobotThreshBlue = ImageConverter.matToImageFX(resultRobot.getOutputThreshBlue());
 
-        var imageThreshCorners = this.cameraController.matToImageFX(resultBoard.getBgrThresh());
+        var imageThreshCorners = ImageConverter.matToImageFX(resultBoard.getBgrThresh());
+
 
         Platform.runLater(() -> {
             this.image.setImage(image);
@@ -291,6 +304,35 @@ public class Main {
             this.imageThreshCorners.setImage(imageThreshCorners);
 
         });
+
+        var balls = resultBalls.getBalls().stream()
+                .map(point -> new java.awt.Point((int)point.x, (int)point.y))
+                .collect(Collectors.toList());
+
+        var robotPosition = Stream.of(resultRobot.getPointFront(), resultRobot.getPointBack())
+                .map(point -> new java.awt.Point((int)point.x, (int)point.y))
+                .collect(Collectors.toList());
+
+        if (!isInitialized) {
+            List<Point> crossPoints = new ArrayList<>();
+            crossPoints.add(new Point(1920/2-70, 1080/2));
+            crossPoints.add(new Point(1920/2+70, 1080/2));
+            crossPoints.add(new Point(1920/2, 1080/2+70));
+            crossPoints.add(new Point(1920/2, 1080/2-70));
+
+            this.roadController.initialize(
+                    resultBoard.getCorners().toList().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
+                    balls,
+                    crossPoints,
+                    //resultBoard.getCross().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
+                    robotPosition
+            );
+            new SmartConverter().calculateBoard(resultBoard.getCorners().toList().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
+            isInitialized = true;
+        }
+
+        this.roadController.updateRobot(robotPosition);
+        this.roadController.setBalls(balls);
     }
 
     private void cameraCalibrationChanged(boolean canCalibrate) {
@@ -372,5 +414,34 @@ public class Main {
 
             return parts[parts.length - 1];
         }
+    }
+
+    @FXML
+    private void startRobotRun() {
+        new Thread(() -> {
+            while(this.roadController.getBalls().size() > -1 ){
+                if (this.roadController.readyToDeposit) {
+                    try {
+                        this.robotManager.getController().fanOff();
+                        this.robotManager.getController().deposit();
+                        this.roadController.readyToDeposit = false;
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println("robot: " + this.roadController.getRobot().getRotationalPoint());
+
+                System.out.println("lowerleft i kvadrant m robot: " + this.roadController.getCurrentQuadrant().getLowerLeft());
+
+                try {
+                    Instruction temp = this.roadController.getNextInstruction();
+                    Instruction ins = new Instruction(temp.getAngle(), temp.getDistance()/(SmartConverter.getPixelsPerCm())) ;
+                    this.robotManager.getMovement().runInstruction(ins);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
     }
 }
