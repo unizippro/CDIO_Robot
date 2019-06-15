@@ -33,27 +33,28 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
         var points = new ArrayList<Point>();
         var out = new Mat();
         src.copyTo(out);
-
+        Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(circle, circle),
+                new Point(circle/2, circle/2));
         var config = this.getConfig();
 
         //var otsu = Imgproc.T
 
         //Imgproc.Canny(srcBlur, detectedEdges, lowThresh, lowThresh * RATIO, KERNEL_SIZE, false);
 
-        Imgproc.threshold(src, src, 210, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C);
+        Imgproc.threshold(src, src, 180, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C);
+        //Imgproc.threshold(src, src, 200, 255, 0);
         Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2GRAY );
-        Imgproc.GaussianBlur(src, src, new Size(7, 7), 0);
-        Imgproc.Canny(src,src,300,300);
-
-        Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(circle, circle),
-                new Point(circle/2, circle/2));
-        Imgproc.dilate(src, src, element);
-        Imgproc.erode(src, src, element);
+        //Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2HSV );
+        Imgproc.GaussianBlur(src, src, new Size(9, 9), 0);
+        Imgproc.threshold(src, src, 200, 255, Imgproc.THRESH_BINARY);
+        //Imgproc.Canny(src,src,300,300);
+        //Imgproc.dilate(src, src, element);
+        //Imgproc.erode(src, src, element);
 
         List<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(src, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        System.out.println(contours.get(0).toString());
+        //System.out.println(contours.get(0).toString());
 
         /* Tegner Kanter
         Mat drawing = Mat.zeros(src.size(), CvType.CV_8UC3);
@@ -64,14 +65,6 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
         */
 
 
-
-        //Blur mat to better define objects
-        //var blurred = ImageProcessUtils.blur(src, config.blurSize.get());
-
-        //Set threshold
-        //var thresh = this.threshold(blurred, config.lowerThreshold.get(), 255);
-
-        //! [houghcircles]
         Mat circles = new Mat();
         Imgproc.HoughCircles(src, circles, Imgproc.HOUGH_GRADIENT, config.houghDp.get(), config.houghMinDist.get(), config.houghParam1.get(), config.houghParam2.get(), config.houghMinRadius.get(), config.houghMaxRadius.get());
 
@@ -88,6 +81,7 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
             int radius = (int) Math.round(c[2]);
             Imgproc.circle(out, center, radius, new Scalar(255, 0, 255), 3, 8, 0);
         }
+
         //! [draw]
 
 
