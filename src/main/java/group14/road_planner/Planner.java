@@ -236,15 +236,7 @@ public class Planner {
     }
 
     private Instruction travelToPhantomPoint(Point travelToPoint) {
-        switch(this.plannerHelper.safetyAreaViolation(this.roadController.getRobot(), travelToPoint, this.roadController.getCurrentQuadrant())) {
-            case 0: return this.travelToPoint(new Point(travelToPoint.x + 20 * (int)SmartConverter.getPixelsPerCm(), travelToPoint.y));
-            case 1: return this.travelToPoint(new Point(travelToPoint.x, travelToPoint.y + 20 * (int)SmartConverter.getPixelsPerCm()));
-            case 2: return this.travelToPoint(new Point(travelToPoint.x - 20 * (int)SmartConverter.getPixelsPerCm(), travelToPoint.y));
-            case 3: return this.travelToPoint(new Point(travelToPoint.x, travelToPoint.y - 20 * (int)SmartConverter.getPixelsPerCm()));
-            case 4: return this.travelToPoint(travelToPoint);
-        }
-
-        return this.travelToPoint(travelToPoint);
+        return this.travelToPoint(this.plannerHelper.safetyAreaViolation(this.roadController.getRobot(), travelToPoint, this.roadController.getCurrentQuadrant()));
     }
 
     /**

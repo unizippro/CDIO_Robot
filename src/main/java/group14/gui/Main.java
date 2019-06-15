@@ -36,7 +36,7 @@ public class Main {
 
     private IRobotManager robotManager;
 
-    private CalibratedCamera camera = new CalibratedCamera(0, 7, 9);
+    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
 
     private BallDetector ballDetector = new BallDetector();
     private BoardDetector boardDetector = new BoardDetector();

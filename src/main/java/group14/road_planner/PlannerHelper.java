@@ -97,32 +97,77 @@ public class PlannerHelper {
     /**
      * 0: left, 1: upper, 2: right, 3: lower
      */
-    public int safetyAreaViolation(Robot robot, Point point, Quadrant quadrant) {
+    public Point safetyAreaViolation(Robot robot, Point point, Quadrant quadrant) {
         int safeMargin = 10;
-        if (point.x >= quadrant.getLowerLeft().x && point.x <= quadrant.getSafetyArea().getLowerLeft().x) {
+        if (withinUpperLeftCorner(point, quadrant)) {
+            Point p = new Point(point.x + 15 * (int) SmartConverter.getPixelsPerCm(), point.y + 15 * (int) SmartConverter.getPixelsPerCm());
+        }
+        if (withinUpperRightCorner(point, quadrant)) {
+            Point p = new Point(point.x - 15 * (int) SmartConverter.getPixelsPerCm(), point.y + 15 * (int) SmartConverter.getPixelsPerCm());
+        }
+        if (withinLowerRightCorner(point, quadrant)) {
+            Point p = new Point(point.x - 15 * (int) SmartConverter.getPixelsPerCm(), point.y - 15 * (int) SmartConverter.getPixelsPerCm());
+        }
+        if (withinLowerLeftCorner(point, quadrant)) {
+            Point p = new Point(point.x + 15 * (int) SmartConverter.getPixelsPerCm(), point.y - 15 * (int) SmartConverter.getPixelsPerCm());
+        }
+        if (withinLeftMargin(point, quadrant)) {
             if (robot.getRotationalPoint().y > point.y - safeMargin*SmartConverter.getPixelsPerCm() && robot.getRotationalPoint().y < point.y + safeMargin*SmartConverter.getPixelsPerCm()) {
-                return 4;
+                return point;
             }
-            return 0;
+            return new Point(point.x + 20 * (int)SmartConverter.getPixelsPerCm(), point.y);
         }
-        if (point.y >= quadrant.getUpperLeft().y && point.y <= quadrant.getSafetyArea().getUpperLeft().y) {
+        if (withingUpMargin(point, quadrant)) {
             if (robot.getRotationalPoint().x > point.x - safeMargin*SmartConverter.getPixelsPerCm() && robot.getRotationalPoint().x < point.x + safeMargin*SmartConverter.getPixelsPerCm()) {
-                return 4;
+                return point;
             }
-            return 1;
+            return new Point(point.x, point.y + 20 * (int)SmartConverter.getPixelsPerCm());
         }
-        if (point.x <= quadrant.getLowerRight().x && point.x >= quadrant.getSafetyArea().getLowerRight().x) {
+        if (withinRightMargin(point, quadrant)) {
             if (robot.getRotationalPoint().y > point.y - safeMargin*SmartConverter.getPixelsPerCm() && robot.getRotationalPoint().y < point.y + safeMargin*SmartConverter.getPixelsPerCm()) {
-                return 4;
+                return point;
             }
-            return 2;
+            return new Point(point.x - 20 * (int)SmartConverter.getPixelsPerCm(), point.y);
         }
-        if (point.y <= quadrant.getLowerLeft().y && point.y >= quadrant.getSafetyArea().getLowerLeft().y) {
+        if (withinDownMargin(point, quadrant)) {
             if (robot.getRotationalPoint().x > point.x - safeMargin*SmartConverter.getPixelsPerCm() && robot.getRotationalPoint().x < point.x + safeMargin*SmartConverter.getPixelsPerCm()) {
-                return 4;
+                return point;
             }
-            return 3;
+            return new Point(point.x, point.y - 20 * (int)SmartConverter.getPixelsPerCm());
         }
-        return 4;
+        return point;
+    }
+
+    private boolean withinLeftMargin(Point point, Quadrant quadrant) {
+        return point.x >= quadrant.getLowerLeft().x && point.x <= quadrant.getSafetyArea().getLowerLeft().x;
+
+    }
+
+    private boolean withingUpMargin(Point point, Quadrant quadrant) {
+        return point.y >= quadrant.getUpperLeft().y && point.y <= quadrant.getSafetyArea().getUpperLeft().y;
+    }
+
+    private boolean withinRightMargin(Point point, Quadrant quadrant) {
+        return point.x <= quadrant.getLowerRight().x && point.x >= quadrant.getSafetyArea().getLowerRight().x;
+    }
+
+    private boolean withinDownMargin(Point point, Quadrant quadrant) {
+        return point.y <= quadrant.getLowerLeft().y && point.y >= quadrant.getSafetyArea().getLowerLeft().y;
+    }
+
+    private boolean withinUpperLeftCorner(Point point, Quadrant quadrant) {
+        return this.withinLeftMargin(point, quadrant) && this.withingUpMargin(point,quadrant);
+    }
+
+    private boolean withinUpperRightCorner(Point point, Quadrant quadrant) {
+        return this.withingUpMargin(point, quadrant) && this.withinRightMargin(point, quadrant);
+    }
+
+    private boolean withinLowerRightCorner(Point point, Quadrant quadrant) {
+        return this.withinRightMargin(point, quadrant) && this.withinDownMargin(point, quadrant);
+    }
+
+    private boolean withinLowerLeftCorner(Point point, Quadrant quadrant) {
+        return this.withinDownMargin(point, quadrant) && this.withinLeftMargin(point, quadrant);
     }
 }
