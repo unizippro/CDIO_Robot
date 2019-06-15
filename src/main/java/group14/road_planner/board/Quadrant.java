@@ -57,9 +57,16 @@ public class Quadrant {
      * @param ball
      * @return
      */
-    public boolean isWithingSafetyArea(Ball ball) {
-        if (ball.getPos().x >= this.safetyArea.getUpperLeft().x && ball.getPos().x <= this.safetyArea.getUpperRight().x) {
-            return ball.getPos().y >= this.safetyArea.getUpperLeft().y && ball.getPos().y <= this.safetyArea.getLowerRight().y;
+    public boolean isWithinSafetyArea(Ball ball) {
+        if (ball.getPos().x >= this.getUpperLeft().x && ball.getPos().x <= this.getUpperRight().x) {
+            return ball.getPos().y >= this.getUpperLeft().y && ball.getPos().y <= this.getLowerRight().y;
+        }
+        return false;
+    }
+
+    public boolean isWithinSafetyArea(Point p) {
+        if (p.x >= this.safetyArea.getUpperLeft().x && p.x <= this.safetyArea.getUpperRight().x) {
+            return p.y >= this.safetyArea.getUpperLeft().y && p.y <= this.safetyArea.getLowerRight().y;
         }
         return false;
     }
@@ -75,7 +82,7 @@ public class Quadrant {
     public List<Ball> ballsWithinArea(List<Ball> ballList) {
         List<Ball> newBallList = new ArrayList<>();
         for (Ball ball : ballList) {
-            if (this.isWithingSafetyArea(ball)) {
+            if (this.isWithinSafetyArea(ball)) {
                 newBallList.add(ball);
             }
         }

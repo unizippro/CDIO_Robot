@@ -23,8 +23,8 @@ public class Planner {
 
     private Ball getClosestBall() {
 
-//        var balls = this.roadController.getBallsWithinArea();
-        var balls = this.roadController.getBalls();
+        var balls = this.roadController.getBallsWithinArea();
+//        var balls = this.roadController.getBalls();
         Ball max = balls.get(0);
         double minLength = Integer.MAX_VALUE;
         for (int i = 0; i < balls.size(); i++) {
@@ -56,12 +56,18 @@ public class Planner {
 //            depositPoint = new DepositPlanner().getSmallGoal(this.roadController.getBoard());
 
         }
-        if (this.roadController.getBalls().size() > 0) {
+        if (this.roadController.getBallsWithinArea().size() > 0) {
 //          if (this.roadController.getBalls().size()>0) {
             System.out.println("Der er bolde i området!");
-            if (this.roadController.getBoard().isWithinBoardSafeArea(robot.getFront())) {
+            if (this.roadController.getBoard().isWithinBoardSafeArea(robot.getRotationalPoint())) {
                 System.out.println("Det er sikkert at dreje");
-                return this.travelToPoint(this.getClosestBall().getPos());
+                Point ball = this.getClosestBall().getPos();
+                if (this.roadController.getCurrentQuadrant().isWithinSafetyArea(ball)) {
+                    return this.travelToPoint(ball);
+                } else {
+                    return this.travelToPhantomPoint(ball);
+                }
+//                return this.travelToPoint(this.getClosestBall().getPos());
             } else {
                 return this.backOff();
             }
@@ -210,7 +216,7 @@ public class Planner {
 
     private Instruction backOff() {
         System.out.println("It is not safe to turn, I am backing off! \n Planner.java");
-        return new Instruction(0, -20);
+        return new Instruction(0, -30);
     }
 
     /**
@@ -219,9 +225,26 @@ public class Planner {
      * @return Instruction
      */
     private Instruction travelToPoint(Point travelToPoint) {
-        double angle = this.plannerHelper.getAngle(this.roadController.getRobot(), travelToPoint);
-        double distance = this.plannerHelper.getDistanceProjected(this.roadController.getRobot(), travelToPoint);
-        return new Instruction(angle, distance);
+//        if (this.roadController.getCurrentQuadrant().isWithinSafetyArea(travelToPoint)) {
+            double angle = this.plannerHelper.getAngle(this.roadController.getRobot(), travelToPoint);
+            double distance = this.plannerHelper.getDistanceProjected(this.roadController.getRobot(), travelToPoint);
+            return new Instruction(angle, distance);
+//        } else {
+//            return this.travelToPhantomPoint(travelToPoint);
+//        }
+
+    }
+
+    private Instruction travelToPhantomPoint(Point travelToPoint) {
+        switch(this.plannerHelper.safetyAreaViolation(this.roadController.getRobot(), travelToPoint, this.roadController.getCurrentQuadrant())) {
+            case 0: return this.travelToPoint(new Point(travelToPoint.x + 20 * (int)SmartConverter.getPixelsPerCm(), travelToPoint.y));
+            case 1: return this.travelToPoint(new Point(travelToPoint.x, travelToPoint.y + 20 * (int)SmartConverter.getPixelsPerCm()));
+            case 2: return this.travelToPoint(new Point(travelToPoint.x - 20 * (int)SmartConverter.getPixelsPerCm(), travelToPoint.y));
+            case 3: return this.travelToPoint(new Point(travelToPoint.x, travelToPoint.y - 20 * (int)SmartConverter.getPixelsPerCm()));
+            case 4: return this.travelToPoint(travelToPoint);
+        }
+
+        return this.travelToPoint(travelToPoint);
     }
 
     /**

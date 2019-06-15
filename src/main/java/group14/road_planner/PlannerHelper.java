@@ -93,4 +93,36 @@ public class PlannerHelper {
         }
         return false;
     }
+
+    /**
+     * 0: left, 1: upper, 2: right, 3: lower
+     */
+    public int safetyAreaViolation(Robot robot, Point point, Quadrant quadrant) {
+        int safeMargin = 10;
+        if (point.x >= quadrant.getLowerLeft().x && point.x <= quadrant.getSafetyArea().getLowerLeft().x) {
+            if (robot.getRotationalPoint().y > point.y - safeMargin*SmartConverter.getPixelsPerCm() && robot.getRotationalPoint().y < point.y + safeMargin*SmartConverter.getPixelsPerCm()) {
+                return 4;
+            }
+            return 0;
+        }
+        if (point.y >= quadrant.getUpperLeft().y && point.y <= quadrant.getSafetyArea().getUpperLeft().y) {
+            if (robot.getRotationalPoint().x > point.x - safeMargin*SmartConverter.getPixelsPerCm() && robot.getRotationalPoint().x < point.x + safeMargin*SmartConverter.getPixelsPerCm()) {
+                return 4;
+            }
+            return 1;
+        }
+        if (point.x <= quadrant.getLowerRight().x && point.x >= quadrant.getSafetyArea().getLowerRight().x) {
+            if (robot.getRotationalPoint().y > point.y - safeMargin*SmartConverter.getPixelsPerCm() && robot.getRotationalPoint().y < point.y + safeMargin*SmartConverter.getPixelsPerCm()) {
+                return 4;
+            }
+            return 2;
+        }
+        if (point.y <= quadrant.getLowerLeft().y && point.y >= quadrant.getSafetyArea().getLowerLeft().y) {
+            if (robot.getRotationalPoint().x > point.x - safeMargin*SmartConverter.getPixelsPerCm() && robot.getRotationalPoint().x < point.x + safeMargin*SmartConverter.getPixelsPerCm()) {
+                return 4;
+            }
+            return 3;
+        }
+        return 4;
+    }
 }

@@ -415,6 +415,7 @@ public class Main {
                     try {
                         this.robotManager.getController().fanOff();
                         this.robotManager.getController().deposit();
+                        this.roadController.readyToDeposit = false;
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -425,7 +426,7 @@ public class Main {
 
                 try {
                     Instruction temp = this.roadController.getNextInstruction();
-                    Instruction ins = new Instruction(temp.getAngle(), temp.getDistance()/SmartConverter.getPixelsPerCm()) ;
+                    Instruction ins = new Instruction(temp.getAngle(), temp.getDistance()/(SmartConverter.getPixelsPerCm())) ;
                     this.robotManager.getMovement().runInstruction(ins);
                 } catch (RemoteException e) {
                     e.printStackTrace();
