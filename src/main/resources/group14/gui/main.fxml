@@ -49,6 +49,8 @@
                                            AnchorPane.topAnchor="35.0"
                                            fitHeight="480" fitWidth="600"
                                 />
+
+                                <Button fx:id="imageCalibrateSnapshot" disable="true" layoutX="757.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#takeCalibrationSnapshot" text="Calibrate" />
                             </children>
                         </AnchorPane>
                     </content>
