@@ -30,6 +30,7 @@ import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -289,7 +290,7 @@ public class Main {
         var imageRobotThreshGreen = ImageConverter.matToImageFX(resultRobot.getOutputThreshGreen());
         var imageRobotThreshBlue = ImageConverter.matToImageFX(resultRobot.getOutputThreshBlue());
 
-        var imageThreshCorners = this.cameraController.matToImageFX(resultBoard.getBgrThresh());
+        var imageThreshCorners = ImageConverter.matToImageFX(resultBoard.getBgrThresh());
 
 
         Platform.runLater(() -> {
@@ -304,6 +305,14 @@ public class Main {
 
         });
 
+        var balls = resultBalls.getBalls().stream()
+                .map(point -> new java.awt.Point((int)point.x, (int)point.y))
+                .collect(Collectors.toList());
+
+        var robotPosition = Stream.of(resultRobot.getPointFront(), resultRobot.getPointBack())
+                .map(point -> new java.awt.Point((int)point.x, (int)point.y))
+                .collect(Collectors.toList());
+
         if (!isInitialized) {
             List<Point> crossPoints = new ArrayList<>();
             crossPoints.add(new Point(1920/2-70, 1080/2));
@@ -313,17 +322,17 @@ public class Main {
 
             this.roadController.initialize(
                     resultBoard.getCorners().toList().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
-                    resultBalls.getBalls().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
+                    balls,
                     crossPoints,
                     //resultBoard.getCross().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
-                    resultRobot.getPoints().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList())
+                    robotPosition
             );
             new SmartConverter().calculateBoard(resultBoard.getCorners().toList().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
             isInitialized = true;
         }
 
-        this.roadController.updateRobot(resultRobot.getPoints().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
-        this.roadController.setBalls(resultBalls.getBalls().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
+        this.roadController.updateRobot(robotPosition);
+        this.roadController.setBalls(balls);
     }
 
     private void cameraCalibrationChanged(boolean canCalibrate) {
