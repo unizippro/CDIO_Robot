@@ -25,16 +25,13 @@ public class Calculator {
     }
 
     public static double getTurnAngle(double angle1, double angle2) {
-        double angle = angle2 - angle1;
-        if (Math.abs(angle) > 180) {
-            if (angle >= 0) {
-                angle = 360 - angle;
-            } else {
-                angle = 360 + angle;
-            }
-        }
+        var diff = angle2 - angle1;
+        var phi = Math.abs(diff) % 360;
+        var distance = phi > 180 ? 360 - phi : phi;
 
-        return angle;
+        var sign = (diff >= 0 && diff <= 180) || (diff <=-180 && diff >= -360) ? 1 : -1;
+
+        return distance * sign;
     }
 
 }

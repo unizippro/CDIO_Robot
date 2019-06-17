@@ -44,7 +44,8 @@ public class CalculatorTest {
         assertEquals(45, Calculator.getTurnAngle(45, 90), 0);
         assertEquals(0, Calculator.getTurnAngle(45, 45), 0);
         assertEquals(-45, Calculator.getTurnAngle(45, 0), 0);
-        // todo: should be -135?
-        assertEquals(135, Calculator.getTurnAngle(0, 225), 0);
+        assertEquals(-135, Calculator.getTurnAngle(0, 225), 0);
+        assertEquals(60, Calculator.getTurnAngle(350, 50), 0);
+        assertEquals(-60, Calculator.getTurnAngle(350, 290), 0);
     }
 }
