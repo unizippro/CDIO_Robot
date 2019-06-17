@@ -15,9 +15,9 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
 
     public static class Config {
 
-        public AtomicInteger ballThreshold1 = new AtomicInteger(170);
+        public AtomicInteger ballThreshold1 = new AtomicInteger(185);
         public AtomicInteger ballThreshold2 = new AtomicInteger(200);
-        public AtomicInteger ballGausBlurSize = new AtomicInteger(9);
+        public AtomicInteger ballGausBlurSize = new AtomicInteger(3);
         public AtomicDouble lowerThreshold = new AtomicDouble(200);
 
         private AtomicDouble houghDp = new AtomicDouble(2);
@@ -45,16 +45,17 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
 
         Imgproc.threshold(work, work, config.ballThreshold1.get(), 255, Imgproc.ADAPTIVE_THRESH_MEAN_C);
         //Imgproc.threshold(src, src, 200, 255, 0);
+        //Imgproc.dilate(work, work, element);
         Imgproc.cvtColor(work, work, Imgproc.COLOR_BGR2GRAY );
         //Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2HSV );
         Imgproc.GaussianBlur(work, work, new Size( config.ballGausBlurSize.get(), config.ballGausBlurSize.get()), 0);
         Imgproc.threshold(work, work, config.ballThreshold1.get(), 255, Imgproc.THRESH_BINARY);
         //Imgproc.Canny(src,src,300,300);
-        //Imgproc.dilate(src, src, element);
-        //Imgproc.erode(src, src, element);
+        //Imgproc.dilate(work, work, element);
+        //Imgproc.erode(work, work, element);
 
-        List<MatOfPoint> contours = new ArrayList<>();
-        Imgproc.findContours(work, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        //List<MatOfPoint> contours = new ArrayList<>();
+        //Imgproc.findContours(work, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
         //System.out.println(contours.get(0).toString());
 

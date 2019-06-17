@@ -66,7 +66,7 @@ public class Main {
     @FXML
     public Slider ballThreshold2;
     @FXML
-    public Slider blurSizeSlider;
+    public Slider ballGausBlurSize;
     @FXML
     public Slider lowerThresholdSlider;
     @FXML
@@ -175,7 +175,7 @@ public class Main {
         var ballDetectorConfig = this.ballDetector.getConfig();
         this.ballThreshold1.setValue(ballDetectorConfig.ballThreshold1.get());
         this.ballThreshold2.setValue(ballDetectorConfig.ballThreshold2.get());
-        this.blurSizeSlider.setValue(ballDetectorConfig.ballGausBlurSize.get());
+        this.ballGausBlurSize.setValue(ballDetectorConfig.ballGausBlurSize.get());
 
         this.lowerThresholdSlider.setValue(ballDetectorConfig.lowerThreshold.get());
         this.houghParam1.setValue(ballDetectorConfig.houghParam1.get());
@@ -367,7 +367,7 @@ public class Main {
     public void ballDetectorConfigUpdated(MouseEvent mouseEvent) {
         var ballDetectorConfig = this.ballDetector.getConfig();
         ballDetectorConfig.ballThreshold1.set((int) this.ballThreshold1.getValue());
-        ballDetectorConfig.ballGausBlurSize.set((int) this.blurSizeSlider.getValue());
+        ballDetectorConfig.ballGausBlurSize.set((int) this.ballGausBlurSize.getValue());
         ballDetectorConfig.ballThreshold2.set((int) this.ballThreshold2.getValue());
         ballDetectorConfig.lowerThreshold.set((int) this.lowerThresholdSlider.getValue());
         ballDetectorConfig.houghParam1.set((int) this.houghParam1.getValue());
