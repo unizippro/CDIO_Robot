@@ -1,5 +1,6 @@
 package group14.navigator.data;
 
+import group14.navigator.Utils;
 import lejos.robotics.geometry.Point2D;
 import lejos.robotics.geometry.Rectangle2D;
 
@@ -60,11 +61,13 @@ public class Board {
             return;
         }
 
-        var left = new Rectangle2D.Double(this.boundingRect.x, this.boundingRect.y, this.boundingRect.x + point.x, this.boundingRect.height);
-        var right = new Rectangle2D.Double(this.boundingRect.x + point.x, this.boundingRect.y, this.boundingRect.width - point.x, this.boundingRect.height);
+        var verticalSplit = Utils.rectangleSplitAt(this.boundingRect, point, Utils.Split.VERTICAL);
 
         this.areas.clear();
-        this.areas.addAll(Arrays.asList(new Area(left, SAFETY_MARGIN), new Area(right, SAFETY_MARGIN)));
+        this.areas.addAll(Arrays.asList(
+                new Area(verticalSplit.get(0), SAFETY_MARGIN),
+                new Area(verticalSplit.get(1), SAFETY_MARGIN)
+        ));
     }
 
 }

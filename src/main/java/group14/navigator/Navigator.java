@@ -162,11 +162,3 @@ public class Navigator {
     }
 
 }
-
-class Utils {
-
-    public static Rectangle2D.Double rectangleWithCenter(Point2D.Double point, double margin) {
-        return new Rectangle2D.Double(point.x - margin, point.y - margin, point.x + margin, point.y + margin);
-    }
-
-}

@@ -1,6 +1,7 @@
 package group14.navigator.data;
 
 import group14.navigator.Calculator;
+import group14.navigator.Utils;
 import lejos.robotics.geometry.Point2D;
 import lejos.robotics.geometry.Rectangle2D;
 
@@ -22,13 +23,12 @@ public class Area {
         this.boundingRect = boundingRect;
         this.safetyMargin = safetyMargin;
 
-        this.safetyArea = new Rectangle2D.Double(boundingRect.x + safetyMargin, boundingRect.y + safetyMargin, boundingRect.width - (safetyMargin * 2), boundingRect.height - (safetyMargin * 2));
+        this.safetyArea = Utils.rectangleWithExpandedMargin(boundingRect, -safetyMargin);
 
-        var top = new Rectangle2D.Double(this.boundingRect.x, this.boundingRect.y, this.boundingRect.width, this.boundingRect.height / 2);
-        var bottom = new Rectangle2D.Double(this.boundingRect.x, this.boundingRect.getCenterY(), this.boundingRect.width, this.boundingRect.height / 2);
+        var horizontalSplit = Utils.rectangleSplitAt(this.boundingRect, Utils.rectangleGetCenter(this.boundingRect), Utils.Split.HORIZONTAL);
 
-        this.safePointTop = new Point2D.Double(top.getCenterX(), top.getCenterY());
-        this.safePointBottom = new Point2D.Double(bottom.getCenterX(), bottom.getCenterY());
+        this.safePointTop = Utils.rectangleGetCenter(horizontalSplit.get(0));
+        this.safePointBottom = Utils.rectangleGetCenter(horizontalSplit.get(1));
     }
 
     public Rectangle2D.Double getBoundingRect() {
