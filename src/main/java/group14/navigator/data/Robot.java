@@ -38,6 +38,30 @@ public class Robot {
         return this.getRotatingPoint().distance(point) - this.getDistanceFromRotatingPointToFront();
     }
 
+    public void updateFromInstruction(Instruction instruction) {
+        var directionAngle = this.getDirectionAngle();
+
+        switch (instruction.getType()) {
+            case FORWARD:
+                this.rearPoint.setLocation(Calculator.getVectorEndPoint(this.rearPoint, directionAngle, instruction.getAmount()));
+                this.frontPoint.setLocation(Calculator.getVectorEndPoint(this.frontPoint, directionAngle, instruction.getAmount()));
+                break;
+
+            case TURN:
+                var rotatingPoint = this.getRotatingPoint();
+                var newAngle = directionAngle + instruction.getAmount();
+
+                this.rearPoint.setLocation(Calculator.getVectorEndPoint(rotatingPoint, Calculator.getOppositeAngle(newAngle), DISTANCE_REAR_POINT_TO_ROTATING));
+                this.frontPoint.setLocation(Calculator.getVectorEndPoint(this.rearPoint, newAngle, 1)); // todo: calculate magnitude
+                break;
+
+            case BACKWARD:
+                this.rearPoint.setLocation(Calculator.getVectorEndPoint(this.rearPoint, Calculator.getOppositeAngle(directionAngle), instruction.getAmount()));
+                this.frontPoint.setLocation(Calculator.getVectorEndPoint(this.frontPoint, Calculator.getOppositeAngle(directionAngle), instruction.getAmount()));
+                break;
+        }
+    }
+
     private double getDistanceFromRotatingPointToFront() {
         return DISTANCE_REAR_POINT_TO_FRONT - DISTANCE_REAR_POINT_TO_ROTATING;
     }
