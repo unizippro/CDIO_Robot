@@ -88,23 +88,32 @@ public class Controller extends UnicastRemoteObject implements IController {
         return fanRunning.get();
     }
 
+    /**
+     * Depostis balls
+     * Opens gate and runs viberator
+     * Turns fan off and leaves it off
+     */
     @Override
-    public void deposit() throws RemoteException {
-        int delaytime = 7500;
-        this.gateOpen();
-        this.vibOn();
+    public void deposit() {
+
 
         try {
-            Thread.sleep(delaytime/4);
-            this.vibOff();
-            Thread.sleep(delaytime/2);
+            this.fanOff();
+            Thread.sleep(2000);
+            this.gateOpen();
             this.vibOn();
-            Thread.sleep(delaytime/4);
+            Thread.sleep(3000);
             this.vibOff();
-            Thread.sleep(delaytime/2);
+            Thread.sleep(3000);
+            this.vibOn();
+            Thread.sleep(3000);
+            this.vibOff();
+            Thread.sleep(3000);
+            this.vibOn();
+            Thread.sleep(3000);
+            this.vibOff();
+            Thread.sleep(3000);
 
-
-            //this.vibOff();
             this.gateClose();
         } catch (InterruptedException e) {
             e.printStackTrace();
