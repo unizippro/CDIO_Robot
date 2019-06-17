@@ -85,6 +85,7 @@ public class CalibratedCamera extends Camera {
 
             if (this.isCalibrated) {
                 Calib3d.undistort(frame, outFrame, this.intrinsic, this.distCoeffs);
+                //Homeography here.
             } else {
                 this.drawCalibration(frame, outFrame);
             }
