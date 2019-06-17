@@ -2,9 +2,11 @@ package group14.navigator;
 
 import lejos.robotics.geometry.Point2D;
 import lejos.robotics.geometry.Rectangle2D;
+import org.opencv.core.Point;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -40,5 +42,26 @@ public class Utils {
 
     public static Point2D.Double rectangleGetCenter(Rectangle2D.Double rectangle) {
         return new Point2D.Double(rectangle.getCenterX(), rectangle.getCenterY());
+    }
+
+    public static Point2D.Double toNavigatorPoint(Point point) {
+        return new Point2D.Double(point.x, point.y);
+    }
+
+    public static List<Point2D.Double> toNavigatorPoints(List<Point> points) {
+        return points.stream()
+                .map(Utils::toNavigatorPoint)
+                .collect(Collectors.toList());
+    }
+
+    public static Rectangle2D.Double createRectangleFromPoints(List<Point2D.Double> points) {
+        if (points.size() != 2) {
+            throw new RuntimeException("Cannot create rectangle with " + points.size() + " points");
+        }
+
+        var topLeft = points.get(0);
+        var bottomRight = points.get(1);
+
+        return new Rectangle2D.Double(topLeft.x, topLeft.y, topLeft.x + bottomRight.x, topLeft.y + bottomRight.y);
     }
 }
