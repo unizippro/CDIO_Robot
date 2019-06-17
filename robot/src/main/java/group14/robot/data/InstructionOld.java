@@ -2,11 +2,11 @@ package group14.robot.data;
 
 import java.io.Serializable;
 
-public class Instruction implements Serializable {
+public class InstructionOld implements Serializable {
     private double angle;
     private double distance;
 
-    public Instruction(double angle, double distance) {
+    public InstructionOld(double angle, double distance) {
         this.angle = angle;
         this.distance = distance;
     }
@@ -20,6 +20,6 @@ public class Instruction implements Serializable {
     }
 
     public String toString() {
-        return "Instruction:  \n\tTurn: " + String.format("%.2f", angle) + " deg.\n\tDrive: " + String.format("%.2f", distance) + " units.";
+        return "InstructionOld:  \n\tTurn: " + String.format("%.2f", angle) + " deg.\n\tDrive: " + String.format("%.2f", distance) + " units.";
     }
 }

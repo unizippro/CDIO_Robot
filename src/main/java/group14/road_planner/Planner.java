@@ -2,10 +2,8 @@ package group14.road_planner;
 
 import group14.road_planner.ball.Ball;
 import group14.road_planner.board.Quadrant;
-import group14.road_planner.board.SafePointTravel;
 import group14.road_planner.board.SmartConverter;
-import group14.robot.data.Instruction;
-import group14.road_planner.deposit.DepositPlanner;
+import group14.robot.data.InstructionOld;
 
 import java.awt.*;
 
@@ -39,7 +37,7 @@ public class Planner {
     }
 
     //TODO
-    public Instruction nextInstruction() {
+    public InstructionOld nextInstruction() {
         var robot = this.roadController.getRobot();
 
         //ballsleft?
@@ -95,7 +93,7 @@ public class Planner {
 //                            new Point(20,100));
 //
 //                    angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
-//                    return new Instruction(angleToDestinationPoint, destinationVector.length);
+//                    return new InstructionOld(angleToDestinationPoint, destinationVector.length);
 //                case 1:
 //                    phaseOneStep++;
 //                    System.out.println("Step 1 - The robot is driving 1 unit towards the cross, to align it self" +
@@ -106,11 +104,11 @@ public class Planner {
 //                            new Point(21,100));
 //
 //                    angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
-//                    return new Instruction(angleToDestinationPoint, destinationVector.length);
+//                    return new InstructionOld(angleToDestinationPoint, destinationVector.length);
 //                case 2:
 //                    phaseOneStep++;
 //                    System.out.println("Step 2 - The robot will now reverse hardcoded amount and drop off balls");
-//                    return new Instruction(0,-10);
+//                    return new InstructionOld(0,-10);
 //                default:
 //                    throw new Exception("I should now start on phase 2");
 //                    //TODO: This variable should be reset, when changing from phase 1->2
@@ -152,7 +150,7 @@ public class Planner {
 //            }
 //
 //            double angleToDestinationPoint= Calculator.CALCULATE_ANGLE(robot.getVector(), destinationVector);
-//            return new Instruction(angleToDestinationPoint, destinationVector.length);
+//            return new InstructionOld(angleToDestinationPoint, destinationVector.length);
 //
 //        }else{
 //            //else we should go find the next ball
@@ -181,61 +179,61 @@ public class Planner {
 //                        // The ball is in front of us
 //                        if (abs((abs(angleToBall) - 90)) <= deltaAngle) { // Test if the route is in one part or two parts
 //                            //System.out.println("The ball is in a 90 deg direction.");
-//                            return new Instruction(angleToBall, destinationVector.length);
+//                            return new InstructionOld(angleToBall, destinationVector.length);
 //                        } else { // The route is spitted up in 2 parts.
 //                            //System.out.println("The route is spitted up");
-//                            return new Instruction(0, abs(destinationVector.getX()));
+//                            return new InstructionOld(0, abs(destinationVector.getX()));
 //                        }
 //                    } else {
 //                        // The ball is behind us
-//                        return new Instruction(180, 0);  // turn 180 deg.
+//                        return new InstructionOld(180, 0);  // turn 180 deg.
 //                    }// &&( angleToBall != -180)) {
 //            }
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
 //        System.err.println("ERROR: COMPAS WAS NOT SET??");
-//        return new Instruction(1337, 1337);
+//        return new InstructionOld(1337, 1337);
 //    }
 //
-//    private Instruction getInstruction(double angletoPoint) {
+//    private InstructionOld getInstruction(double angletoPoint) {
 //        if ((abs(angletoPoint) < 90 + deltaAngle) || (abs(angletoPoint) > 270 - deltaAngle)) {
 //            // The ball is in front of us
 //            if (abs((abs(angletoPoint) - 90)) <= deltaAngle) { // Test if the route is in one part or two parts
 //                //System.out.println("The ball is in a 90 deg direction.");
-//                return new Instruction(angletoPoint, destinationVector.length);
+//                return new InstructionOld(angletoPoint, destinationVector.length);
 //            } else { // The route is spitted up in 2 parts.
 //                //System.out.println("The route is spitted up");
-//                return new Instruction(0, abs(destinationVector.getY()));
+//                return new InstructionOld(0, abs(destinationVector.getY()));
 //            }
 //        } else {
 //            // The ball is behind us
-//            return new Instruction(180, 0);  // turn 180 deg.
+//            return new InstructionOld(180, 0);  // turn 180 deg.
 //        }
     }
 
-    private Instruction backOff() {
+    private InstructionOld backOff() {
         System.out.println("It is not safe to turn, I am backing off! \n Planner.java");
-        return new Instruction(0, -30);
+        return new InstructionOld(0, -30);
     }
 
     /**
      * calculates angle and distance to closest ball and maps data to instruction
      *
-     * @return Instruction
+     * @return InstructionOld
      */
-    private Instruction travelToPoint(Point travelToPoint) {
+    private InstructionOld travelToPoint(Point travelToPoint) {
 //        if (this.roadController.getCurrentQuadrant().isWithinSafetyArea(travelToPoint)) {
             double angle = this.plannerHelper.getAngle(this.roadController.getRobot(), travelToPoint);
             double distance = this.plannerHelper.getDistanceProjected(this.roadController.getRobot(), travelToPoint);
-            return new Instruction(angle, distance);
+            return new InstructionOld(angle, distance);
 //        } else {
 //            return this.travelToPhantomPoint(travelToPoint);
 //        }
 
     }
 
-    private Instruction travelToPhantomPoint(Point travelToPoint) {
+    private InstructionOld travelToPhantomPoint(Point travelToPoint) {
         return this.travelToPoint(this.plannerHelper.safetyAreaViolation(this.roadController.getRobot(), travelToPoint, this.roadController.getCurrentQuadrant()));
     }
 
@@ -243,9 +241,9 @@ public class Planner {
      * Checks if the robot is within acceptable distance to the exit safe point, if so the robot will travel
      * to next quadrant's entry safe point
      *
-     * @return Instruction
+     * @return InstructionOld
      */
-    private Instruction travelToNextSafePoint() {
+    private InstructionOld travelToNextSafePoint() {
         var exitSafePoint = this.roadController.getCurrentQuadrant().getExitSafePoint();
 //        if (this.plannerHelper.isNearPoint(this.roadController.getRobot(), exitSafePoint)) {
 ////            this.travelToNextQuadrant = false;
@@ -259,9 +257,9 @@ public class Planner {
      * Checks if the robot is within acceptable distance to the entry safe point, if so the robot will travel
      * to previous quadrant's exit safe point
      *
-     * @return Instruction
+     * @return InstructionOld
      */
-    private Instruction travelToPreviousSafePoint() {
+    private InstructionOld travelToPreviousSafePoint() {
         var entrySafePoint = this.roadController.getCurrentQuadrant().getEntrySafePoint();
         if (this.plannerHelper.isNearPoint(this.roadController.getRobot(), entrySafePoint)) {
 //            this.travelToNextQuadrant = false;
@@ -270,17 +268,17 @@ public class Planner {
         return this.travelOwnEntrySafePoint();
     }
 
-    private Instruction travelOwnExitSafePoint() {
+    private InstructionOld travelOwnExitSafePoint() {
 //        this.travelToNextQuadrant = true;
         return this.travelToPoint(this.roadController.getCurrentQuadrant().getExitSafePoint());
     }
 
-    private Instruction travelOwnEntrySafePoint() {
+    private InstructionOld travelOwnEntrySafePoint() {
 //        this.travelToNextQuadrant = true;
         return this.travelToPoint(this.roadController.getCurrentQuadrant().getEntrySafePoint());
     }
 
-    private Instruction travelToQuadrant(Quadrant quadrant) {
+    private InstructionOld travelToQuadrant(Quadrant quadrant) {
         if (this.roadController.getCurrentQuadrant() != quadrant) {
             //Check quadrant jumps from robot.pos
             switch (this.plannerHelper.goBackOrForward(this.roadController, quadrant)) {
@@ -294,12 +292,12 @@ public class Planner {
         return null;
     }
 
-    private Instruction travelToGoal() {
+    private InstructionOld travelToGoal() {
         var smallGoal = this.roadController.getBoard().getGoals().get(0);
         if (this.readyToDeposit) {
             this.roadController.readyToDeposit = true;
             this.readyToDeposit = false;
-            return new Instruction(180, 0);
+            return new InstructionOld(180, 0);
         }
         if (!this.travelledToDepositPoint) {
             Point p = new Point(smallGoal.getPos().x + 30 * (int) SmartConverter.getPixelsPerCm(), smallGoal.getPos().y);

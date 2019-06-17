@@ -1,6 +1,6 @@
 package group14.robot.implementation;
 
-import group14.robot.data.Instruction;
+import group14.robot.data.InstructionOld;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.RegulatedMotor;
 import group14.robot.interfaces.IMovement;
@@ -49,7 +49,7 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     }
 
     @Override
-    public void runInstruction(Instruction instruction) {
+    public void runInstruction(InstructionOld instruction) {
         if (instruction.getAngle() != 0) {
             this.turn((int) instruction.getAngle());
         }

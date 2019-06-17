@@ -4,7 +4,7 @@ import group14.road_planner.ball.Ball;
 import group14.road_planner.board.Board;
 import group14.road_planner.board.Cross;
 import group14.road_planner.board.Quadrant;
-import group14.robot.data.Instruction;
+import group14.robot.data.InstructionOld;
 import group14.road_planner.board.goal.Goal;
 
 import java.awt.*;
@@ -109,8 +109,8 @@ public class RoadController {
      * This is the facade to execute instructions in Planner
      * @return instruction to be executed by MovementController
      */
-    public Instruction getNextInstruction() {
-        Instruction inst = this.planner.nextInstruction();
+    public InstructionOld getNextInstruction() {
+        InstructionOld inst = this.planner.nextInstruction();
         System.out.println(inst);
         return inst;
     }
