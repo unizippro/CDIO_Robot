@@ -146,7 +146,10 @@ public class Navigator {
             return null;
         }
 
+        var area = Utils.rectangleWithExpandedMargin(this.board.getAreaForPoint(point).getBoundingRect(), 1);
+
         return this.ballPositions.stream()
+                .filter(area::contains)
                 .reduce(null, (o, ball) -> {
                     if (o == null) {
                         return ball;
