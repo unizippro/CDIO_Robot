@@ -62,6 +62,10 @@ public class Main {
     @FXML
     public ImageView imageBalls;
     @FXML
+    public Slider ballThreshold1;
+    @FXML
+    public Slider ballThreshold2;
+    @FXML
     public Slider blurSizeSlider;
     @FXML
     public Slider lowerThresholdSlider;
@@ -169,7 +173,10 @@ public class Main {
         this.plot.setCross(new Point2D(20, 10));
 
         var ballDetectorConfig = this.ballDetector.getConfig();
-        this.blurSizeSlider.setValue(ballDetectorConfig.blurSize.get());
+        this.ballThreshold1.setValue(ballDetectorConfig.ballThreshold1.get());
+        this.ballThreshold2.setValue(ballDetectorConfig.ballThreshold2.get());
+        this.blurSizeSlider.setValue(ballDetectorConfig.ballGausBlurSize.get());
+
         this.lowerThresholdSlider.setValue(ballDetectorConfig.lowerThreshold.get());
         this.houghParam1.setValue(ballDetectorConfig.houghParam1.get());
         this.houghParam2.setValue(ballDetectorConfig.houghParam2.get());
@@ -359,7 +366,9 @@ public class Main {
     @FXML
     public void ballDetectorConfigUpdated(MouseEvent mouseEvent) {
         var ballDetectorConfig = this.ballDetector.getConfig();
-        ballDetectorConfig.blurSize.set((int) this.blurSizeSlider.getValue());
+        ballDetectorConfig.ballThreshold1.set((int) this.ballThreshold1.getValue());
+        ballDetectorConfig.ballGausBlurSize.set((int) this.blurSizeSlider.getValue());
+        ballDetectorConfig.ballThreshold2.set((int) this.ballThreshold2.getValue());
         ballDetectorConfig.lowerThreshold.set((int) this.lowerThresholdSlider.getValue());
         ballDetectorConfig.houghParam1.set((int) this.houghParam1.getValue());
         ballDetectorConfig.houghParam2.set((int) this.houghParam2.getValue());

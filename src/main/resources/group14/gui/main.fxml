@@ -69,13 +69,16 @@
                                            AnchorPane.topAnchor="35.0"
                                            fitHeight="480" fitWidth="600"
                                 />
-
-                                <Label layoutX="757.0" layoutY="15.0" text="Blur size" />
-                                <Slider fx:id="blurSizeSlider" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="3" max="9" majorTickUnit="2" minorTickCount="0" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="85.0" text="Param 1" />
-                                <Slider fx:id="houghParam1" layoutX="757.0" layoutY="105.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="145.0" text="Param 2" />
-                                <Slider fx:id="houghParam2" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="15.0" text="Threshold 1" />
+                                <Slider fx:id="ballThreshold1" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="150" max="255" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="85.0" text="Blur size" />
+                                <Slider fx:id="blurSizeSlider" layoutX="757.0" layoutY="105.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="3" max="15" majorTickUnit="2" minorTickCount="0" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="155.0" text="Threshold 2" />
+                                <Slider fx:id="ballThreshold2" layoutX="757.0" layoutY="175.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="150" max="255" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="225.0" text="Param 1" />
+                                <Slider fx:id="houghParam1" layoutX="757.0" layoutY="245.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="295.0" text="Param 2" />
+                                <Slider fx:id="houghParam2" layoutX="757.0" layoutY="315.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                             </children>
                         </AnchorPane>
                     </content>
