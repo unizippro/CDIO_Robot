@@ -18,6 +18,7 @@ public class Camera {
 
     private ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> currentFuture;
+    private Thread calculationThread;
 
     private final VideoCapture camera = new VideoCapture();
 
@@ -38,14 +39,24 @@ public class Camera {
             var frame = new Mat();
             this.camera.read(frame);
 
+            if (frame.empty()) {
+                System.err.println("Frame is empty");
+
+                return;
+            }
+
             if (updatedHandler != null) {
-                new Thread(() -> {
-                    try {
-                        updatedHandler.frameUpdated(frame);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+                if (this.calculationThread == null || ! this.calculationThread.isAlive()) {
+                    this.calculationThread = new Thread(() -> {
+                        try {
+                            updatedHandler.frameUpdated(frame);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    this.calculationThread.start();
+                }
             }
         }, 0, 1000 / FPS, TimeUnit.MILLISECONDS);
     }
