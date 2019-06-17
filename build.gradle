@@ -23,6 +23,9 @@ dependencies {
 
     // OpenCV
     implementation(fileTree(dir: opencvProperties["jarDir"], includes: ["*.jar"]))
+
+    // Tests
+    testImplementation("junit:junit:4.12")
 }
 
 compileJava {
