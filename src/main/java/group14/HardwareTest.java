@@ -23,7 +23,6 @@ public class HardwareTest {
 
             //cont.fanOn();
             System.out.println("Start: ");
-<<<<<<< master
 
             robotManager.playSound("/home/lejos/sound/R2_beeping.wav");
             System.out.println("End.");
