@@ -12,6 +12,14 @@ import org.opencv.imgproc.Imgproc;
 
 public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.Config> {
 
+    public BoardDetector(Config boardDetectorConfig) {
+        this.setConfig(boardDetectorConfig);
+    }
+
+    public BoardDetector() {
+        super();
+    }
+
     public static class Config {
         public AtomicDouble cornerMarginPercentage = new AtomicDouble(30);
         public AtomicInteger blockSize = new AtomicInteger(11);

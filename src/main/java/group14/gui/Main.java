@@ -36,14 +36,14 @@ public class Main {
 
     private IRobotManager robotManager;
 
-    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
-
     private BallDetector ballDetector = new BallDetector();
-    private BoardDetector boardDetector = new BoardDetector();
+    private BoardDetector.Config boardDetectorConfig = new BoardDetector.Config();
+    private BoardDetector boardDetector = new BoardDetector(boardDetectorConfig);
     private RobotDetector robotDetector = new RobotDetector();
     private RoadController roadController = new RoadController();
     private boolean isInitialized = false;
 
+    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9, boardDetectorConfig);
 
     @FXML
     private ChoiceBox testImages;
