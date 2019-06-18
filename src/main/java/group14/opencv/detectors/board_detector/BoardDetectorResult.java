@@ -36,4 +36,5 @@ public class BoardDetectorResult {
     public Rect getCross() {
         return this.cross;
     }
+
 }
