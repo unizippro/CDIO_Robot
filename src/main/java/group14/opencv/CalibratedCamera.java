@@ -2,6 +2,7 @@ package group14.opencv;
 
 import com.google.gson.*;
 import group14.opencv.utils.ImageConverter;
+import group14.opencv.detectors.board_detector.BoardDetector;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
@@ -17,6 +18,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class CalibratedCamera extends Camera {
+
+    private final BoardDetector boardDetector;
+    private double longBoard = 1670;
+    private double shortBoard = 1220;
+    private ArrayList<Point> homeographyArray = new ArrayList<>();
+    private MatOfPoint2f destPoints = new MatOfPoint2f();
 
     private int numberOfCalibrations = 10;
     private int chessboardCornersHorizontal;
@@ -41,13 +48,15 @@ public class CalibratedCamera extends Camera {
     private List<Mat> tvecs = new ArrayList<>();
 
     private CalibrationPossibleListener calibrationPossibleListener;
+    private boolean isHomo = false;
+    private Mat HomographyMat;
 
     public interface CalibrationPossibleListener {
         void calibrationChanged(boolean canCalibrate);
     }
 
 
-    public CalibratedCamera(int cameraIndex, int chessboardCornersHorizontal, int chessboardCornersVertical) {
+    public CalibratedCamera(int cameraIndex, int chessboardCornersHorizontal, int chessboardCornersVertical, BoardDetector.Config boardDetectorConfig) {
         super(cameraIndex);
 
         this.chessboardCornersHorizontal = chessboardCornersHorizontal;
@@ -70,10 +79,20 @@ public class CalibratedCamera extends Camera {
             this.isCalibrated = true;
             System.out.println("Calibrated from file");
         }
+
+        //Ready homeo
+        homeographyArray.add(new Point(5,5));
+        homeographyArray.add(new Point(5+longBoard,5));
+        homeographyArray.add(new Point(5,5 + shortBoard));
+        homeographyArray.add(new Point(5+longBoard,5+ shortBoard));
+        destPoints.fromList(homeographyArray);
+
+
+        this.boardDetector = new BoardDetector(boardDetectorConfig);
     }
 
-    public CalibratedCamera(int cameraIndex, int numberOfCalibrations, int chessboardCornersHorizontal, int chessboardCornersVertical) {
-        this(cameraIndex, chessboardCornersHorizontal, chessboardCornersVertical);
+    public CalibratedCamera(int cameraIndex, int numberOfCalibrations, int chessboardCornersHorizontal, int chessboardCornersVertical, BoardDetector.Config boardDetectorConfig) {
+        this(cameraIndex, chessboardCornersHorizontal, chessboardCornersVertical, boardDetectorConfig);
 
         this.numberOfCalibrations = numberOfCalibrations;
     }
@@ -85,9 +104,28 @@ public class CalibratedCamera extends Camera {
 
             if (this.isCalibrated) {
                 Calib3d.undistort(frame, outFrame, this.intrinsic, this.distCoeffs);
-                //Homeography here.
+
             } else {
                 this.drawCalibration(frame, outFrame);
+            }
+
+
+            if (this.isHomo){
+                //Do Homo
+                Imgproc.warpPerspective(frame, outFrame, HomographyMat, new Size(longBoard, shortBoard));
+            } else {
+
+                var boardDetectorResult = boardDetector.run(outFrame);
+
+                var pointsInImage = new MatOfPoint2f();
+                //See if board is found
+                if(boardDetectorResult.getCorners().toList().size() == 4) {
+                    pointsInImage.fromList(boardDetectorResult.getCorners().toList());
+
+                    HomographyMat = Imgproc.getPerspectiveTransform(pointsInImage, destPoints); //Need corners
+                    Imgproc.warpPerspective(frame, outFrame, HomographyMat, new Size(longBoard, shortBoard));
+                    this.isHomo = true;
+                }
             }
 
             updatedHandler.frameUpdated(outFrame);

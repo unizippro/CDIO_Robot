@@ -13,6 +13,10 @@ public abstract class Detector<T, U> {
         return this.config;
     }
 
+    public void setConfig(U config) {
+        this.config = config;
+    }
+
     abstract public T run(Mat src);
     abstract protected U createConfig();
 }
