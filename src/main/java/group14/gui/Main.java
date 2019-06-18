@@ -29,7 +29,6 @@ import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.utils.Converters;
 
-import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
@@ -365,11 +364,11 @@ public class Main {
                 .collect(Collectors.toList());
 
         if (!isInitialized) {
-            List<Point> crossPoints = new ArrayList<>();
-            crossPoints.add(new Point(1920/2-70, 1080/2));
-            crossPoints.add(new Point(1920/2+70, 1080/2));
-            crossPoints.add(new Point(1920/2, 1080/2+70));
-            crossPoints.add(new Point(1920/2, 1080/2-70));
+            List<java.awt.Point> crossPoints = new ArrayList<>();
+            crossPoints.add(new java.awt.Point(1920/2-70, 1080/2));
+            crossPoints.add(new java.awt.Point(1920/2+70, 1080/2));
+            crossPoints.add(new java.awt.Point(1920/2, 1080/2+70));
+            crossPoints.add(new java.awt.Point(1920/2, 1080/2-70));
 
             this.roadController.initialize(
                     resultBoard.getCorners().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
