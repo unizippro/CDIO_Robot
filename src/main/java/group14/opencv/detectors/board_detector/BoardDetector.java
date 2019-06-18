@@ -16,12 +16,12 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
         public AtomicDouble cornerMarginPercentage = new AtomicDouble(30);
         public AtomicInteger blockSize = new AtomicInteger(11);
         public AtomicInteger kSize = new AtomicInteger(9);
-        public AtomicInteger minHBoard = new AtomicInteger(200);
-        public AtomicInteger maxHBoard = new AtomicInteger(255);
-        public AtomicInteger minSBoard = new AtomicInteger(120);
-        public AtomicInteger maxSBoard = new AtomicInteger(255);
-        public AtomicInteger minVBoard = new AtomicInteger(0);
-        public AtomicInteger maxVBoard = new AtomicInteger(180);
+        public AtomicInteger minHBoard = new AtomicInteger(0);
+        public AtomicInteger maxHBoard = new AtomicInteger(120);
+        public AtomicInteger minSBoard = new AtomicInteger(0);
+        public AtomicInteger maxSBoard = new AtomicInteger(120);
+        public AtomicInteger minVBoard = new AtomicInteger(180);
+        public AtomicInteger maxVBoard = new AtomicInteger(255);
     }
 
     public BoardDetectorResult run(Mat src) {
@@ -37,6 +37,8 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
 
         Mat dilateEle = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4));
         Imgproc.dilate(hsvThresh, hsvThresh, dilateEle);
+        Imgproc.dilate(hsvThresh, hsvThresh, dilateEle);
+        Imgproc.dilate(hsvThresh, hsvThresh, dilateEle);
 
         Mat cannyOutput = new Mat();
         Imgproc.Canny(hsvThresh, cannyOutput, 200, 400);
@@ -47,9 +49,10 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
 
         MatOfPoint2f approxcurve = new MatOfPoint2f();
 
-        List<Point> cornerPoints = null;
+        List<MatOfPoint> cornerPoints = new ArrayList<>();
+        List<Point> finalCornerPoints = new ArrayList<>();
         Rect cross = null;
-        double area=0;
+        double area=20000000;
 
         for (int i = 0; i < contours.size(); i++) {
             //Imgproc.drawContours(drawing, contours, i, new Scalar(255));
@@ -68,20 +71,23 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
                 }
 
                 if (points.total() == 4) {
-                    if (Imgproc.contourArea(points) < area || area == 0) {
-                        cornerPoints.clear();
-                        area = Imgproc.contourArea(points);
-                        cornerPoints = points.toList();
-                        System.out.println(Imgproc.contourArea(points));
-                        for (Point point : cornerPoints) {
-                            Imgproc.circle(out, point, 10, new Scalar(255), 8, 2, 0);
-                        }
-                    }
-
+                    cornerPoints.add(points);
+                    //System.out.println(Imgproc.contourArea(points));
                 }
+
             }
         }
-        return new BoardDetectorResult(out, hsvThresh, cornerPoints, cross);
+        for(MatOfPoint matCornerPoints: cornerPoints){
+            if(Imgproc.contourArea(matCornerPoints)<area){
+                if(finalCornerPoints.size()==0){finalCornerPoints.clear();}
+                finalCornerPoints = matCornerPoints.toList();
+            }
+        }
+        for(Point point: finalCornerPoints){
+            System.out.println(point);
+            Imgproc.circle(out, point, 20, new Scalar(255), 3, 8, 0);
+        }
+        return new BoardDetectorResult(out, hsvThresh, finalCornerPoints, cross);
     }
 
     @Override
