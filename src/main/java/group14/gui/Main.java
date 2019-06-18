@@ -24,6 +24,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 
 import java.awt.Point;
 import java.rmi.RemoteException;
@@ -44,6 +48,9 @@ public class Main {
     private boolean isInitialized = false;
 
     private CalibratedCamera camera = new CalibratedCamera(1, 7, 9, boardDetectorConfig);
+
+    private boolean isHomo = false;
+    private Mat homeographyMat;
 
     @FXML
     private ChoiceBox testImages;
@@ -153,6 +160,7 @@ public class Main {
         this.robotManager = robotManager;
 
         this.camera.setCalibrationPossibleListener(this::cameraCalibrationChanged);
+        this.camera.setCalibrationCustomHandler(this::customCalibration);
     }
 
 
@@ -276,6 +284,36 @@ public class Main {
     public void onTestImageChanged(ActionEvent actionEvent) {
 //        this.camera.stop();
 //        this.camera.updateWithImage(((FileSelectItem) this.testImages.getValue()).filePath);
+    }
+
+    private void customCalibration(Mat frame, Mat outFrame) {
+        if (this.isHomo) {
+            Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, frame.size());
+        } else {
+            var boardDetectorResult = this.boardDetector.run(frame);
+
+            // todo fix check for null
+            if (boardDetectorResult.getCorners() != null && boardDetectorResult.getCorners().size() == 4) {
+                var size = frame.size();
+
+                var srcMat = Converters.vector_Point2f_to_Mat(boardDetectorResult.getCorners());
+                var margin = 100;
+                var dst = new MatOfPoint2f(
+                        new org.opencv.core.Point(margin, margin),
+                        new org.opencv.core.Point(size.width - margin, margin),
+                        new org.opencv.core.Point(size.width - margin, size.height - margin),
+                        new Point(margin, size.height - margin)
+                );
+
+                // Calculate Homo
+                this.homeographyMat = Imgproc.getPerspectiveTransform(srcMat, dst);
+
+                Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, size);
+                this.isHomo = true;
+            } else {
+                frame.copyTo(outFrame);
+            }
+        }
     }
 
     private void cameraFrameUpdated(Mat frame) {

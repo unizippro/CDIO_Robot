@@ -44,13 +44,15 @@ public class CalibratedCamera extends Camera {
     private List<Mat> rvecs = new ArrayList<>();
     private List<Mat> tvecs = new ArrayList<>();
 
-    private boolean isHomo = false;
-    private Mat HomographyMat;
-
     private CalibrationPossibleListener calibrationPossibleListener;
+    private CalibrationCustomHandler calibrationCustomHandler;
 
     public interface CalibrationPossibleListener {
         void calibrationChanged(boolean canCalibrate);
+    }
+
+    public interface CalibrationCustomHandler {
+        void handleCustomCalibration(Mat frame, Mat outFrame);
     }
 
 
@@ -100,10 +102,8 @@ public class CalibratedCamera extends Camera {
 
             Mat updatedFrame = new Mat();
 
-            if (this.isHomo) {
-                Imgproc.warpPerspective(outFrame, updatedFrame, this.HomographyMat, outFrame.size());
-            } else {
-                this.handleHomeography(outFrame, updatedFrame);
+            if (this.calibrationCustomHandler != null) {
+                this.calibrationCustomHandler.handleCustomCalibration(outFrame, updatedFrame);
             }
 
             frame.release();
@@ -175,6 +175,10 @@ public class CalibratedCamera extends Camera {
         this.calibrationPossibleListener = listener;
     }
 
+    public void setCalibrationCustomHandler(CalibrationCustomHandler calibrationCustomHandler) {
+        this.calibrationCustomHandler = calibrationCustomHandler;
+    }
+
     private void drawCalibration(Mat frame, Mat outFrame) {
         frame.copyTo(outFrame);
 
@@ -194,32 +198,6 @@ public class CalibratedCamera extends Camera {
         if (canCalibrate != this.canCalibrate && this.calibrationPossibleListener != null) {
             this.canCalibrate = canCalibrate;
             this.calibrationPossibleListener.calibrationChanged(canCalibrate);
-        }
-    }
-
-    private void handleHomeography(Mat frame, Mat outFrame) {
-        var boardDetectorResult = this.boardDetector.run(frame);
-
-        // todo fix check for null
-        if (boardDetectorResult.getCorners() != null && boardDetectorResult.getCorners().size() == 4) {
-            var size = frame.size();
-
-            var srcMat = Converters.vector_Point2f_to_Mat(boardDetectorResult.getCorners());
-            var margin = 100;
-            var dst = new MatOfPoint2f(
-                    new Point(margin, margin),
-                    new Point(size.width - margin, margin),
-                    new Point(size.width - margin, size.height - margin),
-                    new Point(margin, size.height - margin)
-            );
-
-            // Calculate Homo
-            this.HomographyMat = Imgproc.getPerspectiveTransform(srcMat, dst);
-
-            Imgproc.warpPerspective(frame, outFrame, this.HomographyMat, size);
-            this.isHomo = true;
-        } else {
-            frame.copyTo(outFrame);
         }
     }
 
