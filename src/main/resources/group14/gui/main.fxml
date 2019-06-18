@@ -231,19 +231,19 @@
                                 />
 
                                 <Label layoutX="757.0" layoutY="15.0" text="Min blue" />
-                                <Slider fx:id="rbgMinBlueSliderCorners" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="minHBoardSliderCorners" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                                 <Label layoutX="757.0" layoutY="75.0" text="Max blue" />
-                                <Slider fx:id="rbgMaxBlueSliderCorners" layoutX="757.0" layoutY="95.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="maxHBoardSliderCorners" layoutX="757.0" layoutY="95.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
                                 <Label layoutX="757.0" layoutY="145.0" text="Min green" />
-                                <Slider fx:id="rbgMinGreenSliderCorners" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="minSBoardSliderCorners" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                                 <Label layoutX="757.0" layoutY="205.0" text="Max green" />
-                                <Slider fx:id="rbgMaxGreenSliderCorners" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="maxSBoardSliderCorners" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
                                 <Label layoutX="757.0" layoutY="275.0" text="Min red" />
-                                <Slider fx:id="rbgMinRedSliderCorners" layoutX="757.0" layoutY="295.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="minVBoardSliderCorners" layoutX="757.0" layoutY="295.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                                 <Label layoutX="757.0" layoutY="335.0" text="Max red" />
-                                <Slider fx:id="rbgMaxRedSliderCorners" layoutX="757.0" layoutY="355.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="maxVBoardSliderCorners" layoutX="757.0" layoutY="355.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                             </children>
                         </AnchorPane>
                     </content>
