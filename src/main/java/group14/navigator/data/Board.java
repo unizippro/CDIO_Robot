@@ -10,18 +10,18 @@ import java.util.List;
 
 public class Board {
 
-    private static final double SAFETY_MARGIN = 10;
-
     private Rectangle2D.Double boundingRect;
+    private final double safetyMargin;
 
     private final List<Area> areas = new ArrayList<>();
 
     public Board(Rectangle2D.Double boundingRect) {
-        this(boundingRect, new Point2D.Double(boundingRect.width / 2, 0));
+        this(boundingRect, new Point2D.Double(boundingRect.width / 2, 0), 0);
     }
 
-    public Board(Rectangle2D.Double boundingRect, Point2D.Double splitAt) {
+    public Board(Rectangle2D.Double boundingRect, Point2D.Double splitAt, double safetyMargin) {
         this.boundingRect = boundingRect;
+        this.safetyMargin = safetyMargin;
         this.splitAt(splitAt);
     }
 
@@ -65,8 +65,8 @@ public class Board {
 
         this.areas.clear();
         this.areas.addAll(Arrays.asList(
-                new Area(verticalSplit.get(0), SAFETY_MARGIN),
-                new Area(verticalSplit.get(1), SAFETY_MARGIN)
+                new Area(verticalSplit.get(0), this.safetyMargin),
+                new Area(verticalSplit.get(1), this.safetyMargin)
         ));
     }
 

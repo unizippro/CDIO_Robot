@@ -4,10 +4,7 @@ import group14.navigator.Calculator;
 import group14.robot.data.Instruction;
 import lejos.robotics.geometry.Point2D;
 
-public class Robot {
-
-    private static final double DISTANCE_REAR_POINT_TO_FRONT = 10;//29.5;
-    private static final double DISTANCE_REAR_POINT_TO_ROTATING = 5;//11;
+public abstract class Robot {
 
     private final Point2D.Double frontPoint;
     private final Point2D.Double rearPoint;
@@ -17,13 +14,16 @@ public class Robot {
         this.rearPoint = rearPoint;
     }
 
+    protected abstract double getDistanceRearPointToFront();
+    protected abstract double getDistanceRearPointToRotating();
+
     public void updatePosition(Point2D.Double frontPoint, Point2D.Double rearPoint) {
         this.frontPoint.setLocation(frontPoint);
         this.rearPoint.setLocation(rearPoint);
     }
 
     public Point2D.Double getFrontPosition() {
-        return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), DISTANCE_REAR_POINT_TO_FRONT);
+        return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), this.getDistanceRearPointToFront());
     }
 
     public double getDirectionAngle() {
@@ -31,7 +31,7 @@ public class Robot {
     }
 
     public Point2D.Double getRotatingPoint() {
-        return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), DISTANCE_REAR_POINT_TO_ROTATING);
+        return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), this.getDistanceRearPointToRotating());
     }
 
     public double getDistanceTo(Point2D.Double point) {
@@ -51,7 +51,7 @@ public class Robot {
                 var rotatingPoint = this.getRotatingPoint();
                 var newAngle = directionAngle + instruction.getAmount();
 
-                this.rearPoint.setLocation(Calculator.getVectorEndPoint(rotatingPoint, Calculator.getOppositeAngle(newAngle), DISTANCE_REAR_POINT_TO_ROTATING));
+                this.rearPoint.setLocation(Calculator.getVectorEndPoint(rotatingPoint, Calculator.getOppositeAngle(newAngle), this.getDistanceRearPointToRotating()));
                 this.frontPoint.setLocation(Calculator.getVectorEndPoint(this.rearPoint, newAngle, 1)); // todo: calculate magnitude
                 break;
 
@@ -63,6 +63,6 @@ public class Robot {
     }
 
     private double getDistanceFromRotatingPointToFront() {
-        return DISTANCE_REAR_POINT_TO_FRONT - DISTANCE_REAR_POINT_TO_ROTATING;
+        return this.getDistanceRearPointToFront() - this.getDistanceRearPointToRotating();
     }
 }

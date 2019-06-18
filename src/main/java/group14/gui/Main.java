@@ -7,13 +7,13 @@ import group14.gui.components.CoordinateSystem;
 import group14.navigator.Navigator;
 import group14.navigator.Utils;
 import group14.navigator.data.Board;
-import group14.navigator.data.Robot;
 import group14.opencv.CalibratedCamera;
 import group14.opencv.detectors.ball_detector.BallDetector;
 import group14.opencv.detectors.board_detector.BoardDetector;
 import group14.opencv.detectors.robot_detector.RobotDetector;
 import group14.opencv.utils.ImageConverter;
 import group14.robot.IRobotManager;
+import group14.robot.Robot;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -361,7 +361,7 @@ public class Main {
                 var boardPoints = Arrays.asList(resultBoard.getCorners().get(0), resultBoard.getCorners().get(2));
                 var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints));
 
-                var board = new Board(boardRect, Utils.rectangleGetCenter(boardRect));
+                var board = new Board(boardRect, Utils.rectangleGetCenter(boardRect), 15);
                 var robot = new Robot(Utils.toNavigatorPoint(resultRobot.getPointFront()), Utils.toNavigatorPoint(resultRobot.getPointBack()));
 
                 this.navigator = new Navigator(board, robot);

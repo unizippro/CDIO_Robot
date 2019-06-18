@@ -22,7 +22,7 @@ public class NavigatorTest {
     @Before
     public void setUp() throws Exception {
         this.board = new Board(new Rectangle2D.Double(0, 0, 200, 200));
-        this.robot = new Robot(new Point2D.Double(30, 33), new Point2D.Double(30, 35));
+        this.robot = new TestRobot(new Point2D.Double(30, 33), new Point2D.Double(30, 35));
         this.navigator = new Navigator(this.board, this.robot);
     }
 
@@ -85,8 +85,8 @@ public class NavigatorTest {
 
     @Test
     public void completeNavigationTest() throws Exception {
-        var robot = new Robot(new Point2D.Double(1, 1), new Point2D.Double(0, 0));
-        var board = new Board(new Rectangle2D.Double(0, 0, 300, 200), new Point2D.Double(200, 100));
+        var robot = new TestRobot(new Point2D.Double(1, 1), new Point2D.Double(0, 0));
+        var board = new Board(new Rectangle2D.Double(0, 0, 300, 200), new Point2D.Double(200, 100), 10);
         var navigator = new Navigator(board, robot);
 
         navigator.updateBallPositions(Arrays.asList(
@@ -270,6 +270,23 @@ public class NavigatorTest {
          */
         instructionSet = navigator.calculateInstructionSet();
         assertEquals(0, instructionSet.size(), 0);
+    }
+
+
+    private class TestRobot extends Robot {
+        TestRobot(Point2D.Double frontPoint, Point2D.Double rearPoint) {
+            super(frontPoint, rearPoint);
+        }
+
+        @Override
+        protected double getDistanceRearPointToFront() {
+            return 10;
+        }
+
+        @Override
+        protected double getDistanceRearPointToRotating() {
+            return 5;
+        }
     }
 
 }
