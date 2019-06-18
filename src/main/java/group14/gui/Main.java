@@ -38,6 +38,8 @@ import java.util.stream.Stream;
 
 public class Main {
 
+    private static final double LONG_LENGTH = 166.8;
+
     private IRobotManager robotManager;
 
     private BallDetector ballDetector = new BallDetector();
@@ -51,6 +53,8 @@ public class Main {
 
     private boolean isHomo = false;
     private Mat homeographyMat;
+
+    private double pixelsPrCm;
 
     @FXML
     private ChoiceBox testImages;
@@ -304,6 +308,9 @@ public class Main {
                         new org.opencv.core.Point(size.width - margin, size.height - margin),
                         new Point(margin, size.height - margin)
                 );
+
+                this.pixelsPrCm = ((size.width - margin) - margin) / LONG_LENGTH;
+                System.out.println("Pixel ratio: " + this.pixelsPrCm);
 
                 // Calculate Homo
                 this.homeographyMat = Imgproc.getPerspectiveTransform(srcMat, dst);
