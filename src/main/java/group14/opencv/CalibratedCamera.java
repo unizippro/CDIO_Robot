@@ -6,6 +6,7 @@ import group14.opencv.detectors.board_detector.BoardDetector;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -19,13 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CalibratedCamera extends Camera {
 
-    private final BoardDetector boardDetector;
-    private double longBoard = 1670;
-    private double shortBoard = 1220;
-    private int extrutionH = (int)(1080-shortBoard)/2;      //100;       //(1920/1080)*(shortBoard+2*extrutionH) =  longBoard+2extrutipnL
-    private int extrutionL = (int)(1920-longBoard)/2;       //(int)(((1920/1080)*(shortBoard+2*extrutionH)) - longBoard)/2;    //(((1920/1080)*(shortBoard+2*extrutionH)) - longBoard)/2 =  extrutipnL // 427.222222222
-    private ArrayList<Point> homeographyArray = new ArrayList<>();
-    private MatOfPoint2f destPoints = new MatOfPoint2f();
+    private BoardDetector boardDetector;
 
     private int numberOfCalibrations = 10;
     private int chessboardCornersHorizontal;
@@ -49,9 +44,10 @@ public class CalibratedCamera extends Camera {
     private List<Mat> rvecs = new ArrayList<>();
     private List<Mat> tvecs = new ArrayList<>();
 
-    private CalibrationPossibleListener calibrationPossibleListener;
     private boolean isHomo = false;
     private Mat HomographyMat;
+
+    private CalibrationPossibleListener calibrationPossibleListener;
 
     public interface CalibrationPossibleListener {
         void calibrationChanged(boolean canCalibrate);
@@ -63,6 +59,8 @@ public class CalibratedCamera extends Camera {
 
         this.chessboardCornersHorizontal = chessboardCornersHorizontal;
         this.chessboardCornersVertical = chessboardCornersVertical;
+
+        this.boardDetector = new BoardDetector(boardDetectorConfig);
 
         this.resetCalibration();
 
@@ -81,21 +79,6 @@ public class CalibratedCamera extends Camera {
             this.isCalibrated = true;
             System.out.println("Calibrated from file");
         }
-
-        //Ready homeo
-
-
-
-        homeographyArray.add(new Point(extrutionL+longBoard,extrutionH));                   //Upper right
-        homeographyArray.add(new Point(extrutionL+longBoard,extrutionH+ shortBoard));    //Lower right
-        homeographyArray.add(new Point(extrutionL,extrutionH + shortBoard));                //Lower left
-
-        homeographyArray.add(new Point(extrutionL,extrutionH));                                //Upper left
-
-        destPoints.fromList(homeographyArray);
-
-
-        this.boardDetector = new BoardDetector(boardDetectorConfig);
     }
 
     public CalibratedCamera(int cameraIndex, int numberOfCalibrations, int chessboardCornersHorizontal, int chessboardCornersVertical, BoardDetector.Config boardDetectorConfig) {
@@ -111,39 +94,20 @@ public class CalibratedCamera extends Camera {
 
             if (this.isCalibrated) {
                 Calib3d.undistort(frame, outFrame, this.intrinsic, this.distCoeffs);
-
             } else {
                 this.drawCalibration(frame, outFrame);
             }
 
             Mat updatedFrame = new Mat();
-            updatedFrame.copyTo(outFrame);
 
-            if (this.isHomo){
-                //Do Homo
-                Imgproc.warpPerspective(outFrame, updatedFrame, HomographyMat, new Size(longBoard+2*extrutionL, shortBoard+2*extrutionH));
-                //TODO Play with size and then resize.
-                Mat imageToResize = new Mat();
-                imageToResize.copyTo(updatedFrame);
-                Imgproc.resize( imageToResize, updatedFrame, new Size(1920,1080) );
-                this.isHomo = true;
+            if (this.isHomo) {
+                Imgproc.warpPerspective(outFrame, updatedFrame, this.HomographyMat, outFrame.size());
             } else {
-                //Calculate Homo
-                var boardDetectorResult = boardDetector.run(outFrame);
+                this.handleHomeography(outFrame, updatedFrame);
+            }
 
-                var pointsInImage = new MatOfPoint2f();
-                //See if board is found
-                //todo fix check for null
-                if(boardDetectorResult.getCorners() != null && boardDetectorResult.getCorners().size() == 4) {
-                    System.out.println(boardDetectorResult.getCorners());
-                    pointsInImage.fromList(boardDetectorResult.getCorners());
-
-                    HomographyMat = Imgproc.getPerspectiveTransform(pointsInImage, destPoints);
-
-                    Imgproc.warpPerspective(outFrame, updatedFrame, HomographyMat, new Size(longBoard, shortBoard));
-                    this.isHomo = true;
-                }
-            }//end is homo
+            frame.release();
+            outFrame.release();
 
             updatedHandler.frameUpdated(updatedFrame);
         });
@@ -230,6 +194,32 @@ public class CalibratedCamera extends Camera {
         if (canCalibrate != this.canCalibrate && this.calibrationPossibleListener != null) {
             this.canCalibrate = canCalibrate;
             this.calibrationPossibleListener.calibrationChanged(canCalibrate);
+        }
+    }
+
+    private void handleHomeography(Mat frame, Mat outFrame) {
+        var boardDetectorResult = this.boardDetector.run(frame);
+
+        // todo fix check for null
+        if (boardDetectorResult.getCorners() != null && boardDetectorResult.getCorners().size() == 4) {
+            var size = frame.size();
+
+            var srcMat = Converters.vector_Point2f_to_Mat(boardDetectorResult.getCorners());
+            var margin = 100;
+            var dst = new MatOfPoint2f(
+                    new Point(margin, margin),
+                    new Point(size.width - margin, margin),
+                    new Point(size.width - margin, size.height - margin),
+                    new Point(margin, size.height - margin)
+            );
+
+            // Calculate Homo
+            this.HomographyMat = Imgproc.getPerspectiveTransform(srcMat, dst);
+
+            Imgproc.warpPerspective(frame, outFrame, this.HomographyMat, size);
+            this.isHomo = true;
+        } else {
+            frame.copyTo(outFrame);
         }
     }
 
