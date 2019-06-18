@@ -22,6 +22,8 @@ public class CalibratedCamera extends Camera {
     private final BoardDetector boardDetector;
     private double longBoard = 1670;
     private double shortBoard = 1220;
+    private int extrutionH = (int)(1080-shortBoard)/2;      //100;       //(1920/1080)*(shortBoard+2*extrutionH) =  longBoard+2extrutipnL
+    private int extrutionL = (int)(1920-longBoard)/2;       //(int)(((1920/1080)*(shortBoard+2*extrutionH)) - longBoard)/2;    //(((1920/1080)*(shortBoard+2*extrutionH)) - longBoard)/2 =  extrutipnL // 427.222222222
     private ArrayList<Point> homeographyArray = new ArrayList<>();
     private MatOfPoint2f destPoints = new MatOfPoint2f();
 
@@ -81,10 +83,15 @@ public class CalibratedCamera extends Camera {
         }
 
         //Ready homeo
-        homeographyArray.add(new Point(5,5));
-        homeographyArray.add(new Point(5+longBoard,5));
-        homeographyArray.add(new Point(5,5 + shortBoard));
-        homeographyArray.add(new Point(5+longBoard,5+ shortBoard));
+
+
+
+        homeographyArray.add(new Point(extrutionL+longBoard,extrutionH));                   //Upper right
+        homeographyArray.add(new Point(extrutionL+longBoard,extrutionH+ shortBoard));    //Lower right
+        homeographyArray.add(new Point(extrutionL,extrutionH + shortBoard));                //Lower left
+
+        homeographyArray.add(new Point(extrutionL,extrutionH));                                //Upper left
+
         destPoints.fromList(homeographyArray);
 
 
@@ -109,31 +116,36 @@ public class CalibratedCamera extends Camera {
                 this.drawCalibration(frame, outFrame);
             }
 
+            Mat updatedFrame = new Mat();
+            updatedFrame.copyTo(outFrame);
 
             if (this.isHomo){
                 //Do Homo
-                Mat updatedFrame = new Mat();
-                Imgproc.warpPerspective(outFrame, updatedFrame, HomographyMat, new Size(longBoard, shortBoard));
+                Imgproc.warpPerspective(outFrame, updatedFrame, HomographyMat, new Size(longBoard+2*extrutionL, shortBoard+2*extrutionH));
+                //TODO Play with size and then resize.
+                Mat imageToResize = new Mat();
+                imageToResize.copyTo(updatedFrame);
+                Imgproc.resize( imageToResize, updatedFrame, new Size(1920,1080) );
                 this.isHomo = true;
-                outFrame = updatedFrame;
             } else {
                 //Calculate Homo
                 var boardDetectorResult = boardDetector.run(outFrame);
 
                 var pointsInImage = new MatOfPoint2f();
                 //See if board is found
-                if(boardDetectorResult.getCorners().toList().size() == 4) {
-                    pointsInImage.fromList(boardDetectorResult.getCorners().toList());
+                //todo fix check for null
+                if(boardDetectorResult.getCorners() != null && boardDetectorResult.getCorners().size() == 4) {
+                    System.out.println(boardDetectorResult.getCorners());
+                    pointsInImage.fromList(boardDetectorResult.getCorners());
 
-                    HomographyMat = Imgproc.getPerspectiveTransform(pointsInImage, destPoints); //Need corners
-                    Mat updatedFrame = new Mat();
+                    HomographyMat = Imgproc.getPerspectiveTransform(pointsInImage, destPoints);
+
                     Imgproc.warpPerspective(outFrame, updatedFrame, HomographyMat, new Size(longBoard, shortBoard));
                     this.isHomo = true;
-                    outFrame = updatedFrame;
                 }
-            }
+            }//end is homo
 
-            updatedHandler.frameUpdated(outFrame);
+            updatedHandler.frameUpdated(updatedFrame);
         });
     }
 
