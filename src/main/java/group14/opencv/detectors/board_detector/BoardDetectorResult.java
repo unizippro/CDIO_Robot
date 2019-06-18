@@ -25,6 +25,10 @@ public class BoardDetectorResult {
 
     public Mat getBgrThresh(){return this.hsvThresh;}
 
+    //Index 0 = upperRight
+    //Index 1 = downRight
+    //Index 2 = downLeft
+    //Index 3 = upperLeft
     public List<Point> getCorners() {
         return this.corners;
     }
