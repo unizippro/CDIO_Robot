@@ -12,24 +12,25 @@ import org.opencv.imgproc.Imgproc;
 
 public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.Config> {
 
+    public BoardDetector(Config boardDetectorConfig) {
+        this.setConfig(boardDetectorConfig);
+    }
+
+    public BoardDetector() {
+        super();
+    }
+
     public static class Config {
         public AtomicDouble cornerMarginPercentage = new AtomicDouble(30);
         public AtomicInteger blockSize = new AtomicInteger(11);
         public AtomicInteger kSize = new AtomicInteger(9);
-        public AtomicInteger minRed = new AtomicInteger(200);
-        public AtomicInteger maxRed = new AtomicInteger(255);
-        public AtomicInteger minGreen = new AtomicInteger(0);
-        public AtomicInteger maxGreen = new AtomicInteger(120);
-        public AtomicInteger minBlue = new AtomicInteger(0);
-        public AtomicInteger maxBlue = new AtomicInteger(120);
+        public AtomicInteger minHBoard = new AtomicInteger(0);
+        public AtomicInteger maxHBoard = new AtomicInteger(120);
+        public AtomicInteger minSBoard = new AtomicInteger(0);
+        public AtomicInteger maxSBoard = new AtomicInteger(120);
+        public AtomicInteger minVBoard = new AtomicInteger(180);
+        public AtomicInteger maxVBoard = new AtomicInteger(255);
     }
-
-    //int minRed = 160;
-    //int minGreen = 0;
-    //int minBlue = 0;
-    //int maxRed = 255;
-    //int maxGreen = 120;
-    //int maxBlue = 120;
 
     public BoardDetectorResult run(Mat src) {
         var out = new Mat();
@@ -37,60 +38,68 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
 
         var config = this.getConfig();
 
-        var bgrThresh = this.threshold(src, new Scalar(config.minBlue.get(), config.minGreen.get(), config.minRed.get()), new Scalar(config.maxBlue.get(), config.maxGreen.get(), config.maxRed.get()));
+        Mat hsv = new Mat();
+        Imgproc.cvtColor(src, hsv, Imgproc.COLOR_BGR2HSV);
+        Mat hsvThresh  = this.threshold(src, new Scalar(config.minHBoard.get(), config.minSBoard.get(), config.minVBoard.get()), new Scalar(config.maxHBoard.get(), config.maxSBoard.get(), config.maxVBoard.get()));
 
 
-        Mat dilateEle = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,2));
-        Imgproc.dilate(bgrThresh, bgrThresh, dilateEle);
-        Imgproc.dilate(bgrThresh, bgrThresh, dilateEle);
-        Imgproc.dilate(bgrThresh, bgrThresh, dilateEle);
+        Mat dilateEle = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4));
+        Imgproc.dilate(hsvThresh, hsvThresh, dilateEle);
+        Imgproc.dilate(hsvThresh, hsvThresh, dilateEle);
+        Imgproc.dilate(hsvThresh, hsvThresh, dilateEle);
 
-        Mat dest = Mat.zeros(bgrThresh.size(), CvType.CV_8UC3);
-        Mat destNorm = new Mat();
-        Mat destNormScaled = new Mat();
+        Mat cannyOutput = new Mat();
+        Imgproc.Canny(hsvThresh, cannyOutput, 200, 400);
 
-        Imgproc.cornerHarris(bgrThresh, dest, config.blockSize.get(), config.kSize.get(), 0.1);
-        Core.normalize(dest, destNorm, 0, 255, Core.NORM_MINMAX);
-        Core.convertScaleAbs(destNorm, destNormScaled);
+        List<MatOfPoint> contours = new ArrayList<>();
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(cannyOutput, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        float[] destNormData = new float[(int) (destNorm.total() * destNorm.channels())];
-        destNorm.get(0, 0, destNormData);
+        MatOfPoint2f approxcurve = new MatOfPoint2f();
 
-        int threshold = 200;
-        List<Point> pointList = new ArrayList<>();
-        for (int i = 0; i < destNorm.rows(); i++) {
-            for (int j = 0; j < destNorm.cols(); j++) {
-                if ((int) destNormData[i * destNorm.cols() + j] > threshold) {
-                    pointList.add(new Point(j, i));
+        List<MatOfPoint> cornerPoints = new ArrayList<>();
+        List<Point> finalCornerPoints = new ArrayList<>();
+        Rect cross = null;
+        double area=20000000;
+
+        for (int i = 0; i < contours.size(); i++) {
+            //Imgproc.drawContours(drawing, contours, i, new Scalar(255));
+            MatOfPoint2f contour2f = new MatOfPoint2f(contours.get(i).toArray());
+            double approxDistance = Imgproc.arcLength(contour2f, true) * 0.02;
+            if (approxDistance > 1) {
+                Imgproc.approxPolyDP(contour2f, approxcurve, approxDistance, true);
+
+                //Convert back to MatOfPoint
+                MatOfPoint points = new MatOfPoint(approxcurve.toArray());
+
+                if (points.total() == 12) {
+                    cross = Imgproc.boundingRect(points);
+                    //System.out.println(cross);
+                    Imgproc.rectangle(out, cross, new Scalar(255));
                 }
+
+                if (points.total() == 4) {
+                    cornerPoints.add(points);
+                    //System.out.println(Imgproc.contourArea(points));
+                }
+
             }
         }
-
-        var cornerPoints = new Corners(src.size(), this.getConfig().cornerMarginPercentage.get());
-        cornerPoints.calculatePoints(pointList);
-        cornerPoints.draw(out);
-
-        // Calculate cross position
-        var center = new Point(src.width() / 2, src.height() / 2);
-        var marginWidth = center.x * (this.getConfig().cornerMarginPercentage.get() / 100.0);
-        var marginHeight = center.y * (this.getConfig().cornerMarginPercentage.get() / 100.0);
-        var centerRect = new Rect(new Point(center.x - marginWidth, center.y - marginHeight), new Point(center.x + marginWidth, center.y + marginHeight));
-        List<Point> possibleCrossPointList = new ArrayList<>();
-        for (Point point : pointList) {
-            if (centerRect.contains(point)) {
-                possibleCrossPointList.add(point);
-                //Imgproc.circle(out, point, 5, new Scalar(0), 2, 8, 0);
+        int boardArea = 900000;
+        for(MatOfPoint matCornerPoints: cornerPoints){
+            if(Imgproc.contourArea(matCornerPoints)<area && Imgproc.contourArea(matCornerPoints)>boardArea){
+                if(finalCornerPoints.size()==0){finalCornerPoints.clear();}
+                finalCornerPoints = matCornerPoints.toList();
             }
         }
-
-        List<Point> finalCrossPointList = this.calculatePoints(possibleCrossPointList);
-        for (Point point : finalCrossPointList) {
-            Imgproc.circle(out, point, 5, new Scalar(0), 2, 8, 0);
+        List<Point> finalCornerPointsSorted = new ArrayList<>();
+        for(Point point: finalCornerPoints){
+            //System.out.println(point);
+            Imgproc.circle(out, point, 20, new Scalar(255), 3, 8, 0);
         }
-//        Imgproc.rectangle(out, new Point(finalCrossPointList.get(0).x, finalCrossPointList.get(2).y), new Point(finalCrossPointList.get(1).x, finalCrossPointList.get(3).y), new Scalar(0));
-//        Imgproc.rectangle(out, centerRect, new Scalar(255, 255, 0), 3);
-
-        return new BoardDetectorResult(out, bgrThresh, cornerPoints, finalCrossPointList);
+        if(finalCornerPoints.size()!=0){finalCornerPointsSorted = this.sortPoints(finalCornerPoints);}
+        System.out.println(finalCornerPointsSorted);
+        return new BoardDetectorResult(out, hsvThresh, finalCornerPoints, cross);
     }
 
     @Override
@@ -98,42 +107,20 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
         return new Config();
     }
 
-
-    private List<Point> calculatePoints(List<Point> pointList) {
-        if (pointList.isEmpty()) {
-            return new ArrayList<>();
+    private List<Point> sortPoints(List<Point> points){
+        Point upperLeft = new Point(2000,2000);
+        Point upperRight = new Point(0, 2000);
+        Point lowerRight = new Point(0, 0);
+        Point lowerLeft = new Point(2000, 0);
+        List<Point> soretedList = new ArrayList<>();
+        for(Point point: points){
+            if(point.x<upperLeft.x && point.y<upperLeft.y){upperLeft = point;}
+            if(point.x>upperRight.x && point.y<upperRight.y){upperRight = point;}
+            if(point.x>lowerRight.x && point.y>lowerRight.y){lowerRight = point;}
+            if(point.x<lowerLeft.x && point.y>lowerLeft.y){lowerLeft = point;}
         }
-
-        List<Point> xList = this.sortX(pointList);
-        List<Point> yList = this.sortY(pointList);
-
-        Point left = xList.get(0);
-        Point right = xList.get(xList.size() - 1);
-        Point up = yList.get(0);
-        Point down = yList.get(yList.size() - 1);
-
-        List<Point> crossPoints = new ArrayList<>();
-        crossPoints.add(left);
-        crossPoints.add(right);
-        crossPoints.add(up);
-        crossPoints.add(down);
-
-        return crossPoints;
-    }
-
-
-    private List<Point> sortX(List<Point> pointList) {
-        List<Point> xSortedList = new ArrayList<>(pointList);
-        xSortedList.sort(Comparator.comparingInt(o -> (int) o.x));
-
-        return xSortedList;
-    }
-
-    private List<Point> sortY(List<Point> pointList) {
-        List<Point> ySortedList = new ArrayList<>(pointList);
-        ySortedList.sort(Comparator.comparingInt(o -> (int) o.y));
-
-        return ySortedList;
+        soretedList.add(upperLeft);soretedList.add(upperRight);soretedList.add(lowerRight);soretedList.add(lowerLeft);
+        return  soretedList;
     }
 
     private Mat threshold(Mat src, Scalar lower, Scalar upper) {

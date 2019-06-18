@@ -24,8 +24,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 
-import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
@@ -34,16 +37,23 @@ import java.util.stream.Stream;
 
 public class Main {
 
+    private static final double LONG_LENGTH = 166.8;
+
     private IRobotManager robotManager;
 
-    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
-
     private BallDetector ballDetector = new BallDetector();
-    private BoardDetector boardDetector = new BoardDetector();
+    private BoardDetector.Config boardDetectorConfig = new BoardDetector.Config();
+    private BoardDetector boardDetector = new BoardDetector(boardDetectorConfig);
     private RobotDetector robotDetector = new RobotDetector();
     private RoadController roadController = new RoadController();
     private boolean isInitialized = false;
 
+    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9, boardDetectorConfig);
+
+    private boolean isHomo = false;
+    private Mat homeographyMat;
+
+    private double pixelsPrCm;
 
     @FXML
     private ChoiceBox testImages;
@@ -112,17 +122,17 @@ public class Main {
     @FXML
     public ImageView imageThreshCorners;
     @FXML
-    public Slider rbgMinRedSliderCorners;
+    public Slider minHBoardSliderCorners;
     @FXML
-    public Slider rbgMaxRedSliderCorners;
+    public Slider maxHBoardSliderCorners;
     @FXML
-    public Slider rbgMinBlueSliderCorners;
+    public Slider minSBoardSliderCorners;
     @FXML
-    public Slider rbgMaxBlueSliderCorners;
+    public Slider maxSBoardSliderCorners;
     @FXML
-    public Slider rbgMinGreenSliderCorners;
+    public Slider minVBoardSliderCorners;
     @FXML
-    public Slider rbgMaxGreenSliderCorners;
+    public Slider maxVBoardSliderCorners;
     @FXML
     public Slider blockSizeSlider;
     @FXML
@@ -153,6 +163,7 @@ public class Main {
         this.robotManager = robotManager;
 
         this.camera.setCalibrationPossibleListener(this::cameraCalibrationChanged);
+        this.camera.setCalibrationCustomHandler(this::customCalibration);
     }
 
 
@@ -160,12 +171,12 @@ public class Main {
     public void initialize() {
 //        this.timer.schedule(this.updateDistance, 0, 1000);
 
-        var fileItems = new ArrayList<FileSelectItem>();
-        for (String file : Resources.TestImages.getAllFiles()) {
-            fileItems.add(new FileSelectItem(file));
-        }
+        //var fileItems = new ArrayList<FileSelectItem>();
+        //for (String file : Resources.TestImages.getAllFiles()) {
+        //    fileItems.add(new FileSelectItem(file));
+        //}
 
-        this.testImages.setItems(FXCollections.observableArrayList(fileItems));
+        //this.testImages.setItems(FXCollections.observableArrayList(fileItems));
 
         this.setPoints(this.generateCoordinates());
 
@@ -200,12 +211,12 @@ public class Main {
         this.cornerMarginSlider.setValue(boardDetectorConfig.cornerMarginPercentage.get());
         this.blockSizeSlider.setValue(boardDetectorConfig.blockSize.get());
         this.kSizeSlider.setValue(boardDetectorConfig.kSize.get());
-        this.rbgMinRedSliderCorners.setValue(boardDetectorConfig.minRed.get());
-        this.rbgMaxRedSliderCorners.setValue(boardDetectorConfig.maxRed.get());
-        this.rbgMinBlueSliderCorners.setValue(boardDetectorConfig.minBlue.get());
-        this.rbgMaxBlueSliderCorners.setValue(boardDetectorConfig.maxBlue.get());
-        this.rbgMinGreenSliderCorners.setValue(boardDetectorConfig.minGreen.get());
-        this.rbgMaxGreenSliderCorners.setValue(boardDetectorConfig.maxGreen.get());
+        this.minHBoardSliderCorners.setValue(boardDetectorConfig.minHBoard.get());
+        this.maxHBoardSliderCorners.setValue(boardDetectorConfig.maxHBoard.get());
+        this.minSBoardSliderCorners.setValue(boardDetectorConfig.minSBoard.get());
+        this.maxSBoardSliderCorners.setValue(boardDetectorConfig.maxSBoard.get());
+        this.minVBoardSliderCorners.setValue(boardDetectorConfig.minVBoard.get());
+        this.maxVBoardSliderCorners.setValue(boardDetectorConfig.maxVBoard.get());
 
 
         if (Application.openCvLoaded) {
@@ -278,6 +289,39 @@ public class Main {
 //        this.camera.updateWithImage(((FileSelectItem) this.testImages.getValue()).filePath);
     }
 
+    private void customCalibration(Mat frame, Mat outFrame) {
+        if (this.isHomo) {
+            Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, frame.size());
+        } else {
+            var boardDetectorResult = this.boardDetector.run(frame);
+
+            // todo fix check for null
+            if (boardDetectorResult.getCorners() != null && boardDetectorResult.getCorners().size() == 4) {
+                var size = frame.size();
+
+                var srcMat = Converters.vector_Point2f_to_Mat(boardDetectorResult.getCorners());
+                var margin = 100;
+                var dst = new MatOfPoint2f(
+                        new org.opencv.core.Point(margin, margin),
+                        new org.opencv.core.Point(size.width - margin, margin),
+                        new org.opencv.core.Point(size.width - margin, size.height - margin),
+                        new Point(margin, size.height - margin)
+                );
+
+                this.pixelsPrCm = ((size.width - margin) - margin) / LONG_LENGTH;
+                System.out.println("Pixel ratio: " + this.pixelsPrCm);
+
+                // Calculate Homo
+                this.homeographyMat = Imgproc.getPerspectiveTransform(srcMat, dst);
+
+                Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, size);
+                this.isHomo = true;
+            } else {
+                frame.copyTo(outFrame);
+            }
+        }
+    }
+
     private void cameraFrameUpdated(Mat frame) {
         var image = ImageConverter.matToImageFX(frame);
 
@@ -320,20 +364,20 @@ public class Main {
                 .collect(Collectors.toList());
 
         if (!isInitialized) {
-            List<Point> crossPoints = new ArrayList<>();
-            crossPoints.add(new Point(1920/2-70, 1080/2));
-            crossPoints.add(new Point(1920/2+70, 1080/2));
-            crossPoints.add(new Point(1920/2, 1080/2+70));
-            crossPoints.add(new Point(1920/2, 1080/2-70));
+            List<java.awt.Point> crossPoints = new ArrayList<>();
+            crossPoints.add(new java.awt.Point(1920/2-70, 1080/2));
+            crossPoints.add(new java.awt.Point(1920/2+70, 1080/2));
+            crossPoints.add(new java.awt.Point(1920/2, 1080/2+70));
+            crossPoints.add(new java.awt.Point(1920/2, 1080/2-70));
 
             this.roadController.initialize(
-                    resultBoard.getCorners().toList().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
+                    resultBoard.getCorners().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
                     balls,
                     crossPoints,
                     //resultBoard.getCross().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
                     robotPosition
             );
-            new SmartConverter().calculateBoard(resultBoard.getCorners().toList().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
+            new SmartConverter().calculateBoard(resultBoard.getCorners().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
             isInitialized = true;
         }
 
@@ -376,12 +420,12 @@ public class Main {
         boardDetectorConfig.cornerMarginPercentage.set(this.cornerMarginSlider.getValue());
         boardDetectorConfig.blockSize.set((int) this.blockSizeSlider.getValue());
         boardDetectorConfig.kSize.set((int) this.kSizeSlider.getValue());
-        boardDetectorConfig.minRed.set((int) this.rbgMinRedSliderCorners.getValue());
-        boardDetectorConfig.maxRed.set((int) this.rbgMaxRedSliderCorners.getValue());
-        boardDetectorConfig.minBlue.set((int) this.rbgMinBlueSliderCorners.getValue());
-        boardDetectorConfig.maxBlue.set((int) this.rbgMaxBlueSliderCorners.getValue());
-        boardDetectorConfig.minGreen.set((int) this.rbgMinGreenSliderCorners.getValue());
-        boardDetectorConfig.maxGreen.set((int) this.rbgMaxGreenSliderCorners.getValue());
+        boardDetectorConfig.minHBoard.set((int) this.minHBoardSliderCorners.getValue());
+        boardDetectorConfig.maxHBoard.set((int) this.maxHBoardSliderCorners.getValue());
+        boardDetectorConfig.minSBoard.set((int) this.minSBoardSliderCorners.getValue());
+        boardDetectorConfig.maxSBoard.set((int) this.maxSBoardSliderCorners.getValue());
+        boardDetectorConfig.minVBoard.set((int) this.minVBoardSliderCorners.getValue());
+        boardDetectorConfig.maxVBoard.set((int) this.maxVBoardSliderCorners.getValue());
 
         var robotDetector = this.robotDetector.getConfig();
         robotDetector.blueMinH.set((int) this.robotBlueMinH.getValue());
