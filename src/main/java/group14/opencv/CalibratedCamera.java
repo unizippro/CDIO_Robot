@@ -1,10 +1,18 @@
 package group14.opencv;
 
+import com.google.gson.*;
+import group14.opencv.utils.ImageConverter;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -27,10 +35,10 @@ public class CalibratedCamera extends Camera {
     private final ArrayList<Mat> objectPoints = new ArrayList<>();
 
     // Information which can be used for undistortion, point projection etc
-    private final Mat intrinsic = new Mat(3, 3, CvType.CV_32FC1);
-    private final Mat distCoeffs = new Mat();
-    private final ArrayList<Mat> rvecs = new ArrayList<>();
-    private final ArrayList<Mat> tvecs = new ArrayList<>();
+    private Mat intrinsic = new Mat(3, 3, CvType.CV_32FC1);
+    private Mat distCoeffs = new Mat();
+    private List<Mat> rvecs = new ArrayList<>();
+    private List<Mat> tvecs = new ArrayList<>();
 
     private CalibrationPossibleListener calibrationPossibleListener;
 
@@ -46,6 +54,22 @@ public class CalibratedCamera extends Camera {
         this.chessboardCornersVertical = chessboardCornersVertical;
 
         this.resetCalibration();
+
+        if (Files.exists(Path.of("calibration_data.json"))) {
+            System.out.println("Calibration data exists");
+            var calibData = this.readCalibrationDataFromFile();
+            if (calibData == null) {
+                return;
+            }
+
+            this.intrinsic = calibData.intrinsic;
+            this.distCoeffs = calibData.distCoeffs;
+            this.rvecs = calibData.rvecs;
+            this.tvecs = calibData.tvecs;
+
+            this.isCalibrated = true;
+            System.out.println("Calibrated from file");
+        }
     }
 
     public CalibratedCamera(int cameraIndex, int numberOfCalibrations, int chessboardCornersHorizontal, int chessboardCornersVertical) {
@@ -87,6 +111,43 @@ public class CalibratedCamera extends Camera {
 
             Calib3d.calibrateCamera(this.objectPoints, this.imagePoints, FRAME_SIZE, this.intrinsic, this.distCoeffs, this.rvecs, this.tvecs);
             this.isCalibrated = true;
+
+            this.saveCalibrationDataToFile();
+        }
+    }
+
+    private CalibrationData readCalibrationDataFromFile() {
+        var gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(Mat.class, (JsonSerializer<Mat>) (src, typeOfSrc, context) -> ImageConverter.matToJson(src))
+                .registerTypeAdapter(Mat.class, (JsonDeserializer<Mat>) (src, typeOfT, context) -> ImageConverter.matFromJson(src))
+                .create();
+
+        try {
+            var fr = new FileReader("calibration_data.json");
+            var calibrationData = gson.fromJson(fr, CalibrationData.class);
+            fr.close();
+
+            return calibrationData;
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+    public void saveCalibrationDataToFile() {
+        var gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(Mat.class, (JsonSerializer<Mat>) (src, typeOfSrc, context) -> ImageConverter.matToJson(src))
+                .registerTypeAdapter(Mat.class, (JsonDeserializer<Mat>) (src, typeOfT, context) -> ImageConverter.matFromJson(src))
+                .create();
+
+        var json = gson.toJson(new CalibrationData(intrinsic, distCoeffs, rvecs, tvecs));
+        try (var fw = new FileWriter("calibration_data.json")) {
+            fw.write(json);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -127,6 +188,23 @@ public class CalibratedCamera extends Camera {
         for (int i = 0; i < (this.chessboardCornersHorizontal * this.chessboardCornersVertical); i++) {
             this.objects.push_back(new MatOfPoint3f(new Point3(i / this.chessboardCornersHorizontal, i % this.chessboardCornersVertical, 0.0f)));
         }
+    }
+
+
+    private class CalibrationData {
+
+        public Mat intrinsic;
+        public Mat distCoeffs;
+        public List<Mat> rvecs;
+        public List<Mat> tvecs;
+
+        public CalibrationData(Mat intrinsic, Mat distCoeffs, List<Mat> rvecs, List<Mat> tvecs) {
+            this.intrinsic = intrinsic;
+            this.distCoeffs = distCoeffs;
+            this.rvecs = rvecs;
+            this.tvecs = tvecs;
+        }
+
     }
 
 }
