@@ -112,9 +112,12 @@ public class CalibratedCamera extends Camera {
 
             if (this.isHomo){
                 //Do Homo
-                Imgproc.warpPerspective(frame, outFrame, HomographyMat, new Size(longBoard, shortBoard));
+                Mat updatedFrame = new Mat();
+                Imgproc.warpPerspective(outFrame, updatedFrame, HomographyMat, new Size(longBoard, shortBoard));
+                this.isHomo = true;
+                outFrame = updatedFrame;
             } else {
-
+                //Calculate Homo
                 var boardDetectorResult = boardDetector.run(outFrame);
 
                 var pointsInImage = new MatOfPoint2f();
@@ -123,8 +126,10 @@ public class CalibratedCamera extends Camera {
                     pointsInImage.fromList(boardDetectorResult.getCorners().toList());
 
                     HomographyMat = Imgproc.getPerspectiveTransform(pointsInImage, destPoints); //Need corners
-                    Imgproc.warpPerspective(frame, outFrame, HomographyMat, new Size(longBoard, shortBoard));
+                    Mat updatedFrame = new Mat();
+                    Imgproc.warpPerspective(outFrame, updatedFrame, HomographyMat, new Size(longBoard, shortBoard));
                     this.isHomo = true;
+                    outFrame = updatedFrame;
                 }
             }
 
