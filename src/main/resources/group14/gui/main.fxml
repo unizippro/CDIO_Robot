@@ -148,11 +148,11 @@
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab text="Thresh Robot Green">
+                <Tab text="Robot G HSV">
                     <content>
                         <AnchorPane>
                             <children>
-                                <ImageView fx:id="imageThreshRobotGreen"
+                                <ImageView fx:id="imageRobotGreenHSV"
                                            style="-fx-background-color: rgb(0,41,52);"
                                            pickOnBounds="true"
                                            preserveRatio="true"
@@ -163,29 +163,29 @@
                                            fitHeight="480" fitWidth="600"
                                 />
 
-                                <Label layoutX="757.0" layoutY="15.0" text="Min blue" />
-                                <Slider fx:id="rbgMinBlueSliderGreen" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="75.0" text="Max blue" />
-                                <Slider fx:id="rbgMaxBlueSliderGreen" layoutX="757.0" layoutY="95.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="15.0" text="Min H" />
+                                <Slider fx:id="robotGreenMinH" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="75.0" text="Max H" />
+                                <Slider fx:id="robotGreenMaxH" layoutX="757.0" layoutY="95.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
-                                <Label layoutX="757.0" layoutY="145.0" text="Min green" />
-                                <Slider fx:id="rbgMinGreenSliderGreen" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="205.0" text="Max green" />
-                                <Slider fx:id="rbgMaxGreenSliderGreen" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="145.0" text="Min S" />
+                                <Slider fx:id="robotGreenMinS" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="205.0" text="Max S" />
+                                <Slider fx:id="robotGreenMaxS" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
-                                <Label layoutX="757.0" layoutY="275.0" text="Min red" />
-                                <Slider fx:id="rbgMinRedSliderGreen" layoutX="757.0" layoutY="295.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="335.0" text="Max red" />
-                                <Slider fx:id="rbgMaxRedSliderGreen" layoutX="757.0" layoutY="355.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="275.0" text="Min V" />
+                                <Slider fx:id="robotGreenMinV" layoutX="757.0" layoutY="295.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="335.0" text="Max V" />
+                                <Slider fx:id="robotGreenMaxV" layoutX="757.0" layoutY="355.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                             </children>
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab text="Thresh Robot Blue">
+                <Tab text="Robot B HSV">
                     <content>
                         <AnchorPane>
                             <children>
-                                <ImageView fx:id="imageThreshRobotBlue"
+                                <ImageView fx:id="imageRobotBlueHSV"
                                            style="-fx-background-color: rgb(0,41,52);"
                                            pickOnBounds="true"
                                            preserveRatio="true"
@@ -196,20 +196,21 @@
                                            fitHeight="480" fitWidth="600"
                                 />
 
-                                <Label layoutX="757.0" layoutY="15.0" text="Min blue" />
-                                <Slider fx:id="rbgMinBlueSliderBlue" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="75.0" text="Max blue" />
-                                <Slider fx:id="rbgMaxBlueSliderBlue" layoutX="757.0" layoutY="95.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="15.0" text="Min H" />
+                                <Slider fx:id="robotBlueMinH" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="60" max="160" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="75.0" text="Max H" />
+                                <Slider fx:id="robotBlueMaxH" layoutX="757.0" layoutY="95.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="60" max="160" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
-                                <Label layoutX="757.0" layoutY="145.0" text="Min green" />
-                                <Slider fx:id="rbgMinGreenSliderBlue" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="205.0" text="Max green" />
-                                <Slider fx:id="rbgMaxGreenSliderBlue" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="145.0" text="Min S" />
+                                <Slider fx:id="robotBlueMinS" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="155" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="205.0" text="Max S" />
+                                <Slider fx:id="robotBlueMaxS" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="155" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
-                                <Label layoutX="757.0" layoutY="275.0" text="Min red" />
-                                <Slider fx:id="rbgMinRedSliderBlue" layoutX="757.0" layoutY="295.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
-                                <Label layoutX="757.0" layoutY="335.0" text="Max red" />
-                                <Slider fx:id="rbgMaxRedSliderBlue" layoutX="757.0" layoutY="355.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="275.0" text="Min V" />
+                                <Slider fx:id="robotBlueMinV" layoutX="757.0" layoutY="295.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="155" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="335.0" text="Max V" />
+                                <Slider fx:id="robotBlueMaxV" layoutX="757.0" layoutY="355.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="155" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+
                             </children>
                         </AnchorPane>
                     </content>
