@@ -51,6 +51,7 @@ public class Main {
 
     private boolean isHomo = false;
     private Mat homeographyMat;
+    private Size homeoSize;
 
     private double pixelsPrCm;
 
@@ -290,30 +291,43 @@ public class Main {
 
     private void customCalibration(Mat frame, Mat outFrame) {
         if (this.isHomo) {
-            Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, frame.size());
+            Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, this.homeoSize);
         } else {
             var boardDetectorResult = this.boardDetector.run(frame);
 
-            // todo fix check for null
-            if (boardDetectorResult.getCorners() != null && boardDetectorResult.getCorners().size() == 4) {
-                var size = frame.size();
-
-                var srcMat = Converters.vector_Point2f_to_Mat(boardDetectorResult.getCorners());
+            var corners = boardDetectorResult.getCorners();
+            if (corners.size() == 4) {
                 var margin = 100;
-                var dst = new MatOfPoint2f(
-                        new org.opencv.core.Point(margin, margin),
-                        new org.opencv.core.Point(size.width - margin, margin),
-                        new org.opencv.core.Point(size.width - margin, size.height - margin),
-                        new Point(margin, size.height - margin)
-                );
 
-                this.pixelsPrCm = ((size.width - margin) - margin) / LONG_LENGTH;
-                System.out.println("Pixel ratio: " + this.pixelsPrCm);
+                var width = (Math.max(corners.get(1).x, corners.get(3).x) + margin) - (Math.min(corners.get(0).x, corners.get(2).x) - margin);
+                var height = (Math.max(corners.get(2).y, corners.get(3).y) + margin) - (Math.min(corners.get(0).y, corners.get(1).y) - margin);
+
+                var aspectRatio = width / height;
+                this.homeoSize = new Size(width * aspectRatio, height);
+
+                var srcMat = new MatOfPoint2f(
+                        new Point(corners.get(0).x - margin, corners.get(0).y - margin),
+                        new Point(corners.get(1).x + margin, corners.get(1).y - margin),
+                        new Point(corners.get(2).x - margin, corners.get(2).y + margin),
+                        new Point(corners.get(3).x + margin, corners.get(3).y + margin)
+                );
+                var dst = new MatOfPoint2f(
+                        new Point(0, 0),
+                        new Point(this.homeoSize.width, 0),
+                        new Point(0, this.homeoSize.height),
+                        new Point(this.homeoSize.width, this.homeoSize.height)
+                );
 
                 // Calculate Homo
                 this.homeographyMat = Imgproc.getPerspectiveTransform(srcMat, dst);
 
-                Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, size);
+                Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, this.homeoSize);
+
+                var result = this.boardDetector.run(outFrame);
+
+                this.pixelsPrCm = (result.getCorners().get(1).x - result.getCorners().get(0).x) / LONG_LENGTH;
+                System.out.println("Pixel ratio: " + this.pixelsPrCm);
+
                 this.isHomo = true;
             } else {
                 frame.copyTo(outFrame);
