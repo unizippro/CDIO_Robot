@@ -1,9 +1,6 @@
 package group14.opencv.detectors.robot_detector;
 
-import com.google.common.util.concurrent.AtomicDouble;
 import group14.opencv.detectors.Detector;
-import group14.opencv.utils.ImageProcessUtils;
-import group14.road_planner.board.SmartConverter;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
@@ -75,6 +72,12 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         Imgproc.dilate(blueMat, blueMat, element);
         Imgproc.dilate(greenMat, greenMat, element);
 
+        var circle2 = 10;
+        Mat element2 = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(circle2, circle2), new Point(circle2/2, circle2/2));
+
+        Imgproc.erode(blueMat, blueMat, element2);
+        Imgproc.erode(greenMat, greenMat, element2);
+
 
         // Color 1 - blue
         var frontPoints = this.getPointsWithColor(blueMat);
@@ -108,7 +111,7 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
     private List<Point> getPointsWithColor(Mat frame) {
         //! [houghcircles]
         Mat circlesFrame = new Mat();
-        Imgproc.HoughCircles(frame, circlesFrame, Imgproc.HOUGH_GRADIENT, 2, 10, 80, 34, 10, 40);
+        Imgproc.HoughCircles(frame, circlesFrame, Imgproc.HOUGH_GRADIENT, 7,10, 80, 34, 15, 20);
 
         Point imgCenter = new Point(frame.width() / 2, frame.height() / 2);
 
@@ -127,8 +130,8 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
 
     private Point projectPoint(double camHeight, double objectHeight, Point centerPoint, Point projectPoint) {
         //Camheight og objectHeight er angviet i pixel så de konverteres
-        camHeight = camHeight* 7.2;
-        objectHeight = objectHeight*7.2;
+        camHeight = camHeight * 9.35;
+        objectHeight = objectHeight * 9.35;
 
         double grundLinje = Math.sqrt(Math.pow(centerPoint.x-projectPoint.x, 2)+ Math.pow(centerPoint.y-projectPoint.y, 2));
         double vinkelProjectPoint = Math.toDegrees(Math.asin(camHeight/(Math.sqrt(Math.pow(camHeight, 2)+Math.pow(grundLinje, 2)))));
