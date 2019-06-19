@@ -87,8 +87,8 @@
                                            AnchorPane.topAnchor="35.0"
                                            fitHeight="480" fitWidth="600"
                                 />
-                                <Label layoutX="757.0" layoutY="15.0" text="Threshold 1" />
-                                <Slider fx:id="ballThreshold1" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="150" max="255" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="15.0" text="Dialate Erode Circle" />
+                                <Slider fx:id="ballDECircle" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="50" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                                 <Label layoutX="757.0" layoutY="85.0" text="Blur size" />
                                 <Slider fx:id="ballGausBlurSize" layoutX="757.0" layoutY="105.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="3" max="19" majorTickUnit="2" minorTickCount="0" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                                 <Label layoutX="757.0" layoutY="155.0" text="Threshold 2" />
@@ -144,11 +144,11 @@
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab text="Thresh Balls">
+                <Tab text="Balls HSV">
                     <content>
                         <AnchorPane>
                             <children>
-                                <ImageView fx:id="imageThreshBalls"
+                                <ImageView fx:id="imageBallsHSV"
                                            style="-fx-background-color: rgb(0,41,52);"
                                            pickOnBounds="true"
                                            preserveRatio="true"
@@ -159,8 +159,21 @@
                                            fitHeight="480" fitWidth="600"
                                 />
 
-                                <Label layoutX="757.0" layoutY="15.0" text="Threshold amount" />
-                                <Slider fx:id="lowerThresholdSlider" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" max="255" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+
+                                <Label layoutX="757.0" layoutY="15.0" text="Min H" />
+                                <Slider fx:id="ballMinH" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="75.0" text="Max H" />
+                                <Slider fx:id="ballMaxH" layoutX="757.0" layoutY="95.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+
+                                <Label layoutX="757.0" layoutY="145.0" text="Min S" />
+                                <Slider fx:id="ballMinS" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="205.0" text="Max S" />
+                                <Slider fx:id="ballMaxS" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+
+                                <Label layoutX="757.0" layoutY="275.0" text="Min V" />
+                                <Slider fx:id="ballMinV" layoutX="757.0" layoutY="295.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Label layoutX="757.0" layoutY="335.0" text="Max V" />
+                                <Slider fx:id="ballMaxV" layoutX="757.0" layoutY="355.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
                             </children>
                         </AnchorPane>

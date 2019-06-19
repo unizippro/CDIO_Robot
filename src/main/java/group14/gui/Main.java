@@ -78,7 +78,7 @@ public class Main {
     @FXML
     public ImageView imageBalls;
     @FXML
-    public Slider ballThreshold1;
+    public Slider ballDECircle;
     @FXML
     public Slider ballThreshold2;
     @FXML
@@ -92,17 +92,25 @@ public class Main {
     @FXML
     public ImageView imageBoard;
     @FXML
-    public Slider robotBlueMinH;
+    public Slider cornerMarginSlider;
     @FXML
-    public Slider robotBlueMinS;
+    public ImageView imageRobot;
     @FXML
-    public Slider robotBlueMinV;
+    public ImageView imageBallsHSV;
     @FXML
-    public Slider robotBlueMaxH;
+    public Slider ballMinH;
     @FXML
-    public Slider robotBlueMaxS;
+    public Slider ballMaxH;
     @FXML
-    public Slider robotBlueMaxV;
+    public Slider ballMinS;
+    @FXML
+    public Slider ballMaxS;
+    @FXML
+    public Slider ballMinV;
+    @FXML
+    public Slider ballMaxV;
+    @FXML
+    public ImageView imageRobotGreenHSV;
     @FXML
     public Slider robotGreenMinH;
     @FXML
@@ -116,15 +124,19 @@ public class Main {
     @FXML
     public Slider robotGreenMaxV;
     @FXML
-    public Slider cornerMarginSlider;
-    @FXML
-    public ImageView imageRobot;
-    @FXML
-    public ImageView imageThreshBalls;
-    @FXML
-    public ImageView imageRobotGreenHSV;
-    @FXML
     public ImageView imageRobotBlueHSV;
+    @FXML
+    public Slider robotBlueMinH;
+    @FXML
+    public Slider robotBlueMinS;
+    @FXML
+    public Slider robotBlueMinV;
+    @FXML
+    public Slider robotBlueMaxH;
+    @FXML
+    public Slider robotBlueMaxS;
+    @FXML
+    public Slider robotBlueMaxV;
     @FXML
     public ImageView imageThreshCorners;
     @FXML
@@ -190,11 +202,17 @@ public class Main {
         this.plot.setCross(new Point2D(20, 10));
 
         var ballDetectorConfig = this.ballDetector.getConfig();
-        this.ballThreshold1.setValue(ballDetectorConfig.ballThreshold1.get());
+        this.ballMinH.setValue(ballDetectorConfig.ballMinH.get());
+        this.ballMinS.setValue(ballDetectorConfig.ballMinS.get());
+        this.ballMinV.setValue(ballDetectorConfig.ballMinV.get());
+        this.ballMaxH.setValue(ballDetectorConfig.ballMaxH.get());
+        this.ballMaxS.setValue(ballDetectorConfig.ballMaxS.get());
+        this.ballMaxV.setValue(ballDetectorConfig.ballMaxV.get());
+
+        this.ballDECircle.setValue(ballDetectorConfig.ballDECircle.get());
         this.ballThreshold2.setValue(ballDetectorConfig.ballThreshold2.get());
         this.ballGausBlurSize.setValue(ballDetectorConfig.ballGausBlurSize.get());
-
-        this.lowerThresholdSlider.setValue(ballDetectorConfig.lowerThreshold.get());
+        //this.lowerThresholdSlider.setValue(ballDetectorConfig.lowerThreshold.get());
         this.houghParam1.setValue(ballDetectorConfig.houghParam1.get());
         this.houghParam2.setValue(ballDetectorConfig.houghParam2.get());
 
@@ -308,7 +326,7 @@ public class Main {
         var imageRobot = ImageConverter.matToImageFX(resultRobot.getOutput());
         //var imageGreenRobot = ImageConverter.matToImageFX(resultRobot.getOutput());
 
-        var imageBallsThresh = ImageConverter.matToImageFX(resultBalls.getOutputThresh());
+        var imageBallsHSV = ImageConverter.matToImageFX(resultBalls.getOutputThresh());
 
         var imageRobotGreenHSV = ImageConverter.matToImageFX(resultRobot.getOutputThreshGreen());
         var imageRobotBlueHSV = ImageConverter.matToImageFX(resultRobot.getOutputThreshBlue());
@@ -321,7 +339,7 @@ public class Main {
             this.imageBalls.setImage(imageBalls);
             this.imageBoard.setImage(imageBoard);
             this.imageRobot.setImage(imageRobot);
-            this.imageThreshBalls.setImage(imageBallsThresh);
+            this.imageBallsHSV.setImage(imageBallsHSV);
             this.imageRobotGreenHSV.setImage(imageRobotGreenHSV);
             this.imageRobotBlueHSV.setImage(imageRobotBlueHSV);
             this.imageThreshCorners.setImage(imageThreshCorners);
@@ -407,12 +425,19 @@ public class Main {
     @FXML
     public void ballDetectorConfigUpdated(MouseEvent mouseEvent) {
         var ballDetectorConfig = this.ballDetector.getConfig();
-        ballDetectorConfig.ballThreshold1.set((int) this.ballThreshold1.getValue());
+        ballDetectorConfig.ballDECircle.set((int) this.ballDECircle.getValue());
         ballDetectorConfig.ballGausBlurSize.set((int) this.ballGausBlurSize.getValue());
         ballDetectorConfig.ballThreshold2.set((int) this.ballThreshold2.getValue());
-        ballDetectorConfig.lowerThreshold.set((int) this.lowerThresholdSlider.getValue());
+        //ballDetectorConfig.lowerThreshold.set((int) this.lowerThresholdSlider.getValue());
         ballDetectorConfig.houghParam1.set((int) this.houghParam1.getValue());
         ballDetectorConfig.houghParam2.set((int) this.houghParam2.getValue());
+        ballDetectorConfig.ballMinH.set((int) this.ballMinH.getValue());
+        ballDetectorConfig.ballMinS.set((int) this.ballMinS.getValue());
+        ballDetectorConfig.ballMinV.set((int) this.ballMinV.getValue());
+        ballDetectorConfig.ballMaxH.set((int) this.ballMaxH.getValue());
+        ballDetectorConfig.ballMaxS.set((int) this.ballMaxS.getValue());
+        ballDetectorConfig.ballMaxV.set((int) this.ballMaxV.getValue());
+        System.out.println("rest");
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         boardDetectorConfig.cornerMarginPercentage.set(this.cornerMarginSlider.getValue());
