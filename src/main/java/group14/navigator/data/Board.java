@@ -1,8 +1,6 @@
 package group14.navigator.data;
 
 import group14.navigator.Utils;
-import lejos.robotics.geometry.Point2D;
-import lejos.robotics.geometry.Rectangle2D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,20 +8,20 @@ import java.util.List;
 
 public class Board {
 
-    private Rectangle2D.Double boundingRect;
+    private Rectangle2D boundingRect;
     private final double safetyMargin;
 
     private final List<Area> areas = new ArrayList<>();
 
-    public Board(Rectangle2D.Double boundingRect) {
+    public Board(Rectangle2D boundingRect) {
         this(boundingRect, 0, null, 0);
     }
 
-    public Board(Rectangle2D.Double boundingRect, double extraMargin, Point2D.Double splitAt, double safetyMargin) {
+    public Board(Rectangle2D boundingRect, double extraMargin, Point2D splitAt, double safetyMargin) {
         this.boundingRect = Utils.rectangleWithExpandedMargin(boundingRect, extraMargin);
         this.safetyMargin = safetyMargin;
 
-        var splitPoint = splitAt != null ? splitAt : new Point2D.Double(this.boundingRect.width / 2, this.boundingRect.height / 2);
+        var splitPoint = splitAt != null ? splitAt : new Point2D(this.boundingRect.width / 2, this.boundingRect.height / 2);
 
         this.splitAt(splitPoint);
     }
@@ -32,11 +30,11 @@ public class Board {
         return this.areas;
     }
 
-    public boolean contains(Point2D.Double point) {
+    public boolean contains(Point2D point) {
         return this.boundingRect.contains(point);
     }
 
-    public Area getAreaForPoint(Point2D.Double point) {
+    public Area getAreaForPoint(Point2D point) {
         for (var area : this.areas) {
             if (area.contains(point)) {
                 return area;
@@ -59,7 +57,7 @@ public class Board {
         return this.areas.get(0);
     }
 
-    private void splitAt(Point2D.Double point) {
+    private void splitAt(Point2D point) {
         if (! this.boundingRect.contains(point)) {
             return;
         }
@@ -73,4 +71,8 @@ public class Board {
         ));
     }
 
+    @Override
+    public String toString() {
+        return "Board(\n\t" + this.areas + "\n)";
+    }
 }

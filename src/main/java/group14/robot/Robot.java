@@ -1,9 +1,9 @@
 package group14.robot;
 
-import lejos.robotics.geometry.Point2D;
+import group14.navigator.data.Point2D;
 
 public class Robot extends group14.navigator.data.Robot {
-    public Robot(Point2D.Double frontPoint, Point2D.Double rearPoint) {
+    public Robot(Point2D frontPoint, Point2D rearPoint) {
         super(frontPoint, rearPoint);
     }
 

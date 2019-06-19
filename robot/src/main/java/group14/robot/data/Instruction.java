@@ -29,6 +29,6 @@ public class Instruction implements Serializable {
 
     @Override
     public String toString() {
-        return "Instruction(" + this.type + ", " + this.amount + ")";
+        return "Instruction(" + this.type + ", " + String.format("%.2f", this.amount) + ")";
     }
 }

@@ -1,13 +1,13 @@
 package group14.navigator;
 
+import group14.navigator.data.Point2D;
 import group14.robot.data.Instruction;
-import lejos.robotics.geometry.Point2D;
 
 import java.util.*;
 
 public class InstructionSet extends LinkedList<Instruction> {
 
-    private Point2D.Double destination;
+    private Point2D destination;
 
     public interface InstructionRunner {
         void run(Instruction instruction);
@@ -19,11 +19,11 @@ public class InstructionSet extends LinkedList<Instruction> {
         }
     }
 
-    public Point2D.Double getDestination() {
+    public Point2D getDestination() {
         return this.destination;
     }
 
-    void setDestination(Point2D.Double destination) {
+    void setDestination(Point2D destination) {
         this.destination = destination;
     }
 

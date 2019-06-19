@@ -2,24 +2,22 @@ package group14.navigator.data;
 
 import group14.navigator.Calculator;
 import group14.navigator.Utils;
-import lejos.robotics.geometry.Point2D;
-import lejos.robotics.geometry.Rectangle2D;
 
 public class Area {
 
-    private final Rectangle2D.Double boundingRect;
+    private final Rectangle2D boundingRect;
     private final double safetyMargin;
 
-    private final Rectangle2D.Double safetyArea;
+    private final Rectangle2D safetyArea;
 
-    private final Point2D.Double safePointTop;
-    private final Point2D.Double safePointBottom;
+    private final Point2D safePointTop;
+    private final Point2D safePointBottom;
 
     public enum DangerousAreaDirection {
         TOP, BOTTOM, LEFT, RIGHT
     }
 
-    Area(Rectangle2D.Double boundingRect, double safetyMargin) {
+    Area(Rectangle2D boundingRect, double safetyMargin) {
         this.boundingRect = boundingRect;
         this.safetyMargin = safetyMargin;
 
@@ -31,7 +29,7 @@ public class Area {
         this.safePointBottom = Utils.rectangleGetCenter(horizontalSplit.get(1));
     }
 
-    public Rectangle2D.Double getBoundingRect() {
+    public Rectangle2D getBoundingRect() {
         return this.boundingRect;
     }
 
@@ -51,15 +49,15 @@ public class Area {
         return this.boundingRect.getHeight();
     }
 
-    public boolean contains(Point2D.Double point) {
+    public boolean contains(Point2D point) {
         return this.boundingRect.contains(point);
     }
 
-    public boolean isWithinSafetyArea(Point2D.Double point) {
+    public boolean isWithinSafetyArea(Point2D point) {
         return this.safetyArea.contains(point);
     }
 
-    public DangerousAreaDirection getDangerousAreaDirection(Point2D.Double point) throws Exception {
+    public DangerousAreaDirection getDangerousAreaDirection(Point2D point) throws Exception {
         // todo: add checks for corners
         if (this.boundingRect.getMinY() <= point.y && point.y <= this.safetyArea.getMinY()) {
             return DangerousAreaDirection.TOP;
@@ -74,27 +72,27 @@ public class Area {
         throw new Exception(point + " is not in a dangerous area - this should be checked first");
     }
 
-    public Point2D.Double getProjectedPoint(Point2D.Double point, DangerousAreaDirection direction) throws Exception {
+    public Point2D getProjectedPoint(Point2D point, DangerousAreaDirection direction) throws Exception {
         var safetyDistance = this.safetyMargin * 1.5;
 
         switch (direction) {
             case TOP:
-                var startPointTop = new Point2D.Double(point.x, this.boundingRect.getMinY());
+                var startPointTop = new Point2D(point.x, this.boundingRect.getMinY());
 
                 return Calculator.getVectorEndPoint(startPointTop, 90, safetyDistance);
 
             case BOTTOM:
-                var startPointBottom = new Point2D.Double(point.x, this.boundingRect.getMaxY());
+                var startPointBottom = new Point2D(point.x, this.boundingRect.getMaxY());
 
                 return Calculator.getVectorEndPoint(startPointBottom, 270, safetyDistance);
 
             case LEFT:
-                var startPointLeft = new Point2D.Double(this.boundingRect.getMinX(), point.y);
+                var startPointLeft = new Point2D(this.boundingRect.getMinX(), point.y);
 
                 return Calculator.getVectorEndPoint(startPointLeft, 0, safetyDistance);
 
             case RIGHT:
-                var startPointRight = new Point2D.Double(this.boundingRect.getMaxX(), point.y);
+                var startPointRight = new Point2D(this.boundingRect.getMaxX(), point.y);
 
                 return Calculator.getVectorEndPoint(startPointRight, 180, safetyDistance);
         }
@@ -102,7 +100,7 @@ public class Area {
         throw new Exception("Direction cannot be null");
     }
 
-    public Point2D.Double getNearestSafePoint(Point2D.Double point) {
+    public Point2D getNearestSafePoint(Point2D point) {
         if (point.distance(this.safePointTop) < point.distance(this.safePointBottom)) {
             return this.safePointTop;
         } else {
@@ -110,4 +108,8 @@ public class Area {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Area(\n\t" + this.boundingRect + "\n\t" + this.safetyArea + "\n)";
+    }
 }

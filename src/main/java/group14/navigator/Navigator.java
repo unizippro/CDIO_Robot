@@ -2,9 +2,9 @@ package group14.navigator;
 
 import group14.navigator.data.Area;
 import group14.navigator.data.Board;
+import group14.navigator.data.Point2D;
 import group14.navigator.data.Robot;
 import group14.robot.data.Instruction;
-import lejos.robotics.geometry.Point2D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class Navigator {
     private final Board board;
     private final Robot robot;
 
-    private final ArrayList<Point2D.Double> ballPositions = new ArrayList<>();
+    private final List<Point2D> ballPositions = new ArrayList<>();
     private final int turnThreshold = 1;
 
     public Navigator(Board board, Robot robot) {
@@ -37,11 +37,11 @@ public class Navigator {
         this.robot = robot;
     }
 
-    public void updateRobotPosition(Point2D.Double frontPoint, Point2D.Double rearPoint) {
+    public void updateRobotPosition(Point2D frontPoint, Point2D rearPoint) {
         this.robot.updatePosition(frontPoint, rearPoint);
     }
 
-    public void updateBallPositions(List<Point2D.Double> ballPositions) {
+    public void updateBallPositions(List<Point2D> ballPositions) {
         this.ballPositions.clear();
 
         ballPositions.stream()
@@ -152,7 +152,7 @@ public class Navigator {
     }
 
 
-    protected Point2D.Double getClosestBall(Point2D.Double point) {
+    protected Point2D getClosestBall(Point2D point) {
         if (this.ballPositions.isEmpty()) {
             return null;
         }

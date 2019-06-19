@@ -1,10 +1,10 @@
 package group14.navigator;
 
 import group14.navigator.data.Board;
+import group14.navigator.data.Point2D;
+import group14.navigator.data.Rectangle2D;
 import group14.navigator.data.Robot;
 import group14.robot.data.Instruction;
-import lejos.robotics.geometry.Point2D;
-import lejos.robotics.geometry.Rectangle2D;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,8 +21,8 @@ public class NavigatorTest {
 
     @Before
     public void setUp() throws Exception {
-        this.board = new Board(new Rectangle2D.Double(0, 0, 200, 200));
-        this.robot = new TestRobot(new Point2D.Double(30, 33), new Point2D.Double(30, 35));
+        this.board = new Board(new Rectangle2D(0, 0, 200, 200));
+        this.robot = new TestRobot(new Point2D(30, 33), new Point2D(30, 35));
         this.navigator = new Navigator(this.board, this.robot);
     }
 
@@ -37,9 +37,9 @@ public class NavigatorTest {
     @Test
     public void calculateInstructionSet() throws Exception {
         this.navigator.updateBallPositions(Arrays.asList(
-                new Point2D.Double(30, 20),
-                new Point2D.Double(75, 75),
-                new Point2D.Double(30, 80)
+                new Point2D(30, 20),
+                new Point2D(75, 75),
+                new Point2D(30, 80)
         ));
 
         var instructionSet = this.navigator.calculateInstructionSet();
@@ -53,8 +53,8 @@ public class NavigatorTest {
 
 //        this.navigator.updateRobotPosition();
         this.navigator.updateBallPositions(Arrays.asList(
-                new Point2D.Double(75, 75),
-                new Point2D.Double(30, 80)
+                new Point2D(75, 75),
+                new Point2D(30, 80)
         ));
 
         instructionSet = this.navigator.calculateInstructionSet();
@@ -66,8 +66,8 @@ public class NavigatorTest {
     public void getClosestBall() {
         assertNull(this.navigator.getClosestBall(this.robot.getRotatingPoint()));
 
-        var closestBall = new Point2D.Double(40, 40);
-        this.navigator.updateBallPositions(Arrays.asList(closestBall, new Point2D.Double(75, 75)));
+        var closestBall = new Point2D(40, 40);
+        this.navigator.updateBallPositions(Arrays.asList(closestBall, new Point2D(75, 75)));
 
         assertEquals(closestBall, this.navigator.getClosestBall(this.robot.getRotatingPoint()));
     }
@@ -77,24 +77,24 @@ public class NavigatorTest {
     public void ballsWithinArea() {
         assertFalse(this.navigator.ballsWithinArea(this.board.getAreas().get(0)));
 
-        var closestBall = new Point2D.Double(40, 40);
-        this.navigator.updateBallPositions(Arrays.asList(closestBall, new Point2D.Double(75, 75)));
+        var closestBall = new Point2D(40, 40);
+        this.navigator.updateBallPositions(Arrays.asList(closestBall, new Point2D(75, 75)));
 
         assertTrue(this.navigator.ballsWithinArea(this.board.getAreas().get(0)));
     }
 
     @Test
     public void completeNavigationTest() throws Exception {
-        var robot = new TestRobot(new Point2D.Double(1, 1), new Point2D.Double(0, 0));
-        var board = new Board(new Rectangle2D.Double(0, 0, 300, 200), 0, new Point2D.Double(200, 100), 10);
+        var robot = new TestRobot(new Point2D(1, 1), new Point2D(0, 0));
+        var board = new Board(new Rectangle2D(0, 0, 300, 200), 0, new Point2D(200, 100), 10);
         var navigator = new Navigator(board, robot);
 
         navigator.updateBallPositions(Arrays.asList(
-                new Point2D.Double(15, 15),
-                new Point2D.Double(60, 60),
-                new Point2D.Double(200, 40),
-                new Point2D.Double(280, 80),
-                new Point2D.Double(175, 175)
+                new Point2D(15, 15),
+                new Point2D(60, 60),
+                new Point2D(200, 40),
+                new Point2D(280, 80),
+                new Point2D(175, 175)
         ));
 
 
@@ -111,10 +111,10 @@ public class NavigatorTest {
 
         robot.updateFromInstruction(instruction);
         navigator.updateBallPositions(Arrays.asList(
-                new Point2D.Double(60, 60),
-                new Point2D.Double(200, 40),
-                new Point2D.Double(280, 80),
-                new Point2D.Double(175, 175)
+                new Point2D(60, 60),
+                new Point2D(200, 40),
+                new Point2D(280, 80),
+                new Point2D(175, 175)
         ));
 
 
@@ -130,9 +130,9 @@ public class NavigatorTest {
 
         robot.updateFromInstruction(instruction);
         navigator.updateBallPositions(Arrays.asList(
-                new Point2D.Double(200, 40),
-                new Point2D.Double(280, 80),
-                new Point2D.Double(175, 175)
+                new Point2D(200, 40),
+                new Point2D(280, 80),
+                new Point2D(175, 175)
         ));
 
 
@@ -179,8 +179,8 @@ public class NavigatorTest {
 
         robot.updateFromInstruction(instruction);
         navigator.updateBallPositions(Arrays.asList(
-                new Point2D.Double(280, 80),
-                new Point2D.Double(175, 175)
+                new Point2D(280, 80),
+                new Point2D(175, 175)
         ));
 
 
@@ -202,7 +202,7 @@ public class NavigatorTest {
 
         robot.updateFromInstruction(instruction);
         navigator.updateBallPositions(Collections.singletonList(
-                new Point2D.Double(280, 80)
+                new Point2D(280, 80)
         ));
 
 
@@ -274,7 +274,7 @@ public class NavigatorTest {
 
 
     private class TestRobot extends Robot {
-        TestRobot(Point2D.Double frontPoint, Point2D.Double rearPoint) {
+        TestRobot(Point2D frontPoint, Point2D rearPoint) {
             super(frontPoint, rearPoint);
         }
 

@@ -2,14 +2,13 @@ package group14.navigator.data;
 
 import group14.navigator.Calculator;
 import group14.robot.data.Instruction;
-import lejos.robotics.geometry.Point2D;
 
 public abstract class Robot {
 
-    private final Point2D.Double frontPoint;
-    private final Point2D.Double rearPoint;
+    private final Point2D frontPoint;
+    private final Point2D rearPoint;
 
-    public Robot(Point2D.Double frontPoint, Point2D.Double rearPoint) {
+    public Robot(Point2D frontPoint, Point2D rearPoint) {
         this.frontPoint = frontPoint;
         this.rearPoint = rearPoint;
     }
@@ -17,12 +16,12 @@ public abstract class Robot {
     protected abstract double getDistanceRearPointToFront();
     protected abstract double getDistanceRearPointToRotating();
 
-    public void updatePosition(Point2D.Double frontPoint, Point2D.Double rearPoint) {
+    public void updatePosition(Point2D frontPoint, Point2D rearPoint) {
         this.frontPoint.setLocation(frontPoint);
         this.rearPoint.setLocation(rearPoint);
     }
 
-    public Point2D.Double getFrontPosition() {
+    public Point2D getFrontPosition() {
         return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), this.getDistanceRearPointToFront());
     }
 
@@ -30,11 +29,11 @@ public abstract class Robot {
         return Calculator.getAngleBetweenPoint(this.rearPoint, this.frontPoint);
     }
 
-    public Point2D.Double getRotatingPoint() {
+    public Point2D getRotatingPoint() {
         return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), this.rearPoint.distance(this.frontPoint));
     }
 
-    public double getDistanceTo(Point2D.Double point) {
+    public double getDistanceTo(Point2D point) {
         var rotatingPoint = this.getRotatingPoint();
 
         return rotatingPoint.distance(point) - rotatingPoint.distance(this.getFrontPosition());
@@ -63,5 +62,10 @@ public abstract class Robot {
                 this.frontPoint.setLocation(Calculator.getVectorEndPoint(this.frontPoint, Calculator.getOppositeAngle(directionAngle), instruction.getAmount()));
                 break;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Robot(" + this.getRotatingPoint() + ")";
     }
 }
