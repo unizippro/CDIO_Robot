@@ -53,6 +53,18 @@ public class Navigator {
         return this.ballPositions.isEmpty();
     }
 
+    public Point2D getRobotPosition() {
+        return this.robot.getRotatingPoint();
+    }
+
+    public Board getBoard() {
+        return this.board;
+    }
+
+    public List<Point2D> getBallPositions() {
+        return this.ballPositions;
+    }
+
     public InstructionSet calculateInstructionSet() throws Exception {
         var instructionSet = new InstructionSet();
 
@@ -66,6 +78,8 @@ public class Navigator {
                 var ball = this.getClosestBall(robotPosition);
 
                 if (currentBoard.isWithinSafetyArea(ball)) {
+                    System.out.println("Navigator: Safe ball");
+
                     var ballAngle = Calculator.getAngleBetweenPoint(robotPosition, ball);
 
                     var turnAngle = Calculator.getTurnAngle(robotAngle, ballAngle);
@@ -82,6 +96,8 @@ public class Navigator {
 
                     var safePointArea = Utils.rectangleWithCenter(safePoint, 5);
                     if (safePointArea.contains(robotPosition)) {
+                        System.out.println("Navigator: Unsafe Ball in direction " + direction);
+
                         var ballAngle = Calculator.getAngleBetweenPoint(robotPosition, ball);
 
                         var turnAngle = Calculator.getTurnAngle(robotAngle, ballAngle);
@@ -89,6 +105,8 @@ public class Navigator {
                             instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
                         }
 
+//                        var distance = (this.robot.getDistanceTo(ball) / 3) * 2;
+//                        var distance = this.robot.getDistanceTo(ball);
                         double distance;
                         if (direction == Area.DangerousAreaDirection.TOP || direction == Area.DangerousAreaDirection.BOTTOM) {
                             distance = robotPosition.distance(ball) / 2;
@@ -101,6 +119,8 @@ public class Navigator {
 
                         instructionSet.setDestination(ball);
                     } else {
+                        System.out.println("Navigator: Unsafe ball with safe point");
+
                         var safePointAngle = Calculator.getAngleBetweenPoint(robotPosition, safePoint);
 
                         var turnAngle = Calculator.getTurnAngle(robotAngle, safePointAngle);
@@ -118,6 +138,8 @@ public class Navigator {
                 var currentSafePointArea = Utils.rectangleWithCenter(currentSafePoint, 5);
 
                 if (currentSafePointArea.contains(robotPosition)) {
+                    System.out.println("Navigator: Safe point next area");
+
                     var nextArea = this.board.getAreaAfter(currentBoard);
                     var newSafePoint = nextArea.getNearestSafePoint(robotPosition);
 
@@ -132,6 +154,8 @@ public class Navigator {
 
                     instructionSet.setDestination(newSafePoint);
                 } else {
+                    System.out.println("Navigator: Safe point current area");
+
                     var currentSafePointAngle = Calculator.getAngleBetweenPoint(robotPosition, currentSafePoint);
 
                     var turnAngle = Calculator.getTurnAngle(robotAngle, currentSafePointAngle);

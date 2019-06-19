@@ -3,6 +3,9 @@ package group14.navigator.data;
 import group14.navigator.Calculator;
 import group14.navigator.Utils;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Area {
 
     private final Rectangle2D boundingRect;
@@ -106,6 +109,14 @@ public class Area {
         } else {
             return this.safePointBottom;
         }
+    }
+
+    public Rectangle2D getSafetyArea() {
+        return this.safetyArea;
+    }
+
+    public List<Point2D> getSafePoints() {
+        return Arrays.asList(this.safePointTop, this.safePointBottom);
     }
 
     @Override

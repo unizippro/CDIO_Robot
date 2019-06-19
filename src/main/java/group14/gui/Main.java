@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import group14.Application;
 import group14.gui.components.CoordinateSystem;
 import group14.navigator.Navigator;
+import group14.navigator.NavigatorDrawing;
 import group14.navigator.Utils;
 import group14.navigator.data.Board;
 import group14.opencv.CalibratedCamera;
@@ -24,9 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.imgproc.Imgproc;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -42,6 +41,7 @@ public class Main {
     private Homeography homeography = new Homeography(this.boardDetector);
 
     private Navigator navigator;
+    private NavigatorDrawing navigatorDrawing;
     private boolean isInitialized = false;
     private Thread runThread;
 
@@ -62,6 +62,8 @@ public class Main {
     public ImageView image;
     @FXML
     public Button imageCalibrateSnapshot;
+    @FXML
+    public ImageView imageNavigator;
     @FXML
     public ImageView imageBalls;
     @FXML
@@ -332,13 +334,19 @@ public class Main {
                 var board = new Board(boardRect, 2.5, crossCenter, 17);
                 var robot = new Robot(Utils.toNavigatorPoint(resultRobot.getPointFront(), this.homeography.getPixelsPrCm()), Utils.toNavigatorPoint(resultRobot.getPointBack(), this.homeography.getPixelsPrCm()));
 
+                System.out.println(board);
 
                 this.navigator = new Navigator(board, robot);
+                this.navigatorDrawing = new NavigatorDrawing(this.navigator, this.homeography.getPixelsPrCm());
+
                 this.isInitialized = true;
             }
 
             this.navigator.updateRobotPosition(Utils.toNavigatorPoint(resultRobot.getPointFront(), this.homeography.getPixelsPrCm()), Utils.toNavigatorPoint(resultRobot.getPointBack(), this.homeography.getPixelsPrCm()));
             this.navigator.updateBallPositions(Utils.toNavigatorPoints(resultBalls.getBalls(), this.homeography.getPixelsPrCm()));
+
+            var imageNavigator = ImageConverter.matToImageFX(this.navigatorDrawing.drawOn(frame));
+            Platform.runLater(() -> this.imageNavigator.setImage(imageNavigator));
         }
     }
 
