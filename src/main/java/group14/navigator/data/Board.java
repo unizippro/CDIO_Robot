@@ -16,13 +16,16 @@ public class Board {
     private final List<Area> areas = new ArrayList<>();
 
     public Board(Rectangle2D.Double boundingRect) {
-        this(boundingRect, new Point2D.Double(boundingRect.width / 2, 0), 0);
+        this(boundingRect, 0, null, 0);
     }
 
-    public Board(Rectangle2D.Double boundingRect, Point2D.Double splitAt, double safetyMargin) {
-        this.boundingRect = boundingRect;
+    public Board(Rectangle2D.Double boundingRect, double extraMargin, Point2D.Double splitAt, double safetyMargin) {
+        this.boundingRect = Utils.rectangleWithExpandedMargin(boundingRect, extraMargin);
         this.safetyMargin = safetyMargin;
-        this.splitAt(splitAt);
+
+        var splitPoint = splitAt != null ? splitAt : new Point2D.Double(this.boundingRect.width / 2, this.boundingRect.height / 2);
+
+        this.splitAt(splitPoint);
     }
 
     public List<Area> getAreas() {

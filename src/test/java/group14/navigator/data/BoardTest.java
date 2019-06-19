@@ -28,7 +28,7 @@ public class BoardTest {
 
     @Test
     public void hasCustomSplit() {
-        var board = new Board(new Rectangle2D.Double(0, 0, 200, 100), new Point2D.Double(50, 50), 10);
+        var board = new Board(new Rectangle2D.Double(0, 0, 200, 100), 0, new Point2D.Double(50, 50), 10);
 
         var areas = board.getAreas();
 

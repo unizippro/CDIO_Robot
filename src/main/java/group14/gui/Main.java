@@ -320,8 +320,8 @@ public class Main {
 
                 var boardPoints = Arrays.asList(resultBoard.getCorners().get(0), resultBoard.getCorners().get(2));
                 var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints));
+                var board = new Board(boardRect, 2.5, Utils.rectangleGetCenter(boardRect), 15);
 
-                var board = new Board(boardRect, Utils.rectangleGetCenter(boardRect), 15);
                 var robot = new Robot(Utils.toNavigatorPoint(resultRobot.getPointFront()), Utils.toNavigatorPoint(resultRobot.getPointBack()));
 
                 this.navigator = new Navigator(board, robot);
