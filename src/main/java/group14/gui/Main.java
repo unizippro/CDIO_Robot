@@ -41,14 +41,13 @@ public class Main {
     private IRobotManager robotManager;
 
     private BallDetector ballDetector = new BallDetector();
-    private BoardDetector.Config boardDetectorConfig = new BoardDetector.Config();
-    private BoardDetector boardDetector = new BoardDetector(boardDetectorConfig);
+    private BoardDetector boardDetector = new BoardDetector();
     private RobotDetector robotDetector = new RobotDetector();
 
     private Navigator navigator;
     private boolean isInitialized = false;
 
-    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9, boardDetectorConfig);
+    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
 
     private boolean isHomo = false;
     private Mat homeographyMat;
