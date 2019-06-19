@@ -268,7 +268,7 @@
                      <font>
                         <Font size="15.0" fx:id="x15" />
                      </font></Button>
-                        <Button layoutX="97.0" layoutY="249.0" mnemonicParsing="false" text="Stop">
+                        <Button layoutX="97.0" layoutY="249.0" mnemonicParsing="false" text="Stop" onMouseClicked="#stopRobotRun">
                      <font>
                         <Font size="15.0" fx:id="x16" />
                      </font></Button>

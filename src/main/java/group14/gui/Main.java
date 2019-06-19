@@ -43,6 +43,7 @@ public class Main {
 
     private Navigator navigator;
     private boolean isInitialized = false;
+    private Thread runThread;
 
     private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
 
@@ -416,14 +417,19 @@ public class Main {
 
     @FXML
     private void startRobotRun() {
-        new Thread(() -> {
-            while (! this.navigator.isEmpty()) {
+        if (this.runThread != null) {
+            this.runThread.interrupt();
+            this.runThread = null;
+        }
+
+        this.runThread = new Thread(() -> {
             try {
                 this.robotManager.getController().fanOn();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
 
+            while (! this.navigator.isEmpty() && ! Thread.currentThread().isInterrupted()) {
                 try {
                     var instructionSet = this.navigator.calculateInstructionSet();
                     System.out.println(instructionSet);
@@ -442,6 +448,10 @@ public class Main {
                 }
             }
 
+            if (Thread.currentThread().isInterrupted()) {
+                return;
+            }
+
             try {
                 this.robotManager.getController().fanOff();
                 this.robotManager.getController().deposit();
@@ -450,6 +460,24 @@ public class Main {
             }
 
             // todo: handle deposit instructions here
+        });
+
+        this.runThread.start();
+    }
+
+    public void stopRobotRun(MouseEvent mouseEvent) {
+        if (this.runThread != null) {
+            this.runThread.interrupt();
+            this.runThread = null;
+        }
+
+        new Thread(() -> {
+            try {
+                this.robotManager.getController().fanOff();
+                this.robotManager.getController().deposit();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }).start();
     }
 }
