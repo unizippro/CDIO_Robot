@@ -418,6 +418,12 @@ public class Main {
     private void startRobotRun() {
         new Thread(() -> {
             while (! this.navigator.isEmpty()) {
+            try {
+                this.robotManager.getController().fanOn();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
                 try {
                     var instructionSet = this.navigator.calculateInstructionSet();
                     System.out.println(instructionSet);
@@ -429,6 +435,8 @@ public class Main {
                             e.printStackTrace();
                         }
                     });
+
+                    Thread.sleep(200);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -436,12 +444,12 @@ public class Main {
 
             try {
                 this.robotManager.getController().fanOff();
+                this.robotManager.getController().deposit();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
 
             // todo: handle deposit instructions here
-//            this.robotManager.getController().deposit();
         }).start();
     }
 }
