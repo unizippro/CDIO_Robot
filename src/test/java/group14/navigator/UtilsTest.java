@@ -86,8 +86,20 @@ public class UtilsTest {
 
         assertEquals(0, rect.x, 0);
         assertEquals(0, rect.y, 0);
+        assertEquals(10, rect.getMaxX(), 0);
+        assertEquals(10, rect.getMaxY(), 0);
         assertEquals(10, rect.width, 0);
         assertEquals(10, rect.height, 0);
+
+
+        var rect2 = Utils.createRectangleFromPoints(Arrays.asList(new Point2D.Double(10, 10), new Point2D.Double(20, 20)));
+
+        assertEquals(10, rect2.x, 0);
+        assertEquals(10, rect2.y, 0);
+        assertEquals(20, rect2.getMaxX(), 0);
+        assertEquals(20, rect2.getMaxY(), 0);
+        assertEquals(10, rect2.width, 0);
+        assertEquals(10, rect2.height, 0);
     }
 
     @Test(expected = RuntimeException.class)

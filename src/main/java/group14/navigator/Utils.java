@@ -25,14 +25,18 @@ public class Utils {
     public static List<Rectangle2D.Double> rectangleSplitAt(Rectangle2D.Double rectangle, Point2D.Double point, Split direction) {
         switch (direction) {
             case VERTICAL:
-                var left = new Rectangle2D.Double(rectangle.x, rectangle.y, rectangle.x + point.x, rectangle.height);
-                var right = new Rectangle2D.Double(rectangle.x + point.x, rectangle.y, rectangle.width - point.x, rectangle.height);
+                var leftWidth = point.x - rectangle.x;
+
+                var left = new Rectangle2D.Double(rectangle.x, rectangle.y, leftWidth, rectangle.height);
+                var right = new Rectangle2D.Double(point.x, rectangle.y, rectangle.width - leftWidth, rectangle.height);
 
                 return Arrays.asList(left, right);
 
             case HORIZONTAL:
-                var top = new Rectangle2D.Double(rectangle.x, rectangle.y, rectangle.width, rectangle.y + point.y);
-                var bottom = new Rectangle2D.Double(rectangle.x, rectangle.y + point.y, rectangle.width, rectangle.height - point.y);
+                var topHeight = point.y - rectangle.y;
+
+                var top = new Rectangle2D.Double(rectangle.x, rectangle.y, rectangle.width, topHeight);
+                var bottom = new Rectangle2D.Double(rectangle.x, point.y, rectangle.width, rectangle.height - topHeight);
 
                 return Arrays.asList(top, bottom);
         }
@@ -62,6 +66,6 @@ public class Utils {
         var topLeft = points.get(0);
         var bottomRight = points.get(1);
 
-        return new Rectangle2D.Double(topLeft.x, topLeft.y, topLeft.x + bottomRight.x, topLeft.y + bottomRight.y);
+        return new Rectangle2D.Double(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
     }
 }
