@@ -89,8 +89,15 @@ public class Navigator {
                             instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
                         }
 
-                        instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, 5));
-                        instructionSet.add(new Instruction(Instruction.InstructionType.BACKWARD, 5));
+                        double distance;
+                        if (direction == Area.DangerousAreaDirection.TOP || direction == Area.DangerousAreaDirection.BOTTOM) {
+                            distance = robotPosition.distance(ball) / 2;
+                        } else {
+                            distance = robotPosition.distance(ball) / 4;
+                        }
+
+                        instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, distance));
+                        instructionSet.add(new Instruction(Instruction.InstructionType.BACKWARD, distance));
 
                         instructionSet.setDestination(ball);
                     } else {
@@ -101,7 +108,7 @@ public class Navigator {
                             instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
                         }
 
-                        instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, this.robot.getDistanceTo(safePoint)));
+                        instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, robotPosition.distance(safePoint)));
 
                         instructionSet.setDestination(safePoint);
                     }
@@ -121,7 +128,7 @@ public class Navigator {
                         instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
                     }
 
-                    instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, this.robot.getDistanceTo(newSafePoint)));
+                    instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, robotPosition.distance(newSafePoint)));
 
                     instructionSet.setDestination(newSafePoint);
                 } else {
@@ -132,7 +139,7 @@ public class Navigator {
                         instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
                     }
 
-                    instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, this.robot.getDistanceTo(currentSafePoint)));
+                    instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, robotPosition.distance(currentSafePoint)));
 
                     instructionSet.setDestination(currentSafePoint);
                 }
