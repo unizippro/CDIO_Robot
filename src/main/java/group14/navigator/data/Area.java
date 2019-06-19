@@ -17,7 +17,12 @@ public class Area {
     private final Point2D safePointBottom;
 
     public enum DangerousAreaDirection {
-        TOP, BOTTOM, LEFT, RIGHT
+        TOP_LEFT, TOP_RIGHT, DOWN_LEFT, DOWN_RIGHT,
+        TOP, BOTTOM, LEFT, RIGHT;
+
+        public static boolean isCorner(DangerousAreaDirection direction) {
+            return direction == Area.DangerousAreaDirection.TOP_LEFT || direction == Area.DangerousAreaDirection.TOP_RIGHT || direction == Area.DangerousAreaDirection.DOWN_LEFT || direction == Area.DangerousAreaDirection.DOWN_RIGHT;
+        }
     }
 
     Area(Rectangle2D boundingRect, double safetyMargin) {
@@ -61,14 +66,30 @@ public class Area {
     }
 
     public DangerousAreaDirection getDangerousAreaDirection(Point2D point) throws Exception {
-        // todo: add checks for corners
-        if (this.boundingRect.getMinY() <= point.y && point.y <= this.safetyArea.getMinY()) {
-            return DangerousAreaDirection.TOP;
-        } else if (this.boundingRect.getMaxY() >= point.y && point.y >= this.safetyArea.getMaxY()) {
-            return DangerousAreaDirection.BOTTOM;
-        } else if (this.boundingRect.getMinX() <= point.x && point.x <= this.safetyArea.getMinX()) {
+        var isTop = this.boundingRect.getMinY() <= point.y && point.y <= this.safetyArea.getMinY();
+        var isBottom = this.boundingRect.getMaxY() >= point.y && point.y >= this.safetyArea.getMaxY();
+        var isLeft = this.boundingRect.getMinX() <= point.x && point.x <= this.safetyArea.getMinX();
+        var isRight = this.boundingRect.getMaxX() >= point.x && point.x >= this.safetyArea.getMaxX();
+
+        if (isTop) {
+            if (isLeft) {
+                return DangerousAreaDirection.TOP_LEFT;
+            } else if (isRight) {
+                return DangerousAreaDirection.TOP_RIGHT;
+            } else {
+                return DangerousAreaDirection.TOP;
+            }
+        } else if (isBottom) {
+            if (isLeft) {
+                return DangerousAreaDirection.DOWN_LEFT;
+            } else if (isRight) {
+                return DangerousAreaDirection.DOWN_RIGHT;
+            } else {
+                return DangerousAreaDirection.BOTTOM;
+            }
+        } else if (isLeft) {
             return DangerousAreaDirection.LEFT;
-        } else if (this.boundingRect.getMaxX() >= point.x && point.x >= this.safetyArea.getMaxX()) {
+        } else if (isRight) {
             return DangerousAreaDirection.RIGHT;
         }
 
@@ -98,6 +119,26 @@ public class Area {
                 var startPointRight = new Point2D(this.boundingRect.getMaxX(), point.y);
 
                 return Calculator.getVectorEndPoint(startPointRight, 180, safetyDistance);
+
+            case TOP_LEFT:
+                var startPointTopLeft = new Point2D(this.boundingRect.getMinX(), this.boundingRect.getMinY());
+
+                return Calculator.getVectorEndPoint(startPointTopLeft, 45, safetyDistance);
+
+            case TOP_RIGHT:
+                var startPointTopRight = new Point2D(this.boundingRect.getMaxX(), this.boundingRect.getMinY());
+
+                return Calculator.getVectorEndPoint(startPointTopRight, 135, safetyDistance);
+
+            case DOWN_LEFT:
+                var startPointDownLeft = new Point2D(this.boundingRect.getMinX(), this.boundingRect.getMaxY());
+
+                return Calculator.getVectorEndPoint(startPointDownLeft, 315, safetyDistance);
+
+            case DOWN_RIGHT:
+                var startPointDownRight = new Point2D(this.boundingRect.getMaxX(), this.boundingRect.getMaxY());
+
+                return Calculator.getVectorEndPoint(startPointDownRight, 225, safetyDistance);
         }
 
         throw new Exception("Direction cannot be null");

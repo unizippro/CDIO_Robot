@@ -27,6 +27,10 @@ public class AreaTest {
         assertEquals(Area.DangerousAreaDirection.BOTTOM, this.area.getDangerousAreaDirection(new Point2D(50, 95)));
         assertEquals(Area.DangerousAreaDirection.LEFT, this.area.getDangerousAreaDirection(new Point2D(5, 50)));
         assertEquals(Area.DangerousAreaDirection.RIGHT, this.area.getDangerousAreaDirection(new Point2D(95, 50)));
+        assertEquals(Area.DangerousAreaDirection.TOP_LEFT, this.area.getDangerousAreaDirection(new Point2D(5, 5)));
+        assertEquals(Area.DangerousAreaDirection.TOP_RIGHT, this.area.getDangerousAreaDirection(new Point2D(95, 5)));
+        assertEquals(Area.DangerousAreaDirection.DOWN_LEFT, this.area.getDangerousAreaDirection(new Point2D(5, 95)));
+        assertEquals(Area.DangerousAreaDirection.DOWN_RIGHT, this.area.getDangerousAreaDirection(new Point2D(95, 95)));
     }
 
     @Test
@@ -46,6 +50,22 @@ public class AreaTest {
         var pointRight = this.area.getProjectedPoint(new Point2D(95, 50), Area.DangerousAreaDirection.RIGHT);
         assertEquals(85, pointRight.x, 0);
         assertEquals(50, pointRight.y, 0);
+
+        var pointTopLeft = this.area.getProjectedPoint(new Point2D(5, 5), Area.DangerousAreaDirection.TOP_LEFT);
+        assertEquals(10.6, pointTopLeft.x, 0.1);
+        assertEquals(10.6, pointTopLeft.y, 0.1);
+
+        var pointTopRight = this.area.getProjectedPoint(new Point2D(95, 5), Area.DangerousAreaDirection.TOP_RIGHT);
+        assertEquals(89.4, pointTopRight.x, 0.1);
+        assertEquals(10.6, pointTopRight.y, 0.1);
+
+        var pointDownLeft = this.area.getProjectedPoint(new Point2D(5, 95), Area.DangerousAreaDirection.DOWN_LEFT);
+        assertEquals(10.6, pointDownLeft.x, 0.1);
+        assertEquals(89.4, pointDownLeft.y, 0.1);
+
+        var pointDownRight = this.area.getProjectedPoint(new Point2D(95, 95), Area.DangerousAreaDirection.DOWN_RIGHT);
+        assertEquals(89.4, pointDownRight.x, 0.1);
+        assertEquals(89.4, pointDownRight.y, 0.1);
     }
 
     @Test

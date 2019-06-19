@@ -105,11 +105,11 @@ public class Navigator {
                             instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
                         }
 
-//                        var distance = (this.robot.getDistanceTo(ball) / 3) * 2;
-//                        var distance = this.robot.getDistanceTo(ball);
                         double distance;
                         if (direction == Area.DangerousAreaDirection.TOP || direction == Area.DangerousAreaDirection.BOTTOM) {
                             distance = robotPosition.distance(ball) / 2;
+                        } else if (Area.DangerousAreaDirection.isCorner(direction)) {
+                            distance = robotPosition.distance(ball) / 3;
                         } else {
                             distance = robotPosition.distance(ball) / 4;
                         }
