@@ -1,6 +1,7 @@
 package group14;
 
 import group14.opencv.ICameraController;
+import group14.robot.IRobotManager;
 import javafx.stage.Stage;
 import org.opencv.core.Core;
 
@@ -53,6 +54,15 @@ public class Application extends javafx.application.Application {
     @Override
     public void stop() throws Exception {
         super.stop();
+
+        var controller = SceneManager.getInstance()
+                .getInjector()
+                .getInstance(IRobotManager.class)
+                .getController();
+
+        if (controller != null) {
+            controller.fanOff();
+        }
 
         SceneManager.getInstance()
                 .getInjector()
