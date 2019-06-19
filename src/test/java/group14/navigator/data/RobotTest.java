@@ -41,13 +41,13 @@ public class RobotTest {
         var rotatingPoint = robot.getRotatingPoint();
 
         assertEquals(50, rotatingPoint.x, 0.1);
-        assertEquals(5, rotatingPoint.y, 0.1);
+        assertEquals(8, rotatingPoint.y, 0.1);
 
 
         var robot1 = new TestRobot(new Point2D.Double(2, 0), new Point2D.Double(0, 0));
         var rotatingPoint1 = robot1.getRotatingPoint();
 
-        assertEquals(5, rotatingPoint1.x, 0.1);
+        assertEquals(2, rotatingPoint1.x, 0.1);
         assertEquals(0, rotatingPoint1.y, 0.1);
     }
 

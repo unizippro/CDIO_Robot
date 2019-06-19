@@ -31,11 +31,13 @@ public abstract class Robot {
     }
 
     public Point2D.Double getRotatingPoint() {
-        return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), this.getDistanceRearPointToRotating());
+        return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), this.rearPoint.distance(this.frontPoint));
     }
 
     public double getDistanceTo(Point2D.Double point) {
-        return this.getRotatingPoint().distance(point) - this.getDistanceFromRotatingPointToFront();
+        var rotatingPoint = this.getRotatingPoint();
+
+        return rotatingPoint.distance(point) - rotatingPoint.distance(this.getFrontPosition());
     }
 
     public void updateFromInstruction(Instruction instruction) {
@@ -50,9 +52,10 @@ public abstract class Robot {
             case TURN:
                 var rotatingPoint = this.getRotatingPoint();
                 var newAngle = directionAngle + instruction.getAmount();
+                var distanceBetweenPoints = this.rearPoint.distance(this.frontPoint);
 
                 this.rearPoint.setLocation(Calculator.getVectorEndPoint(rotatingPoint, Calculator.getOppositeAngle(newAngle), this.getDistanceRearPointToRotating()));
-                this.frontPoint.setLocation(Calculator.getVectorEndPoint(this.rearPoint, newAngle, 1)); // todo: calculate magnitude
+                this.frontPoint.setLocation(Calculator.getVectorEndPoint(this.rearPoint, newAngle, distanceBetweenPoints));
                 break;
 
             case BACKWARD:
@@ -60,9 +63,5 @@ public abstract class Robot {
                 this.frontPoint.setLocation(Calculator.getVectorEndPoint(this.frontPoint, Calculator.getOppositeAngle(directionAngle), instruction.getAmount()));
                 break;
         }
-    }
-
-    private double getDistanceFromRotatingPointToFront() {
-        return this.getDistanceRearPointToFront() - this.getDistanceRearPointToRotating();
     }
 }
