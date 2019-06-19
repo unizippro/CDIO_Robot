@@ -2,12 +2,12 @@ package group14.gui;
 
 import com.google.inject.Inject;
 import group14.Application;
-import group14.Resources;
 import group14.gui.components.CoordinateSystem;
 import group14.navigator.Navigator;
 import group14.navigator.Utils;
 import group14.navigator.data.Board;
 import group14.opencv.CalibratedCamera;
+import group14.opencv.Homeography;
 import group14.opencv.detectors.ball_detector.BallDetector;
 import group14.opencv.detectors.board_detector.BoardDetector;
 import group14.opencv.detectors.robot_detector.RobotDetector;
@@ -15,7 +15,6 @@ import group14.opencv.utils.ImageConverter;
 import group14.robot.IRobotManager;
 import group14.robot.Robot;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -28,7 +27,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.utils.Converters;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -36,24 +34,18 @@ import java.util.List;
 
 public class Main {
 
-    private static final double LONG_LENGTH = 166.8;
-
     private IRobotManager robotManager;
 
     private BallDetector ballDetector = new BallDetector();
     private BoardDetector boardDetector = new BoardDetector();
     private RobotDetector robotDetector = new RobotDetector();
+    private Homeography homeography = new Homeography(this.boardDetector);
 
     private Navigator navigator;
     private boolean isInitialized = false;
 
     private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
 
-    private boolean isHomo = false;
-    private Mat homeographyMat;
-    private Size homeoSize;
-
-    private double pixelsPrCm;
 
     @FXML
     private ChoiceBox testImages;
@@ -163,7 +155,7 @@ public class Main {
         this.robotManager = robotManager;
 
         this.camera.setCalibrationPossibleListener(this::cameraCalibrationChanged);
-        this.camera.setCalibrationCustomHandler(this::customCalibration);
+        this.camera.setCalibrationCustomHandler(this.homeography);
     }
 
 
@@ -289,51 +281,6 @@ public class Main {
 //        this.camera.updateWithImage(((FileSelectItem) this.testImages.getValue()).filePath);
     }
 
-    private void customCalibration(Mat frame, Mat outFrame) {
-        if (this.isHomo) {
-            Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, this.homeoSize);
-        } else {
-            var boardDetectorResult = this.boardDetector.run(frame);
-
-            var corners = boardDetectorResult.getCorners();
-            if (corners.size() == 4) {
-                var margin = 100;
-
-                var width = (Math.max(corners.get(1).x, corners.get(3).x) + margin) - (Math.min(corners.get(0).x, corners.get(2).x) - margin);
-                var height = (Math.max(corners.get(2).y, corners.get(3).y) + margin) - (Math.min(corners.get(0).y, corners.get(1).y) - margin);
-
-                var aspectRatio = width / height;
-                this.homeoSize = new Size(width * aspectRatio, height);
-
-                var srcMat = new MatOfPoint2f(
-                        new Point(corners.get(0).x - margin, corners.get(0).y - margin),
-                        new Point(corners.get(1).x + margin, corners.get(1).y - margin),
-                        new Point(corners.get(2).x - margin, corners.get(2).y + margin),
-                        new Point(corners.get(3).x + margin, corners.get(3).y + margin)
-                );
-                var dst = new MatOfPoint2f(
-                        new Point(0, 0),
-                        new Point(this.homeoSize.width, 0),
-                        new Point(0, this.homeoSize.height),
-                        new Point(this.homeoSize.width, this.homeoSize.height)
-                );
-
-                // Calculate Homo
-                this.homeographyMat = Imgproc.getPerspectiveTransform(srcMat, dst);
-
-                Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, this.homeoSize);
-
-                var result = this.boardDetector.run(outFrame);
-
-                this.pixelsPrCm = (result.getCorners().get(1).x - result.getCorners().get(0).x) / LONG_LENGTH;
-                System.out.println("Pixel ratio: " + this.pixelsPrCm);
-
-                this.isHomo = true;
-            } else {
-                frame.copyTo(outFrame);
-            }
-        }
-    }
 
     private void cameraFrameUpdated(Mat frame) {
         var image = ImageConverter.matToImageFX(frame);
