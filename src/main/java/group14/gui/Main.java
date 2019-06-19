@@ -317,21 +317,22 @@ public class Main {
 
         if (this.camera.isCalibrated()) {
             if (! this.isInitialized) {
+                var boardPoints = Arrays.asList(resultBoard.getCorners().get(0), resultBoard.getCorners().get(3));
+                var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints, this.homeography.getPixelsPrCm()));
+
                 var cross = resultBoard.getCross();
-                var crossCenter = Utils.toNavigatorPoint(new Point(cross.x + cross.width / 2, cross.y + cross.height / 2));
+                var crossCenter = Utils.toNavigatorPoint(new Point(cross.x + cross.width / 2, cross.y + cross.height / 2), this.homeography.getPixelsPrCm());
 
-                var boardPoints = Arrays.asList(resultBoard.getCorners().get(0), resultBoard.getCorners().get(2));
-                var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints));
                 var board = new Board(boardRect, 2.5, crossCenter, 17);
+                var robot = new Robot(Utils.toNavigatorPoint(resultRobot.getPointFront(), this.homeography.getPixelsPrCm()), Utils.toNavigatorPoint(resultRobot.getPointBack(), this.homeography.getPixelsPrCm()));
 
-                var robot = new Robot(Utils.toNavigatorPoint(resultRobot.getPointFront()), Utils.toNavigatorPoint(resultRobot.getPointBack()));
 
                 this.navigator = new Navigator(board, robot);
                 this.isInitialized = true;
             }
 
-            this.navigator.updateRobotPosition(Utils.toNavigatorPoint(resultRobot.getPointFront()), Utils.toNavigatorPoint(resultRobot.getPointBack()));
-            this.navigator.updateBallPositions(Utils.toNavigatorPoints(resultBalls.getBalls()));
+            this.navigator.updateRobotPosition(Utils.toNavigatorPoint(resultRobot.getPointFront(), this.homeography.getPixelsPrCm()), Utils.toNavigatorPoint(resultRobot.getPointBack(), this.homeography.getPixelsPrCm()));
+            this.navigator.updateBallPositions(Utils.toNavigatorPoints(resultBalls.getBalls(), this.homeography.getPixelsPrCm()));
         }
     }
 

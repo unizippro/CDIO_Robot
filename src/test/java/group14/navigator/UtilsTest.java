@@ -70,14 +70,14 @@ public class UtilsTest {
 
     @Test
     public void toNavigatorPoint() {
-        assertTrue(Utils.toNavigatorPoint(new Point()) instanceof Point2D.Double);
+        assertTrue(Utils.toNavigatorPoint(new Point(), 0) instanceof Point2D.Double);
     }
 
     @Test
     public void toNavigatorPoints() {
         var listOfPoints = Arrays.asList(new Point(), new Point());
 
-        assertEquals(2, Utils.toNavigatorPoints(listOfPoints).size(), 0);
+        assertEquals(2, Utils.toNavigatorPoints(listOfPoints, 0).size(), 0);
     }
 
     @Test()

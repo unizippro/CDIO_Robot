@@ -48,13 +48,13 @@ public class Utils {
         return new Point2D.Double(rectangle.getCenterX(), rectangle.getCenterY());
     }
 
-    public static Point2D.Double toNavigatorPoint(Point point) {
-        return new Point2D.Double(point.x, point.y);
+    public static Point2D.Double toNavigatorPoint(Point point, double ratio) {
+        return new Point2D.Double(point.x / ratio, point.y / ratio);
     }
 
-    public static List<Point2D.Double> toNavigatorPoints(List<Point> points) {
+    public static List<Point2D.Double> toNavigatorPoints(List<Point> points, double ratio) {
         return points.stream()
-                .map(Utils::toNavigatorPoint)
+                .map((Point point) -> toNavigatorPoint(point, ratio))
                 .collect(Collectors.toList());
     }
 
