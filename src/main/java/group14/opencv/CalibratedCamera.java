@@ -104,6 +104,8 @@ public class CalibratedCamera extends Camera {
 
             if (this.calibrationCustomHandler != null) {
                 this.calibrationCustomHandler.handleCustomCalibration(outFrame, updatedFrame);
+            } else {
+                outFrame.copyTo(updatedFrame);
             }
 
             frame.release();
