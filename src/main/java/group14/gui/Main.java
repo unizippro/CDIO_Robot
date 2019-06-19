@@ -317,8 +317,13 @@ public class Main {
         });
 
         if (this.camera.isCalibrated()) {
+            var corners = resultBoard.getCorners();
+            if (corners.size() != 4) {
+                return;
+            }
+
             if (! this.isInitialized) {
-                var boardPoints = Arrays.asList(resultBoard.getCorners().get(0), resultBoard.getCorners().get(3));
+                var boardPoints = Arrays.asList(corners.get(0), corners.get(3));
                 var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints, this.homeography.getPixelsPrCm()));
 
                 var cross = resultBoard.getCross();
