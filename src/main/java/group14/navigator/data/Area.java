@@ -75,26 +75,28 @@ public class Area {
     }
 
     public Point2D.Double getProjectedPoint(Point2D.Double point, DangerousAreaDirection direction) throws Exception {
+        var safetyDistance = this.safetyMargin * 1.5;
+
         switch (direction) {
             case TOP:
                 var startPointTop = new Point2D.Double(point.x, this.boundingRect.getMinY());
 
-                return Calculator.getVectorEndPoint(startPointTop, 90, this.safetyMargin);
+                return Calculator.getVectorEndPoint(startPointTop, 90, safetyDistance);
 
             case BOTTOM:
                 var startPointBottom = new Point2D.Double(point.x, this.boundingRect.getMaxY());
 
-                return Calculator.getVectorEndPoint(startPointBottom, 270, this.safetyMargin);
+                return Calculator.getVectorEndPoint(startPointBottom, 270, safetyDistance);
 
             case LEFT:
                 var startPointLeft = new Point2D.Double(this.boundingRect.getMinX(), point.y);
 
-                return Calculator.getVectorEndPoint(startPointLeft, 0, this.safetyMargin);
+                return Calculator.getVectorEndPoint(startPointLeft, 0, safetyDistance);
 
             case RIGHT:
                 var startPointRight = new Point2D.Double(this.boundingRect.getMaxX(), point.y);
 
-                return Calculator.getVectorEndPoint(startPointRight, 180, this.safetyMargin);
+                return Calculator.getVectorEndPoint(startPointRight, 180, safetyDistance);
         }
 
         throw new Exception("Direction cannot be null");

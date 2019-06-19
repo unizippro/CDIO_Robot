@@ -35,18 +35,18 @@ public class AreaTest {
     public void getProjectedPoint() throws Exception {
         var pointTop = this.area.getProjectedPoint(new Point2D.Double(50, 5), Area.DangerousAreaDirection.TOP);
         assertEquals(50, pointTop.x, 0);
-        assertEquals(10, pointTop.y, 0);
+        assertEquals(15, pointTop.y, 0);
 
         var pointBottom = this.area.getProjectedPoint(new Point2D.Double(50, 95), Area.DangerousAreaDirection.BOTTOM);
         assertEquals(50, pointBottom.x, 0);
-        assertEquals(90, pointBottom.y, 0);
+        assertEquals(85, pointBottom.y, 0);
 
         var pointLeft = this.area.getProjectedPoint(new Point2D.Double(5, 50), Area.DangerousAreaDirection.LEFT);
-        assertEquals(10, pointLeft.x, 0);
+        assertEquals(15, pointLeft.x, 0);
         assertEquals(50, pointLeft.y, 0);
 
         var pointRight = this.area.getProjectedPoint(new Point2D.Double(95, 50), Area.DangerousAreaDirection.RIGHT);
-        assertEquals(90, pointRight.x, 0);
+        assertEquals(85, pointRight.x, 0);
         assertEquals(50, pointRight.y, 0);
     }
 
