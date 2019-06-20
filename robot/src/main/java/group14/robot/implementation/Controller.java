@@ -14,7 +14,7 @@ public class Controller extends UnicastRemoteObject implements IController {
     private AtomicBoolean fanRunning = new AtomicBoolean(false);
     private AtomicBoolean vibRunning = new AtomicBoolean(false);
     private AtomicBoolean gateOpen = new AtomicBoolean(false);
-    private int openCloseAngle = 1080;
+    private int openCloseAngle = 1440;
 
     private EV3LargeRegulatedMotor controllerMotor;
     private EV3MediumRegulatedMotor gateMotor;
