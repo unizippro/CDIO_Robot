@@ -16,6 +16,30 @@ public class Instruction implements Serializable {
         DANCE
     }
 
+    public static Instruction forward(double amount) {
+        return new Instruction(InstructionType.FORWARD, amount);
+    }
+
+    public static Instruction turn(double amount) {
+        return new Instruction(InstructionType.TURN, amount);
+    }
+
+    public static Instruction backward(double amount) {
+        return new Instruction(InstructionType.BACKWARD, amount);
+    }
+
+    public static Instruction sleep(double amount) {
+        return new Instruction(InstructionType.WAIT, amount);
+    }
+
+    public static Instruction deposit() {
+        return new Instruction(InstructionType.DEPOSIT);
+    }
+
+    public static Instruction dance() {
+        return new Instruction(InstructionType.DANCE);
+    }
+
     public Instruction(InstructionType type) {
         this.type = type;
         this.amount = 0;

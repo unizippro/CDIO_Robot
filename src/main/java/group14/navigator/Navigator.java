@@ -86,16 +86,10 @@ public class Navigator {
                 if (currentBoard.isWithinSafetyArea(ball)) {
                     System.out.println("Navigator: Safe ball");
 
-                    var ballAngle = Calculator.getAngleBetweenPoint(robotPosition, ball);
-
-                    var turnAngle = Calculator.getTurnAngle(robotAngle, ballAngle);
-                    if (Math.abs(turnAngle) >= this.turnThreshold) {
-                        instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
-                    }
-
-                    instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, this.robot.getDistanceTo(ball)));
-
                     instructionSet.setDestination(ball);
+
+                    this.addTurnIfNeeded(instructionSet, robotPosition, ball);
+                    instructionSet.add(Instruction.forward(this.robot.getDistanceTo(ball)));
                 } else {
                     var direction = currentBoard.getDangerousAreaDirection(ball);
                     var safePoint = currentBoard.getProjectedPoint(ball, direction);
@@ -104,12 +98,9 @@ public class Navigator {
                     if (safePointArea.contains(robotPosition)) {
                         System.out.println("Navigator: Unsafe Ball in direction " + direction);
 
-                        var ballAngle = Calculator.getAngleBetweenPoint(robotPosition, ball);
+                        instructionSet.setDestination(ball);
 
-                        var turnAngle = Calculator.getTurnAngle(robotAngle, ballAngle);
-                        if (Math.abs(turnAngle) >= this.turnThreshold) {
-                            instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
-                        }
+                        this.addTurnIfNeeded(instructionSet, robotPosition, ball);
 
                         double distance;
                         if (direction == Area.DangerousAreaDirection.TOP || direction == Area.DangerousAreaDirection.BOTTOM) {
@@ -120,24 +111,15 @@ public class Navigator {
                             distance = robotPosition.distance(ball) / 4;
                         }
 
-                        instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, distance));
-                        instructionSet.add(new Instruction(Instruction.InstructionType.WAIT, 500));
-                        instructionSet.add(new Instruction(Instruction.InstructionType.BACKWARD, distance * 1.2));
-
-                        instructionSet.setDestination(ball);
+                        instructionSet.add(Instruction.forward(distance));
+                        instructionSet.add(Instruction.sleep(500));
+                        instructionSet.add(Instruction.backward(distance * 1.2));
                     } else {
                         System.out.println("Navigator: Unsafe ball with safe point");
 
-                        var safePointAngle = Calculator.getAngleBetweenPoint(robotPosition, safePoint);
-
-                        var turnAngle = Calculator.getTurnAngle(robotAngle, safePointAngle);
-                        if (Math.abs(turnAngle) >= this.turnThreshold) {
-                            instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
-                        }
-
-                        instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, robotPosition.distance(safePoint)));
-
                         instructionSet.setDestination(safePoint);
+
+                        this.addTurnAndForward(instructionSet, robotPosition, safePoint);
                     }
                 }
             } else {
@@ -150,29 +132,15 @@ public class Navigator {
                     var nextArea = this.board.getAreaAfter(currentBoard);
                     var newSafePoint = nextArea.getNearestSafePoint(robotPosition);
 
-                    var newSafePointAngle = Calculator.getAngleBetweenPoint(robotPosition, newSafePoint);
-
-                    var turnAngle = Calculator.getTurnAngle(robotAngle, newSafePointAngle);
-                    if (Math.abs(turnAngle) >= this.turnThreshold) {
-                        instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
-                    }
-
-                    instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, robotPosition.distance(newSafePoint)));
-
                     instructionSet.setDestination(newSafePoint);
+
+                    this.addTurnAndForward(instructionSet, robotPosition, newSafePoint);
                 } else {
                     System.out.println("Navigator: Safe point current area");
 
-                    var currentSafePointAngle = Calculator.getAngleBetweenPoint(robotPosition, currentSafePoint);
-
-                    var turnAngle = Calculator.getTurnAngle(robotAngle, currentSafePointAngle);
-                    if (Math.abs(turnAngle) >= this.turnThreshold) {
-                        instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
-                    }
-
-                    instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, robotPosition.distance(currentSafePoint)));
-
                     instructionSet.setDestination(currentSafePoint);
+
+                    this.addTurnAndForward(instructionSet, robotPosition, currentSafePoint);
                 }
             }
         } else {
@@ -180,38 +148,33 @@ public class Navigator {
             if (currentDepositPointSafe.contains(robotPosition)) {
                 System.out.println("Navigator: Deposit plan started");
 
-                var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, new Point2D(this.depositPoint.x - 30, this.depositPoint.y));
+                var projectedDepositPoint = new Point2D(this.depositPoint.x - 30, this.depositPoint.y);
+
+                instructionSet.setDestination(projectedDepositPoint);
+
+                var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, projectedDepositPoint);
 
                 var turnAngle = Calculator.getTurnAngle(robotAngle, currentDepositPointAngle);
                 if (Math.abs(turnAngle) >= 1.5) {
-                    instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
+                    instructionSet.add(Instruction.turn(turnAngle));
                     this.depositCorrectionMode = true;
                 } else {
                     this.depositCorrectionMode = false;
                 }
 
                 if (! this.depositCorrectionMode) {
-                    instructionSet.add(new Instruction(Instruction.InstructionType.TURN, 180));
-                    instructionSet.add(new Instruction(Instruction.InstructionType.DEPOSIT));
-                    instructionSet.add(new Instruction(Instruction.InstructionType.DANCE));
+                    instructionSet.add(Instruction.turn(180));
+                    instructionSet.add(Instruction.deposit());
+                    instructionSet.add(Instruction.dance());
 
                     this.hasDeposit = true;
                 }
-
-                instructionSet.setDestination(new Point2D(this.depositPoint.x - 30, this.depositPoint.y));
             } else if (currentBoard.contains(this.depositPoint)) {
                 System.out.println("Navigator: Deposit point current area");
 
-                var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, this.depositPoint);
-
-                var turnAngle = Calculator.getTurnAngle(robotAngle, currentDepositPointAngle);
-                if (Math.abs(turnAngle) >= this.turnThreshold) {
-                    instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
-                }
-
-                instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, robotPosition.distance(this.depositPoint)));
-
                 instructionSet.setDestination(this.depositPoint);
+
+                this.addTurnAndForward(instructionSet, robotPosition, this.depositPoint);
             } else {
                 var currentSafePoint = currentBoard.getNearestSafePoint(robotPosition);
                 var currentSafePointArea = Utils.rectangleWithCenter(currentSafePoint, 5);
@@ -222,27 +185,11 @@ public class Navigator {
                     var nextArea = this.board.getAreaAfter(currentBoard);
                     var newSafePoint = nextArea.getNearestSafePoint(robotPosition);
 
-                    var newSafePointAngle = Calculator.getAngleBetweenPoint(robotPosition, newSafePoint);
-
-                    var turnAngle = Calculator.getTurnAngle(robotAngle, newSafePointAngle);
-                    if (Math.abs(turnAngle) >= this.turnThreshold) {
-                        instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
-                    }
-
-                    instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, robotPosition.distance(newSafePoint)));
-
                     instructionSet.setDestination(newSafePoint);
+
+                    this.addTurnAndForward(instructionSet, newSafePoint, robotPosition);
                 } else {
                     System.out.println("Navigator: Deposit point - safe point current area");
-
-                    var currentSafePointAngle = Calculator.getAngleBetweenPoint(robotPosition, currentSafePoint);
-
-                    var turnAngle = Calculator.getTurnAngle(robotAngle, currentSafePointAngle);
-                    if (Math.abs(turnAngle) >= this.turnThreshold) {
-                        instructionSet.add(new Instruction(Instruction.InstructionType.TURN, turnAngle));
-                    }
-
-                    instructionSet.add(new Instruction(Instruction.InstructionType.FORWARD, robotPosition.distance(currentSafePoint)));
 
                     instructionSet.setDestination(currentSafePoint);
                 }
@@ -250,6 +197,24 @@ public class Navigator {
         }
 
         return instructionSet;
+    }
+
+    private void addTurnAndForward(InstructionSet instructionSet, Point2D from, Point2D to) {
+        var toAngle = Calculator.getAngleBetweenPoint(from, to);
+        var turnAngle = Calculator.getTurnAngle(this.robot.getDirectionAngle(), toAngle);
+        if (Math.abs(turnAngle) >= this.turnThreshold) {
+            instructionSet.add(Instruction.turn(turnAngle));
+        }
+
+        instructionSet.add(Instruction.forward(from.distance(to)));
+    }
+
+    private void addTurnIfNeeded(InstructionSet instructionSet, Point2D from, Point2D to) {
+        var toAngle = Calculator.getAngleBetweenPoint(from, to);
+        var turnAngle = Calculator.getTurnAngle(this.robot.getDirectionAngle(), toAngle);
+        if (Math.abs(turnAngle) >= this.turnThreshold) {
+            instructionSet.add(Instruction.turn(turnAngle));
+        }
     }
 
 
