@@ -458,8 +458,6 @@ public class Main {
                             e.printStackTrace();
                         }
                     });
-
-                    Thread.sleep(200);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
