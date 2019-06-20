@@ -1,5 +1,6 @@
 package group14.navigator.data;
 
+import group14.navigator.Calculator;
 import group14.navigator.Utils;
 
 import java.util.ArrayList;
@@ -53,6 +54,17 @@ public class Board {
 
     public boolean contains(Point2D point) {
         return this.boundingRect.contains(point);
+    }
+
+    public boolean isInsideCross(Point2D point) {
+        return this.cross.contains(point);
+    }
+
+    public Point2D getProjectedPoint(Point2D point) {
+        var crossCenter = this.cross.getCenter();
+        var angle = Calculator.getAngleBetweenPoint(crossCenter, point);
+
+        return Calculator.getVectorEndPoint(crossCenter, angle, this.safetyMargin * 1.30);
     }
 
     public Area getAreaForPoint(Point2D point) {

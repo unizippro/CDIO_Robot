@@ -130,7 +130,7 @@ public class Navigator {
 
     private void goToBallOutsideSafeArea(InstructionSet instructionSet, Point2D robotPosition, Area currentBoard, Point2D ball) throws Exception {
         var direction = currentBoard.getDangerousAreaDirection(ball);
-        var safePoint = currentBoard.getProjectedPoint(ball, direction);
+        var safePoint = this.board.isInsideCross(ball) ? this.board.getProjectedPoint(ball) : currentBoard.getProjectedPoint(ball, direction);
 
         var safePointArea = Utils.rectangleWithCenter(safePoint, 5);
         if (safePointArea.contains(robotPosition)) {
