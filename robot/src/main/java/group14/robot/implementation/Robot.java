@@ -1,14 +1,11 @@
 package group14.robot.implementation;
 
 import group14.robot.data.Instruction;
-import lejos.hardware.Audio;
 import lejos.hardware.Sound;
-import lejos.hardware.ev3.EV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import group14.robot.interfaces.IRobot;
-import lejos.remote.ev3.RemoteAudio;
 
 import java.io.File;
 import java.rmi.RemoteException;
@@ -34,8 +31,6 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
 
     private AtomicBoolean running = new AtomicBoolean(false);
     private Thread runningThread = null;
-    private Object soundSema = new Object();
-    private File soundFile;
 
 
     public Robot() throws RemoteException { }
@@ -96,6 +91,16 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
                     e.printStackTrace();
                 }
                 break;
+
+            case DANCE:
+                Sound.setVolume(Sound.VOL_MAX);
+                Sound.beep();
+                try {
+                    this.playMarch();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
@@ -108,11 +113,8 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
     synchronized public void playSound(String path) throws RemoteException {
             Sound.setVolume(Sound.VOL_MAX);
             try {
-                System.out.print(".");
-                soundFile = new File(path);
-                int i = Sound.playSample(soundFile, 100);
-                soundFile = null;
-                System.out.print(i);
+                File soundFile = new File(path);
+                Sound.playSample(soundFile, 100);
             } catch (Exception e) {
                 System.err.println("File not found; Sound not played.");
                 e.printStackTrace();
