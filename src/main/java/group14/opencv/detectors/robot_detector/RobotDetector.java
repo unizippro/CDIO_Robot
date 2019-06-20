@@ -12,24 +12,24 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
 
     public static class Config {
         // HSV Blue
-        public AtomicInteger blueMinH = new AtomicInteger(60);
-        public AtomicInteger blueMaxH = new AtomicInteger(160);
-        public AtomicInteger blueMinS = new AtomicInteger(200);
+        public AtomicInteger blueMinH = new AtomicInteger(100);
+        public AtomicInteger blueMaxH = new AtomicInteger(140);
+        public AtomicInteger blueMinS = new AtomicInteger(160);
         public AtomicInteger blueMaxS = new AtomicInteger(255);
-        public AtomicInteger blueMinV = new AtomicInteger(215);
+        public AtomicInteger blueMinV = new AtomicInteger(90);
         public AtomicInteger blueMaxV = new AtomicInteger(255);
 
         // HSV Green
         public AtomicInteger greenMinH = new AtomicInteger(20);
-        public AtomicInteger greenMaxH = new AtomicInteger(100);
-        public AtomicInteger greenMinS = new AtomicInteger(50);
-        public AtomicInteger greenMaxS = new AtomicInteger(210);
-        public AtomicInteger greenMinV = new AtomicInteger(0);
+        public AtomicInteger greenMaxH = new AtomicInteger(95);
+        public AtomicInteger greenMinS = new AtomicInteger(40);
+        public AtomicInteger greenMaxS = new AtomicInteger(255);
+        public AtomicInteger greenMinV = new AtomicInteger(80);
         public AtomicInteger greenMaxV = new AtomicInteger(255);
 
     }
 
-    double camHeight = 165;
+    double camHeight = 169.5;
     double robotFrontHeight = 28;
     double robotBackHeight = 27;
 
@@ -72,18 +72,12 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         Imgproc.dilate(blueMat, blueMat, element);
         Imgproc.dilate(greenMat, greenMat, element);
 
-        var circle2 = 10;
-        Mat element2 = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(circle2, circle2), new Point(circle2/2, circle2/2));
-
-        Imgproc.erode(blueMat, blueMat, element2);
-        Imgproc.erode(greenMat, greenMat, element2);
-
 
         // Color 1 - blue
-        var frontPoints = this.getPointsWithColor(blueMat);
+        var frontPoints = this.getPointsWithColor(blueMat, out);
 
         // Color 2 - green
-        var backPoints = this.getPointsWithColor(greenMat);
+        var backPoints = this.getPointsWithColor(greenMat, out);
 
         //front is index 0
 
@@ -92,12 +86,6 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         if (! frontPoints.isEmpty() && ! backPoints.isEmpty()) {
             front = frontPoints.get(0);
             back = backPoints.get(0);
-
-            Imgproc.circle(out, front, 1, new Scalar(0, 100, 100), 3, 8, 0);
-            Imgproc.circle(out, front, 5, new Scalar(255, 0, 255), 3, 8, 0);
-
-            Imgproc.circle(out, back, 1, new Scalar(0, 100, 100), 3, 8, 0);
-            Imgproc.circle(out, back, 5, new Scalar(255, 0, 255), 3, 8, 0);
         }
 
         return new RobotDetectorResult(out, blueMat, greenMat, front, back);
@@ -108,10 +96,10 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         return new Config();
     }
 
-    private List<Point> getPointsWithColor(Mat frame) {
+    private List<Point> getPointsWithColor(Mat frame, Mat out) {
         //! [houghcircles]
         Mat circlesFrame = new Mat();
-        Imgproc.HoughCircles(frame, circlesFrame, Imgproc.HOUGH_GRADIENT, 7,10, 80, 34, 15, 20);
+        Imgproc.HoughCircles(frame, circlesFrame, Imgproc.HOUGH_GRADIENT, 7, 1000000000, 80, 20, 15, 22);
 
         Point imgCenter = new Point(frame.width() / 2, frame.height() / 2);
 
@@ -122,28 +110,59 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
             Point center = new Point(Math.round(c[0]), Math.round(c[1]));
             Point finalCenter = projectPoint(camHeight, robotFrontHeight, imgCenter, center);
 
+            Imgproc.circle(out, center, 1, new Scalar(0, 100, 100), 3, 8, 0);
+            int radius = (int) Math.round(c[2]);
+            Imgproc.circle(out, center, radius, new Scalar(255, 0, 255), 3, 8, 0);
+
             points.add(finalCenter);
         }
 
         return points;
     }
 
-    private Point projectPoint(double camHeight, double objectHeight, Point centerPoint, Point projectPoint) {
-        //Camheight og objectHeight er angviet i pixel så de konverteres
-        camHeight = camHeight * 9.35;
-        objectHeight = objectHeight * 9.35;
+    private Point projectPoint(double camHeight, double objectHeight, Point centerPoint, Point objectPoint) {
 
-        double grundLinje = Math.sqrt(Math.pow(centerPoint.x-projectPoint.x, 2)+ Math.pow(centerPoint.y-projectPoint.y, 2));
-        double vinkelProjectPoint = Math.toDegrees(Math.asin(camHeight/(Math.sqrt(Math.pow(camHeight, 2)+Math.pow(grundLinje, 2)))));
+        // Beregn hypotynusen
+        var b = camHeight * 8.89;
+        //var b = 165;
+        //objectPoint = new Point(30, 0);
+        //centerPoint = new Point(0,0);
+        var tx = objectPoint.x - centerPoint.x;
+        var ty = objectPoint.y - centerPoint.y;
+        var a = Math.sqrt(tx*tx+ty*ty);  // Lenght from center to
+        //System.out.println("a = " + a);
+        var c = Math.sqrt(a*a + b*b);
+        //System.out.println("c = " + c);
+        var A = Math.toDegrees(Math.acos((b*b + c*c - a*a)/(2*b*c)));
 
-        double robotTopVinkel = 90-vinkelProjectPoint;
-        double projectLength = (objectHeight*robotTopVinkel)/vinkelProjectPoint;
-        double grundLinje2 = grundLinje-projectLength;
-        double strengthFactor = grundLinje2/grundLinje;
-        double xChange = centerPoint.x-projectPoint.x;
-        double yChange = centerPoint.y - projectPoint.y;
-        Point newPoint = new Point(centerPoint.x-xChange*strengthFactor,centerPoint.y-yChange*strengthFactor);
-        return newPoint;
+        //System.out.println("angle A = " + A + "Should be 10.3");
+
+        var B = 180 - A - 90;
+        var realDistToPoint = (Math.sin(Math.toRadians(A)) * (b - objectHeight * 8.89)) / Math.sin(Math.toRadians(B));
+        //System.out.println("Dist = "  +realDistToPoint);
+        var movingDist = a - realDistToPoint;
+        var angle = getAngleBetweenPoint(centerPoint, objectPoint);
+        return getVectorEndPoint(objectPoint, getOppositeAngle(angle) , movingDist);
+    }
+
+    public static double getAngleBetweenPoint(Point point1, Point point2) {
+        var dx = point2.x - point1.x;
+        var dy = -(point1.y - point2.y); // Reverse math sign due to y positive from to bottom
+
+        var result = Math.toDegrees(Math.atan2(dy, dx));
+
+        return result < 0 ? (360d + result) : result;
+    }
+
+    public static Point getVectorEndPoint(Point startPoint, double angle, double magnitude) {
+        var dx = magnitude * Math.cos(Math.toRadians(angle));
+        var dy = magnitude * Math.sin(Math.toRadians(angle));
+
+        return new Point(startPoint.x + dx, startPoint.y + dy);
+    }
+
+    public static double getOppositeAngle(double angle) {
+        return (angle + 180) % 360;
     }
 
     private Mat threshold(Mat src, Scalar lower, Scalar upper) {

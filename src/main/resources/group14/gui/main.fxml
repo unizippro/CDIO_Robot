@@ -215,19 +215,19 @@
                                 />
 
                                 <Label layoutX="757.0" layoutY="15.0" text="Min H" />
-                                <Slider fx:id="robotBlueMinH" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="60" max="160" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="robotBlueMinH" layoutX="757.0" layoutY="35.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                                 <Label layoutX="757.0" layoutY="75.0" text="Max H" />
-                                <Slider fx:id="robotBlueMaxH" layoutX="757.0" layoutY="95.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="60" max="160" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="robotBlueMaxH" layoutX="757.0" layoutY="95.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
                                 <Label layoutX="757.0" layoutY="145.0" text="Min S" />
-                                <Slider fx:id="robotBlueMinS" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="155" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="robotBlueMinS" layoutX="757.0" layoutY="165.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                                 <Label layoutX="757.0" layoutY="205.0" text="Max S" />
-                                <Slider fx:id="robotBlueMaxS" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="155" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="robotBlueMaxS" layoutX="757.0" layoutY="225.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
                                 <Label layoutX="757.0" layoutY="275.0" text="Min V" />
-                                <Slider fx:id="robotBlueMinV" layoutX="757.0" layoutY="295.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="155" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="robotBlueMinV" layoutX="757.0" layoutY="295.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
                                 <Label layoutX="757.0" layoutY="335.0" text="Max V" />
-                                <Slider fx:id="robotBlueMaxV" layoutX="757.0" layoutY="355.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="155" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
+                                <Slider fx:id="robotBlueMaxV" layoutX="757.0" layoutY="355.0" onMouseReleased="#ballDetectorConfigUpdated" prefHeight="16.0" prefWidth="180.0" min="0" max="255" majorTickUnit="10" minorTickCount="1" snapToTicks="true" showTickLabels="true" showTickMarks="true" />
 
                             </children>
                         </AnchorPane>
