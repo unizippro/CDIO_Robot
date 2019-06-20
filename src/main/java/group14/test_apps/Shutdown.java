@@ -1,4 +1,4 @@
-package group14;
+package group14.test_apps;
 
 import lejos.hardware.BrickFinder;
 import lejos.hardware.BrickInfo;

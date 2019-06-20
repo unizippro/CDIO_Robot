@@ -1,4 +1,4 @@
-package OpenCV;
+package group14.test_apps.opencv;
 
 import group14.Resources;
 import org.opencv.calib3d.Calib3d;

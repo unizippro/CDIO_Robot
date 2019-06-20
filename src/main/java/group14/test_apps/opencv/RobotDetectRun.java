@@ -1,20 +1,13 @@
-package OpenCV;
+package group14.test_apps.opencv;
 
 import group14.Resources;
-import group14.opencv.detectors.ball_detector.BallDetector;
-import group14.opencv.detectors.ball_detector.BallDetectorResult;
-import group14.opencv.utils.ImageProcessUtils;
+import group14.opencv.detectors.robot_detector.RobotDetector;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 
-import java.util.ArrayList;
-
-public class BallDetectRun {
+public class RobotDetectRun {
     public static void main(String[] args) {
         // Load the native library.
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -28,17 +21,20 @@ public class BallDetectRun {
 //        Mat src = new Mat();
 //        cap.read(src);
 
-        Mat src = Imgcodecs.imread(Resources.TestImages.board4, Imgcodecs.IMREAD_COLOR);
+        Mat src = Imgcodecs.imread(Resources.TestImages.board7, Imgcodecs.IMREAD_COLOR);
 
-        var result = new BallDetector().run(src);
+        var result = new RobotDetector().run(src);
 
-        result.getBalls().forEach(System.out::println);
+        System.out.println("Front points");
+        System.out.println(result.getPointFront().toString());
+
+        System.out.println("Back points");
+        System.out.println(result.getPointBack().toString());
 
         HighGui.imshow("Result", result.getOutput());
-        HighGui.resizeWindow("Result", 680, 400);
+        HighGui.resizeWindow("Result", src.width() / 2, src.height() / 2);
         HighGui.waitKey();
 
         System.exit(0);
     }
-
 }

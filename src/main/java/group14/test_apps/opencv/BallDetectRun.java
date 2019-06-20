@@ -1,4 +1,4 @@
-package OpenCV;
+package group14.test_apps.opencv;
 
 import group14.Resources;
 import group14.opencv.detectors.ball_detector.BallDetector;
@@ -7,7 +7,7 @@ import org.opencv.core.Mat;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 
-public class CircleDetectRun {
+public class BallDetectRun {
     public static void main(String[] args) {
         // Load the native library.
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -33,4 +33,5 @@ public class CircleDetectRun {
 
         System.exit(0);
     }
+
 }

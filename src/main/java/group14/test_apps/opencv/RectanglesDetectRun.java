@@ -1,14 +1,13 @@
-package OpenCV;
+package group14.test_apps.opencv;
 
 import group14.Resources;
-import group14.opencv.detectors.robot_detector.RobotDetector;
+import group14.opencv.detectors.board_detector.BoardDetector;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.videoio.VideoCapture;
 
-public class RobotDetectRun {
+public class RectanglesDetectRun {
     public static void main(String[] args) {
         // Load the native library.
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -24,13 +23,10 @@ public class RobotDetectRun {
 
         Mat src = Imgcodecs.imread(Resources.TestImages.board7, Imgcodecs.IMREAD_COLOR);
 
-        var result = new RobotDetector().run(src);
+        var result = new BoardDetector().run(src);
 
-        System.out.println("Front points");
-        System.out.println(result.getPointFront().toString());
-
-        System.out.println("Back points");
-        System.out.println(result.getPointBack().toString());
+        System.out.println(result.getCorners());
+        System.out.println(result.getCross());
 
         HighGui.imshow("Result", result.getOutput());
         HighGui.resizeWindow("Result", src.width() / 2, src.height() / 2);
