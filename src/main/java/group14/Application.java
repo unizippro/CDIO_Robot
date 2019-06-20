@@ -40,7 +40,7 @@ public class Application extends javafx.application.Application {
 
             primaryStage.setScene(SceneManager.getInstance().getScene());
             primaryStage.setTitle("CDIO Robot GUI");
-            primaryStage.setHeight(740);
+            primaryStage.setHeight(840);
             primaryStage.setWidth(968);
             primaryStage.setResizable(false);
             primaryStage.show();
