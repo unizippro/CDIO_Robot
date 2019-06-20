@@ -84,119 +84,129 @@ public class Navigator {
                 var ball = this.getClosestBall(robotPosition);
 
                 if (currentBoard.isWithinSafetyArea(ball)) {
-                    System.out.println("Navigator: Safe ball");
-
-                    instructionSet.setDestination(ball);
-
-                    this.addTurnIfNeeded(instructionSet, robotPosition, ball);
-                    instructionSet.add(Instruction.forward(this.robot.getDistanceTo(ball)));
+                    this.goToBallInSafeArea(instructionSet, robotPosition, ball);
                 } else {
-                    var direction = currentBoard.getDangerousAreaDirection(ball);
-                    var safePoint = currentBoard.getProjectedPoint(ball, direction);
-
-                    var safePointArea = Utils.rectangleWithCenter(safePoint, 5);
-                    if (safePointArea.contains(robotPosition)) {
-                        System.out.println("Navigator: Unsafe Ball in direction " + direction);
-
-                        instructionSet.setDestination(ball);
-
-                        this.addTurnIfNeeded(instructionSet, robotPosition, ball);
-
-                        double distance;
-                        if (direction == Area.DangerousAreaDirection.TOP || direction == Area.DangerousAreaDirection.BOTTOM) {
-                            distance = robotPosition.distance(ball) / 2;
-                        } else if (Area.DangerousAreaDirection.isCorner(direction)) {
-                            distance = robotPosition.distance(ball) / 3;
-                        } else {
-                            distance = robotPosition.distance(ball) / 4;
-                        }
-
-                        instructionSet.add(Instruction.forward(distance));
-                        instructionSet.add(Instruction.sleep(500));
-                        instructionSet.add(Instruction.backward(distance * 1.2));
-                    } else {
-                        System.out.println("Navigator: Unsafe ball with safe point");
-
-                        instructionSet.setDestination(safePoint);
-
-                        this.addTurnAndForward(instructionSet, robotPosition, safePoint);
-                    }
+                    this.goToBallOutsideSafeArea(instructionSet, robotPosition, currentBoard, ball);
                 }
             } else {
-                var currentSafePoint = currentBoard.getNearestSafePoint(robotPosition);
-                var currentSafePointArea = Utils.rectangleWithCenter(currentSafePoint, 5);
-
-                if (currentSafePointArea.contains(robotPosition)) {
-                    System.out.println("Navigator: Safe point next area");
-
-                    var nextArea = this.board.getAreaAfter(currentBoard);
-                    var newSafePoint = nextArea.getNearestSafePoint(robotPosition);
-
-                    instructionSet.setDestination(newSafePoint);
-
-                    this.addTurnAndForward(instructionSet, robotPosition, newSafePoint);
-                } else {
-                    System.out.println("Navigator: Safe point current area");
-
-                    instructionSet.setDestination(currentSafePoint);
-
-                    this.addTurnAndForward(instructionSet, robotPosition, currentSafePoint);
-                }
+                this.goToNextArea(instructionSet, robotPosition, currentBoard);
             }
         } else {
-            var currentDepositPointSafe = Utils.rectangleWithCenter(this.depositPoint, 5);
+            var currentDepositPointSafe = Utils.rectangleWithCenter(this.depositPoint, 3);
+
             if (currentDepositPointSafe.contains(robotPosition)) {
-                System.out.println("Navigator: Deposit plan started");
-
-                var projectedDepositPoint = new Point2D(this.depositPoint.x - 30, this.depositPoint.y);
-
-                instructionSet.setDestination(projectedDepositPoint);
-
-                var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, projectedDepositPoint);
-
-                var turnAngle = Calculator.getTurnAngle(robotAngle, currentDepositPointAngle);
-                if (Math.abs(turnAngle) >= 1.5) {
-                    instructionSet.add(Instruction.turn(turnAngle));
-                    this.depositCorrectionMode = true;
-                } else {
-                    this.depositCorrectionMode = false;
-                }
-
-                if (! this.depositCorrectionMode) {
-                    instructionSet.add(Instruction.turn(180));
-                    instructionSet.add(Instruction.deposit());
-                    instructionSet.add(Instruction.dance());
-
-                    this.hasDeposit = true;
-                }
+                this.handleDepositAction(instructionSet, robotPosition, robotAngle);
             } else if (currentBoard.contains(this.depositPoint)) {
-                System.out.println("Navigator: Deposit point current area");
-
-                instructionSet.setDestination(this.depositPoint);
-
-                this.addTurnAndForward(instructionSet, robotPosition, this.depositPoint);
+                this.goToDepositPoint(instructionSet, robotPosition, this.depositPoint);
             } else {
-                var currentSafePoint = currentBoard.getNearestSafePoint(robotPosition);
-                var currentSafePointArea = Utils.rectangleWithCenter(currentSafePoint, 5);
-
-                if (currentSafePointArea.contains(robotPosition)) {
-                    System.out.println("Navigator: Deposit point - safe point next area");
-
-                    var nextArea = this.board.getAreaAfter(currentBoard);
-                    var newSafePoint = nextArea.getNearestSafePoint(robotPosition);
-
-                    instructionSet.setDestination(newSafePoint);
-
-                    this.addTurnAndForward(instructionSet, newSafePoint, robotPosition);
-                } else {
-                    System.out.println("Navigator: Deposit point - safe point current area");
-
-                    instructionSet.setDestination(currentSafePoint);
-                }
+                this.goToDepositOtherArea(instructionSet, robotPosition, currentBoard);
             }
         }
 
         return instructionSet;
+    }
+
+    private void goToBallInSafeArea(InstructionSet instructionSet, Point2D robotPosition, Point2D ball) {
+        instructionSet.setDestination(ball, "Navigator: Safe ball");
+
+        this.addTurnIfNeeded(instructionSet, robotPosition, ball);
+        instructionSet.add(Instruction.forward(this.robot.getDistanceTo(ball)));
+    }
+
+    private void goToBallOutsideSafeArea(InstructionSet instructionSet, Point2D robotPosition, Area currentBoard, Point2D ball) throws Exception {
+        var direction = currentBoard.getDangerousAreaDirection(ball);
+        var safePoint = currentBoard.getProjectedPoint(ball, direction);
+
+        var safePointArea = Utils.rectangleWithCenter(safePoint, 5);
+        if (safePointArea.contains(robotPosition)) {
+            instructionSet.setDestination(ball, "Navigator: Unsafe Ball in direction " + direction);
+
+            this.addTurnIfNeeded(instructionSet, robotPosition, ball);
+
+            double distance;
+            if (direction == Area.DangerousAreaDirection.TOP || direction == Area.DangerousAreaDirection.BOTTOM) {
+                distance = robotPosition.distance(ball) / 2;
+            } else if (Area.DangerousAreaDirection.isCorner(direction)) {
+                distance = robotPosition.distance(ball) / 3;
+            } else {
+                distance = robotPosition.distance(ball) / 4;
+            }
+
+            instructionSet.add(Instruction.forward(distance));
+            instructionSet.add(Instruction.sleep(500));
+            instructionSet.add(Instruction.backward(distance * 1.2));
+        } else {
+            instructionSet.setDestination(safePoint, "Navigator: Unsafe ball with safe point");
+
+            this.addTurnAndForward(instructionSet, robotPosition, safePoint);
+        }
+    }
+
+    private void goToNextArea(InstructionSet instructionSet, Point2D robotPosition, Area currentBoard) {
+        var currentSafePoint = currentBoard.getNearestSafePoint(robotPosition);
+        var currentSafePointArea = Utils.rectangleWithCenter(currentSafePoint, 5);
+
+        if (currentSafePointArea.contains(robotPosition)) {
+            var nextArea = this.board.getAreaAfter(currentBoard);
+            var newSafePoint = nextArea.getNearestSafePoint(robotPosition);
+
+            instructionSet.setDestination(newSafePoint, "Navigator: Safe point next area");
+
+            this.addTurnAndForward(instructionSet, robotPosition, newSafePoint);
+        } else {
+            instructionSet.setDestination(currentSafePoint, "Navigator: Safe point current area");
+
+            this.addTurnAndForward(instructionSet, robotPosition, currentSafePoint);
+        }
+    }
+
+    private void handleDepositAction(InstructionSet instructionSet, Point2D robotPosition, double robotAngle) {
+        var projectedDepositPoint = new Point2D(this.depositPoint.x - 30, this.depositPoint.y);
+
+        instructionSet.setDestination(projectedDepositPoint, "Navigator: Deposit plan started");
+
+        var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, projectedDepositPoint);
+
+        var turnAngle = Calculator.getTurnAngle(robotAngle, currentDepositPointAngle);
+        if (Math.abs(turnAngle) >= 1.5) {
+            instructionSet.add(Instruction.turn(turnAngle));
+            this.depositCorrectionMode = true;
+        } else {
+            this.depositCorrectionMode = false;
+        }
+
+        if (! this.depositCorrectionMode) {
+            instructionSet.add(Instruction.turn(180));
+            instructionSet.add(Instruction.deposit());
+            instructionSet.add(Instruction.dance());
+
+            this.hasDeposit = true;
+        }
+    }
+
+    private void goToDepositPoint(InstructionSet instructionSet, Point2D robotPosition, Point2D depositPoint) {
+        instructionSet.setDestination(depositPoint, "Navigator: Deposit point current area");
+
+        this.addTurnAndForward(instructionSet, robotPosition, depositPoint);
+    }
+
+    private void goToDepositOtherArea(InstructionSet instructionSet, Point2D robotPosition, Area currentBoard) {
+        var currentSafePoint = currentBoard.getNearestSafePoint(robotPosition);
+        var currentSafePointArea = Utils.rectangleWithCenter(currentSafePoint, 5);
+
+        if (currentSafePointArea.contains(robotPosition)) {
+            var nextArea = this.board.getAreaAfter(currentBoard);
+            var newSafePoint = nextArea.getNearestSafePoint(robotPosition);
+
+            instructionSet.setDestination(newSafePoint, "Navigator: Deposit point - safe point next area");
+
+            this.addTurnAndForward(instructionSet, newSafePoint, robotPosition);
+        } else {
+            instructionSet.setDestination(currentSafePoint, "Navigator: Deposit point - safe point current area");
+
+            // todo: check
+            this.addTurnAndForward(instructionSet, robotPosition, currentSafePoint);
+        }
     }
 
     private void addTurnAndForward(InstructionSet instructionSet, Point2D from, Point2D to) {
