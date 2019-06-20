@@ -161,23 +161,18 @@ public class Navigator {
     }
 
     private void handleDepositAction(InstructionSet instructionSet, Point2D robotPosition, double robotAngle) {
-        var projectedDepositPoint = new Point2D(this.depositPoint.x - 30, this.depositPoint.y);
+        var projectedDepositPoint = new Point2D(this.depositPoint.x + 30, this.depositPoint.y);
 
         instructionSet.setData(this.robot.getRotatingPoint(), projectedDepositPoint, "Navigator: Deposit plan started");
 
-        var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, projectedDepositPoint);
+        if (Math.abs(robotAngle) >= 1.5) {
+            var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, projectedDepositPoint);
+            var turnAngle = Calculator.getTurnAngle(robotAngle, currentDepositPointAngle);
 
-        var turnAngle = Calculator.getTurnAngle(robotAngle, currentDepositPointAngle);
-        if (Math.abs(turnAngle) >= 1.5) {
             instructionSet.add(Instruction.turn(turnAngle));
-            this.depositCorrectionMode = true;
         } else {
-            this.depositCorrectionMode = false;
-        }
-
-        if (! this.depositCorrectionMode) {
-            instructionSet.add(Instruction.turn(180));
             instructionSet.add(Instruction.deposit());
+            instructionSet.add(Instruction.forward(10));
             instructionSet.add(Instruction.dance());
 
             this.hasDeposit = true;
@@ -200,7 +195,7 @@ public class Navigator {
 
             instructionSet.setData(this.robot.getRotatingPoint(), newSafePoint, "Navigator: Deposit point - safe point next area");
 
-            this.addTurnAndForward(instructionSet, newSafePoint, robotPosition);
+            this.addTurnAndForward(instructionSet, robotPosition, newSafePoint);
         } else {
             instructionSet.setData(this.robot.getRotatingPoint(), currentSafePoint, "Navigator: Deposit point - safe point current area");
 
