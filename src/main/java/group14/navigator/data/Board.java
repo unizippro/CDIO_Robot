@@ -20,11 +20,11 @@ public class Board {
         this(boundingRect, 0, null, 0);
     }
 
-    public Board(Rectangle2D boundingRect, double extraMargin, Point2D splitAt, double safetyMargin) {
+    public Board(Rectangle2D boundingRect, double extraMargin, Point2D cross, double safetyMargin) {
         this.extraMargin = extraMargin;
         this.safetyMargin = safetyMargin;
 
-        this.updateBoard(boundingRect, splitAt);
+        this.updateBoard(boundingRect, cross);
     }
 
     public List<Area> getAreas() {
@@ -35,15 +35,15 @@ public class Board {
         return this.depositPoint;
     }
 
-    public void updateBoard(Rectangle2D boundingRect, Point2D splitAt) {
+    public void updateBoard(Rectangle2D boundingRect, Point2D cross) {
         if (this.canUpdateToNewRect(boundingRect)) {
             this.boundingRect = Utils.rectangleWithExpandedMargin(boundingRect, this.extraMargin);
         }
 
         this.depositPoint = new Point2D(boundingRect.getMinX() + this.safetyMargin * 1.05, boundingRect.y + (boundingRect.getHeight() / 2));
 
-        var splitPoint = splitAt != null ? splitAt : new Point2D(this.boundingRect.width / 2, this.boundingRect.height / 2);
-        this.splitAt(splitPoint);
+        var crossPoint = cross != null ? cross : new Point2D(this.boundingRect.width / 2, this.boundingRect.height / 2);
+        this.setCrossPosition(crossPoint);
     }
 
     public boolean contains(Point2D point) {
@@ -73,7 +73,7 @@ public class Board {
         return this.areas.get(0);
     }
 
-    private void splitAt(Point2D point) {
+    private void setCrossPosition(Point2D point) {
         if (! this.boundingRect.contains(point)) {
             return;
         }
