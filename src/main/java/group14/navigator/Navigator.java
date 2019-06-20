@@ -125,11 +125,11 @@ public class Navigator {
 
             double distance;
             if (direction == Area.DangerousAreaDirection.TOP || direction == Area.DangerousAreaDirection.BOTTOM) {
-                distance = robotPosition.distance(ball) / 2;
+                distance = robotPosition.distance(ball) * 0.75;
             } else if (Area.DangerousAreaDirection.isCorner(direction)) {
-                distance = robotPosition.distance(ball) / 3;
+                distance = robotPosition.distance(ball) * 0.62;
             } else {
-                distance = robotPosition.distance(ball) / 4;
+                distance = robotPosition.distance(ball) * 0.55;
             }
 
             instructionSet.add(Instruction.forward(distance));

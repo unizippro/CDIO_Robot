@@ -23,7 +23,7 @@ public class Board {
         this.boundingRect = Utils.rectangleWithExpandedMargin(boundingRect, extraMargin);
         this.safetyMargin = safetyMargin;
 
-        this.depositPoint = new Point2D(boundingRect.getMinX() + safetyMargin * 1.32, boundingRect.y + (boundingRect.getHeight() / 2));
+        this.depositPoint = new Point2D(boundingRect.getMinX() + safetyMargin, boundingRect.y + (boundingRect.getHeight() / 2));
 
         var splitPoint = splitAt != null ? splitAt : new Point2D(this.boundingRect.width / 2, this.boundingRect.height / 2);
 

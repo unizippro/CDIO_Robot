@@ -30,15 +30,13 @@ public abstract class Robot {
     }
 
     public Point2D getRotatingPoint() {
-        return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), this.rearPoint.distance(this.frontPoint));
+        return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), this.getDistanceRearPointToRotating());
     }
 
     public double getDistanceTo(Point2D point) {
         var rotatingPoint = this.getRotatingPoint();
 
-        System.out.println("Rotating to front: " + rotatingPoint.distance(this.getFrontPosition()));
-
-        return rotatingPoint.distance(point) - 15;
+        return rotatingPoint.distance(point) - (this.getDistanceRearPointToFront() - this.getDistanceRearPointToRotating());
     }
 
     public void updateFromInstruction(Instruction instruction) {

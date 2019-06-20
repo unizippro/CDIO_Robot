@@ -9,11 +9,11 @@ public class Robot extends group14.navigator.data.Robot {
 
     @Override
     protected double getDistanceRearPointToFront() {
-        return 29.5;
+        return 22; // 27cm
     }
 
     @Override
     protected double getDistanceRearPointToRotating() {
-        return 8.5;
+        return 10; // 12.5cm
     }
 }
