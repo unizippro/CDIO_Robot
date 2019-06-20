@@ -13,7 +13,8 @@ public class Instruction implements Serializable {
         BACKWARD,
         DEPOSIT,
         WAIT,
-        DANCE
+        DANCE,
+        SHORT_DANCE
     }
 
     public static Instruction forward(double amount) {
@@ -36,7 +37,11 @@ public class Instruction implements Serializable {
         return new Instruction(InstructionType.DEPOSIT);
     }
 
-    public static Instruction dance() {
+    public static Instruction dance(boolean shortDance) {
+        if (shortDance) {
+            return new Instruction(InstructionType.SHORT_DANCE);
+        }
+
         return new Instruction(InstructionType.DANCE);
     }
 

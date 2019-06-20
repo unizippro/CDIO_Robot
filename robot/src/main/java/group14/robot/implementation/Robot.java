@@ -94,7 +94,9 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
                 break;
 
             case DANCE:
-               Thread thread = new Thread(new Runnable() {
+                this.controller.fanOff();
+
+                Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Sound.setVolume(Sound.VOL_MAX);
@@ -106,12 +108,29 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
                         }
                     }
                 });
-               thread.start();
-               while (thread.isAlive()) {
-                   this.makeMoves();
-               }
+
+                thread.start();
+
+                while (thread.getState() != Thread.State.TERMINATED) {
+                    this.makeMoves();
+                }
 
                 this.makeMoves();
+                break;
+
+            case SHORT_DANCE:
+                this.controller.fanOff();
+
+                try {
+                    Sound.setVolume(Sound.VOL_MAX);
+                    Sound.beep();
+                    Thread.sleep(100);
+                    Sound.beep();
+                    Thread.sleep(100);
+                    Sound.beep();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
