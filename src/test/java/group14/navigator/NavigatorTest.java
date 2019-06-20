@@ -86,7 +86,7 @@ public class NavigatorTest {
     @Test
     public void completeNavigationTest() throws Exception {
         var robot = new TestRobot(new Point2D(1, 1), new Point2D(0, 0));
-        var board = new Board(new Rectangle2D(0, 0, 300, 200), 0, new Point2D(200, 100), 10);
+        var board = new Board(new Rectangle2D(0, 0, 300, 200), 0, new Rectangle2D(190, 90, 20, 20), 10);
         var navigator = new Navigator(board, robot);
 
         navigator.updateBallPositions(Arrays.asList(

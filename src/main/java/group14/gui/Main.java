@@ -353,7 +353,7 @@ public class Main {
                 var boardPoints = Arrays.asList(corners.get(0), corners.get(3));
                 var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints, this.homeography.getPixelsPrCm()));
 
-                var crossCenter = Utils.toNavigatorPoint(new Point(cross.x + cross.width / 2, cross.y + cross.height / 2), this.homeography.getPixelsPrCm());
+                var crossCenter = Utils.toNavigatorRectangle(cross, this.homeography.getPixelsPrCm());
 
                 var board = new Board(boardRect, 2.5, crossCenter, 22);
                 var robot = new Robot(Utils.toNavigatorPoint(robotFront, this.homeography.getPixelsPrCm()), Utils.toNavigatorPoint(robotRear, this.homeography.getPixelsPrCm()));
@@ -373,7 +373,7 @@ public class Main {
                 var boardPoints = Arrays.asList(corners.get(0), corners.get(3));
                 var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints, this.homeography.getPixelsPrCm()));
 
-                var crossCenter = Utils.toNavigatorPoint(new Point(cross.x + cross.width / 2, cross.y + cross.height / 2), this.homeography.getPixelsPrCm());
+                var crossCenter = Utils.toNavigatorRectangle(cross, this.homeography.getPixelsPrCm());
 
                 this.navigator.updateBoard(boardRect, crossCenter);
             }

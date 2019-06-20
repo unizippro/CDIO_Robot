@@ -3,6 +3,7 @@ package group14.navigator;
 import group14.navigator.data.Point2D;
 import group14.navigator.data.Rectangle2D;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +17,10 @@ public class Utils {
 
     public static Rectangle2D rectangleWithCenter(Point2D point, double margin) {
         return new Rectangle2D(Math.max(point.x - margin, 0), Math.max(point.y - margin, 0), margin * 2, margin * 2);
+    }
+
+    public static Rectangle2D rectangleWithCenter(Point2D point, double width, double height) {
+        return new Rectangle2D(Math.max(point.x - width / 2, 0), Math.max(point.y - height / 2, 0), width, height);
     }
 
     public static Rectangle2D rectangleWithExpandedMargin(Rectangle2D rectangle, double margin) {
@@ -56,6 +61,10 @@ public class Utils {
         return points.stream()
                 .map((Point point) -> toNavigatorPoint(point, ratio))
                 .collect(Collectors.toList());
+    }
+
+    public static Rectangle2D toNavigatorRectangle(Rect rect, double ratio) {
+        return new Rectangle2D(rect.x / ratio, rect.y / ratio, rect.width / ratio, rect.height / ratio);
     }
 
     public static Rectangle2D createRectangleFromPoints(List<Point2D> points) {

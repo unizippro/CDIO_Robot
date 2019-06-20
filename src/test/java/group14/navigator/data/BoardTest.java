@@ -26,7 +26,7 @@ public class BoardTest {
 
     @Test
     public void hasCustomSplit() {
-        var board = new Board(new Rectangle2D(0, 0, 200, 100), 0, new Point2D(50, 50), 10);
+        var board = new Board(new Rectangle2D(0, 0, 200, 100), 0, new Rectangle2D(40, 40, 20, 20), 10);
 
         var areas = board.getAreas();
 

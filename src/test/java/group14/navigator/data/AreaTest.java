@@ -3,6 +3,7 @@ package group14.navigator.data;
 import org.junit.Before;
 import org.junit.Test;
 
+import static group14.navigator.data.Area.SafePointLocation.ALL;
 import static org.junit.Assert.*;
 
 public class AreaTest {
@@ -11,7 +12,7 @@ public class AreaTest {
 
     @Before
     public void setUp() throws Exception {
-        this.area = new Area(new Rectangle2D(0, 0, 100, 100), 10);
+        this.area = new Area(new Rectangle2D(0, 0, 100, 100), 10, ALL);
     }
 
     @Test

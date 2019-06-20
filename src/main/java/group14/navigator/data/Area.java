@@ -4,12 +4,14 @@ import group14.navigator.Calculator;
 import group14.navigator.Utils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Area {
 
     private final Rectangle2D boundingRect;
     private final double safetyMargin;
+    private SafePointLocation safePointLocation;
 
     private final Rectangle2D safetyArea;
 
@@ -25,9 +27,22 @@ public class Area {
         }
     }
 
-    Area(Rectangle2D boundingRect, double safetyMargin) {
+    public enum SafePointLocation {
+        ALL, TOP, DOWN;
+
+        public boolean isTop() {
+            return this == TOP;
+        }
+
+        public boolean isDown() {
+            return this == DOWN;
+        }
+    }
+
+    Area(Rectangle2D boundingRect, double safetyMargin, SafePointLocation safePointLocation) {
         this.boundingRect = boundingRect;
         this.safetyMargin = safetyMargin;
+        this.safePointLocation = safePointLocation;
 
         this.safetyArea = Utils.rectangleWithExpandedMargin(boundingRect, -safetyMargin);
 
@@ -145,11 +160,23 @@ public class Area {
     }
 
     public Point2D getNearestSafePoint(Point2D point) {
-        if (point.distance(this.safePointTop) < point.distance(this.safePointBottom)) {
+        if (this.safePointLocation.isTop() || point.distance(this.safePointTop) < point.distance(this.safePointBottom)) {
             return this.safePointTop;
         } else {
             return this.safePointBottom;
         }
+    }
+
+    Point2D getSafePointTop() {
+        return this.safePointTop;
+    }
+
+    Point2D getSafePointBottom() {
+        return this.safePointBottom;
+    }
+
+    void setSafePointLocation(SafePointLocation safePointLocation) {
+        this.safePointLocation = safePointLocation;
     }
 
     public Rectangle2D getSafetyArea() {
@@ -157,7 +184,13 @@ public class Area {
     }
 
     public List<Point2D> getSafePoints() {
-        return Arrays.asList(this.safePointTop, this.safePointBottom);
+        if (this.safePointLocation.isTop()) {
+            return Collections.singletonList(this.safePointTop);
+        } else if (this.safePointLocation.isDown()) {
+            return Collections.singletonList(this.safePointBottom);
+        } else {
+            return Arrays.asList(this.safePointTop, this.safePointBottom);
+        }
     }
 
     @Override

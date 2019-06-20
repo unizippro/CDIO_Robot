@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static group14.navigator.data.Area.SafePointLocation.*;
+
 public class Board {
 
     private Rectangle2D boundingRect;
@@ -15,12 +17,13 @@ public class Board {
     private Point2D depositPoint;
 
     private final List<Area> areas = new ArrayList<>();
+    private Rectangle2D cross;
 
     public Board(Rectangle2D boundingRect) {
         this(boundingRect, 0, null, 0);
     }
 
-    public Board(Rectangle2D boundingRect, double extraMargin, Point2D cross, double safetyMargin) {
+    public Board(Rectangle2D boundingRect, double extraMargin, Rectangle2D cross, double safetyMargin) {
         this.extraMargin = extraMargin;
         this.safetyMargin = safetyMargin;
 
@@ -35,14 +38,16 @@ public class Board {
         return this.depositPoint;
     }
 
-    public void updateBoard(Rectangle2D boundingRect, Point2D cross) {
+    public void updateBoard(Rectangle2D boundingRect, Rectangle2D cross) {
         if (this.canUpdateToNewRect(boundingRect)) {
             this.boundingRect = Utils.rectangleWithExpandedMargin(boundingRect, this.extraMargin);
         }
 
+        this.cross = cross;
+
         this.depositPoint = new Point2D(boundingRect.getMinX() + this.safetyMargin * 1.05, boundingRect.y + (boundingRect.getHeight() / 2));
 
-        var crossPoint = cross != null ? cross : new Point2D(this.boundingRect.width / 2, this.boundingRect.height / 2);
+        var crossPoint = cross != null ? cross : new Rectangle2D((this.boundingRect.width / 2) - 100, (this.boundingRect.height / 2) - 100, 200, 200);
         this.setCrossPosition(crossPoint);
     }
 
@@ -73,18 +78,36 @@ public class Board {
         return this.areas.get(0);
     }
 
-    private void setCrossPosition(Point2D point) {
-        if (! this.boundingRect.contains(point)) {
+    private void setCrossPosition(Rectangle2D cross) {
+        if (! this.boundingRect.contains(cross)) {
             return;
         }
 
-        var verticalSplit = Utils.rectangleSplitAt(this.boundingRect, point, Utils.Split.VERTICAL);
+        var crossCenter = Utils.rectangleGetCenter(cross);
+        var verticalSplit = Utils.rectangleSplitAt(this.boundingRect, crossCenter, Utils.Split.VERTICAL);
+
+        var areaLeft = new Area(verticalSplit.get(0), this.safetyMargin, ALL);
+        var areaRight = new Area(verticalSplit.get(1), this.safetyMargin, ALL);
+
+        double safePointTopWidth = areaRight.getSafePointTop().x - areaLeft.getSafePointTop().x;
+        double safePointDownWidth = areaRight.getSafePointBottom().x - areaLeft.getSafePointBottom().x;
+
+        var safePointTopCenter = new Point2D(safePointTopWidth, areaRight.getSafePointTop().y);
+        var safePointDownCenter = new Point2D(safePointDownWidth, areaRight.getSafePointBottom().y);
+
+        var safePointTopRect = Utils.rectangleWithCenter(safePointTopCenter, safePointTopWidth, 20);
+        var safePointDownRect = Utils.rectangleWithCenter(safePointDownCenter, safePointDownWidth, 20);
+
+        if (safePointTopRect.intersects(cross)) {
+            areaLeft.setSafePointLocation(DOWN);
+            areaRight.setSafePointLocation(DOWN);
+        } else if (safePointDownRect.intersects(cross)) {
+            areaLeft.setSafePointLocation(TOP);
+            areaRight.setSafePointLocation(TOP);
+        }
 
         this.areas.clear();
-        this.areas.addAll(Arrays.asList(
-                new Area(verticalSplit.get(0), this.safetyMargin),
-                new Area(verticalSplit.get(1), this.safetyMargin)
-        ));
+        this.areas.addAll(Arrays.asList(areaLeft, areaRight));
     }
 
     private boolean canUpdateToNewRect(Rectangle2D newRect) {

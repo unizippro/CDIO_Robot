@@ -52,8 +52,8 @@ public class Navigator {
                 .collect(Collectors.toCollection(() -> this.ballPositions));
     }
 
-    public void updateBoard(Rectangle2D boundingRect, Point2D splitAt) {
-        this.board.updateBoard(boundingRect, splitAt);
+    public void updateBoard(Rectangle2D boundingRect, Rectangle2D cross) {
+        this.board.updateBoard(boundingRect, cross);
     }
 
     public boolean isEmpty() {
