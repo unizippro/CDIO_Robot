@@ -24,7 +24,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -437,7 +436,6 @@ public class Main {
         ballDetectorConfig.ballMaxH.set((int) this.ballMaxH.getValue());
         ballDetectorConfig.ballMaxS.set((int) this.ballMaxS.getValue());
         ballDetectorConfig.ballMaxV.set((int) this.ballMaxV.getValue());
-        System.out.println("rest");
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         boardDetectorConfig.cornerMarginPercentage.set(this.cornerMarginSlider.getValue());
@@ -496,14 +494,10 @@ public class Main {
         this.startTimer();
 
         this.runThread = new Thread(() -> {
-            try {
-                this.robotManager.getController().fanOn();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-
-            while (! this.navigator.isEmpty() && ! Thread.currentThread().isInterrupted()) {
+            while (! this.navigator.isDone() && ! Thread.currentThread().isInterrupted()) {
                 try {
+                    this.robotManager.getController().fanOn();
+
                     var instructionSet = this.navigator.calculateInstructionSet();
                     System.out.println(instructionSet);
                     instructionSet.run(this.robotManager::runInstruction);
@@ -519,6 +513,8 @@ public class Main {
             }
 
             this.stopTimer();
+
+            System.out.println("Robot done!");
         });
 
         this.runThread.start();

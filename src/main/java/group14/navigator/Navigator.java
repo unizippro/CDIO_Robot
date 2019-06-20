@@ -31,7 +31,6 @@ public class Navigator {
     private Point2D depositPoint;
 
     private final int turnThreshold = 1;
-    private boolean hasDeposit = false;
 
     public Navigator(Board board, Robot robot) {
         this.board = board;
@@ -56,8 +55,8 @@ public class Navigator {
         this.board.updateBoard(boundingRect, cross);
     }
 
-    public boolean isEmpty() {
-        return this.hasDeposit;
+    public boolean isDone() {
+        return this.state.hasDoneState();
     }
 
     public Point2D getRobotPosition() {
@@ -82,11 +81,11 @@ public class Navigator {
 
         System.out.println(this.state);
 
-        if (! this.ballPositions.isEmpty() || this.state.hasState()) {
-            var statePointInCurrentArea = this.state.hasState() && currentBoard.contains(this.state.getPoint());
+        if (! this.ballPositions.isEmpty() || this.state.hasBallState()) {
+            var statePointInCurrentArea = this.state.hasBallState() && currentBoard.contains(this.state.getPoint());
 
             if (statePointInCurrentArea || this.ballsWithinArea(currentBoard)) {
-                var ball = this.state.hasState() ? this.state.getPoint() : this.getClosestBall(robotPosition);
+                var ball = this.state.hasBallState() ? this.state.getPoint() : this.getClosestBall(robotPosition);
 
                 if (currentBoard.isWithinSafetyArea(ball)) {
                     this.state.setSafe(ball);
@@ -99,9 +98,16 @@ public class Navigator {
                 this.goToNextArea(instructionSet, robotPosition, currentBoard);
             }
         } else {
-            var currentDepositPointSafe = Utils.rectangleWithCenter(this.depositPoint, 3);
+            var currentDepositPointSafe = Utils.rectangleWithCenter(this.depositPoint, 5);
 
-            if (currentDepositPointSafe.contains(robotPosition)) {
+            if (this.state.hasPreDoneState()) {
+                this.state.setDone();
+                instructionSet.add(Instruction.dance(true));
+            } else if (this.state.getState() == NavigationState.State.DEPOSIT_RECHECK) {
+                this.goToNextArea(instructionSet, robotPosition, currentBoard);
+                instructionSet.add(Instruction.sleep(100));
+                this.state.setHasPreDone();
+            } else if (currentDepositPointSafe.contains(robotPosition)) {
                 this.handleDepositAction(instructionSet, robotPosition, robotAngle);
             } else if (currentBoard.contains(this.depositPoint)) {
                 this.goToDepositPoint(instructionSet, robotPosition, this.depositPoint);
@@ -176,17 +182,18 @@ public class Navigator {
 
         instructionSet.setData(this.robot.getRotatingPoint(), projectedDepositPoint, "Navigator: Deposit plan started");
 
-        if (Math.abs(robotAngle) >= 1.5) {
+        if (Math.abs(robotAngle) >= 2.2) {
             var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, projectedDepositPoint);
             var turnAngle = Calculator.getTurnAngle(robotAngle, currentDepositPointAngle);
+
+            if (Math.abs(turnAngle) <= 1) {
+                turnAngle *= 1.5;
+            }
 
             instructionSet.add(Instruction.turn(turnAngle));
         } else {
             instructionSet.add(Instruction.deposit());
-            instructionSet.add(Instruction.forward(10));
-            instructionSet.add(Instruction.dance());
-
-            this.hasDeposit = true;
+            this.state.setDepositRecheck();
         }
     }
 
@@ -210,7 +217,6 @@ public class Navigator {
         } else {
             instructionSet.setData(this.robot.getRotatingPoint(), currentSafePoint, "Navigator: Deposit point - safe point current area");
 
-            // todo: check
             this.addTurnAndForward(instructionSet, robotPosition, currentSafePoint);
         }
     }
