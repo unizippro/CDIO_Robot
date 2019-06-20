@@ -3,8 +3,8 @@ package group14.navigator;
 import group14.navigator.data.Area;
 import group14.navigator.data.Board;
 import group14.navigator.data.Robot;
+import group14.robot.data.Instruction;
 import lejos.robotics.geometry.Point2D;
-import lejos.robotics.geometry.Rectangle2D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +47,10 @@ public class Navigator {
         ballPositions.stream()
                 .filter(this.board::contains)
                 .collect(Collectors.toCollection(() -> this.ballPositions));
+    }
+
+    public boolean isEmpty() {
+        return this.ballPositions.isEmpty();
     }
 
     public InstructionSet calculateInstructionSet() throws Exception {

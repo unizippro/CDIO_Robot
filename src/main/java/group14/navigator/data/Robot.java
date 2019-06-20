@@ -1,7 +1,7 @@
 package group14.navigator.data;
 
 import group14.navigator.Calculator;
-import group14.navigator.Instruction;
+import group14.robot.data.Instruction;
 import lejos.robotics.geometry.Point2D;
 
 public class Robot {

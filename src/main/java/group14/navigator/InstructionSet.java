@@ -1,5 +1,6 @@
 package group14.navigator;
 
+import group14.robot.data.Instruction;
 import lejos.robotics.geometry.Point2D;
 
 import java.util.*;
@@ -22,7 +23,7 @@ public class InstructionSet extends LinkedList<Instruction> {
         return this.destination;
     }
 
-    public void setDestination(Point2D.Double destination) {
+    void setDestination(Point2D.Double destination) {
         this.destination = destination;
     }
 

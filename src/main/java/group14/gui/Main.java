@@ -4,15 +4,16 @@ import com.google.inject.Inject;
 import group14.Application;
 import group14.Resources;
 import group14.gui.components.CoordinateSystem;
+import group14.navigator.Navigator;
+import group14.navigator.Utils;
+import group14.navigator.data.Board;
+import group14.navigator.data.Robot;
 import group14.opencv.CalibratedCamera;
 import group14.opencv.detectors.ball_detector.BallDetector;
 import group14.opencv.detectors.board_detector.BoardDetector;
 import group14.opencv.detectors.robot_detector.RobotDetector;
 import group14.opencv.utils.ImageConverter;
-import group14.road_planner.RoadController;
-import group14.road_planner.board.SmartConverter;
 import group14.robot.IRobotManager;
-import group14.robot.data.Instruction;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -32,8 +33,6 @@ import org.opencv.utils.Converters;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
 
@@ -45,7 +44,8 @@ public class Main {
     private BoardDetector.Config boardDetectorConfig = new BoardDetector.Config();
     private BoardDetector boardDetector = new BoardDetector(boardDetectorConfig);
     private RobotDetector robotDetector = new RobotDetector();
-    private RoadController roadController = new RoadController();
+
+    private Navigator navigator;
     private boolean isInitialized = false;
 
     private CalibratedCamera camera = new CalibratedCamera(1, 7, 9, boardDetectorConfig);
@@ -355,34 +355,22 @@ public class Main {
 
         });
 
-        var balls = resultBalls.getBalls().stream()
-                .map(point -> new java.awt.Point((int)point.x, (int)point.y))
-                .collect(Collectors.toList());
+        if (this.camera.isCalibrated()) {
+            if (! this.isInitialized) {
 
-        var robotPosition = Stream.of(resultRobot.getPointFront(), resultRobot.getPointBack())
-                .map(point -> new java.awt.Point((int)point.x, (int)point.y))
-                .collect(Collectors.toList());
+                var boardPoints = Arrays.asList(resultBoard.getCorners().get(0), resultBoard.getCorners().get(2));
+                var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints));
 
-        if (!isInitialized) {
-            List<java.awt.Point> crossPoints = new ArrayList<>();
-            crossPoints.add(new java.awt.Point(1920/2-70, 1080/2));
-            crossPoints.add(new java.awt.Point(1920/2+70, 1080/2));
-            crossPoints.add(new java.awt.Point(1920/2, 1080/2+70));
-            crossPoints.add(new java.awt.Point(1920/2, 1080/2-70));
+                var board = new Board(boardRect, Utils.rectangleGetCenter(boardRect));
+                var robot = new Robot(Utils.toNavigatorPoint(resultRobot.getPointFront()), Utils.toNavigatorPoint(resultRobot.getPointBack()));
 
-            this.roadController.initialize(
-                    resultBoard.getCorners().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
-                    balls,
-                    crossPoints,
-                    //resultBoard.getCross().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
-                    robotPosition
-            );
-            new SmartConverter().calculateBoard(resultBoard.getCorners().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
-            isInitialized = true;
+                this.navigator = new Navigator(board, robot);
+                this.isInitialized = true;
+            }
+
+            this.navigator.updateRobotPosition(Utils.toNavigatorPoint(resultRobot.getPointFront()), Utils.toNavigatorPoint(resultRobot.getPointBack()));
+            this.navigator.updateBallPositions(Utils.toNavigatorPoints(resultBalls.getBalls()));
         }
-
-        this.roadController.updateRobot(robotPosition);
-        this.roadController.setBalls(balls);
     }
 
     private void cameraCalibrationChanged(boolean canCalibrate) {
@@ -466,29 +454,31 @@ public class Main {
     @FXML
     private void startRobotRun() {
         new Thread(() -> {
-            while(this.roadController.getBalls().size() > -1 ){
-                if (this.roadController.readyToDeposit) {
-                    try {
-                        this.robotManager.getController().fanOff();
-                        this.robotManager.getController().deposit();
-                        this.roadController.readyToDeposit = false;
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-                System.out.println("robot: " + this.roadController.getRobot().getRotationalPoint());
-
-                System.out.println("lowerleft i kvadrant m robot: " + this.roadController.getCurrentQuadrant().getLowerLeft());
-
+            while (! this.navigator.isEmpty()) {
                 try {
-                    Instruction temp = this.roadController.getNextInstruction();
-                    Instruction ins = new Instruction(temp.getAngle(), temp.getDistance()/(SmartConverter.getPixelsPerCm())) ;
-                    this.robotManager.getMovement().runInstruction(ins);
-                } catch (RemoteException e) {
+                    var instructionSet = this.navigator.calculateInstructionSet();
+                    System.out.println(instructionSet);
+
+                    instructionSet.run(instruction -> {
+                        try {
+                            this.robotManager.getMovement().runInstruction(instruction);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
+
+            try {
+                this.robotManager.getController().fanOff();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            // todo: handle deposit instructions here
+//            this.robotManager.getController().deposit();
         }).start();
     }
 }

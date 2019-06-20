@@ -2,6 +2,7 @@ package group14.navigator;
 
 import group14.navigator.data.Board;
 import group14.navigator.data.Robot;
+import group14.robot.data.Instruction;
 import lejos.robotics.geometry.Point2D;
 import lejos.robotics.geometry.Rectangle2D;
 import org.junit.Before;

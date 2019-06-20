@@ -1,18 +1,20 @@
-package group14.navigator;
+package group14.robot.data;
 
-public class Instruction {
+import java.io.Serializable;
+
+public class Instruction implements Serializable {
 
     private final InstructionType type;
     private final double amount;
 
-    public enum InstructionType {
+    public enum InstructionType implements Serializable {
         TURN,
         FORWARD,
         BACKWARD,
         DANCE
     }
 
-    Instruction(InstructionType type, double amount) {
+    public Instruction(InstructionType type, double amount) {
         this.type = type;
         this.amount = amount;
     }

@@ -173,6 +173,10 @@ public class CalibratedCamera extends Camera {
         }
     }
 
+    public boolean isCalibrated() {
+        return this.isCalibrated;
+    }
+
     public void setCalibrationPossibleListener(CalibrationPossibleListener listener) {
         this.calibrationPossibleListener = listener;
     }
