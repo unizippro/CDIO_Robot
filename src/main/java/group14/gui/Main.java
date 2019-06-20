@@ -1,60 +1,64 @@
 package group14.gui;
 
+import com.google.common.base.Stopwatch;
 import com.google.inject.Inject;
 import group14.Application;
-import group14.Resources;
 import group14.gui.components.CoordinateSystem;
+import group14.navigator.Navigator;
+import group14.navigator.NavigatorDrawing;
+import group14.navigator.Utils;
+import group14.navigator.data.Board;
 import group14.opencv.CalibratedCamera;
+import group14.opencv.Homeography;
 import group14.opencv.detectors.ball_detector.BallDetector;
 import group14.opencv.detectors.board_detector.BoardDetector;
 import group14.opencv.detectors.robot_detector.RobotDetector;
 import group14.opencv.utils.ImageConverter;
-import group14.road_planner.RoadController;
-import group14.road_planner.board.SmartConverter;
 import group14.robot.IRobotManager;
+import group14.robot.Robot;
 import group14.robot.data.Instruction;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.Point;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.utils.Converters;
 
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
-
-    private static final double LONG_LENGTH = 166.8;
 
     private IRobotManager robotManager;
 
     private BallDetector ballDetector = new BallDetector();
-    private BoardDetector.Config boardDetectorConfig = new BoardDetector.Config();
-    private BoardDetector boardDetector = new BoardDetector(boardDetectorConfig);
+    private BoardDetector boardDetector = new BoardDetector();
     private RobotDetector robotDetector = new RobotDetector();
-    private RoadController roadController = new RoadController();
+    private Homeography homeography = new Homeography(this.boardDetector);
+
+    private Navigator navigator;
+    private NavigatorDrawing navigatorDrawing;
     private boolean isInitialized = false;
+    private Thread runThread;
 
-    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9, boardDetectorConfig);
+    private Stopwatch stopwatch;
+    private ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> currentFuture;
 
-    private boolean isHomo = false;
-    private Mat homeographyMat;
+    private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
 
-    private double pixelsPrCm;
 
+    @FXML
+    private Label timer;
     @FXML
     private ChoiceBox testImages;
     @FXML
@@ -70,9 +74,11 @@ public class Main {
     @FXML
     public Button imageCalibrateSnapshot;
     @FXML
+    public ImageView imageNavigator;
+    @FXML
     public ImageView imageBalls;
     @FXML
-    public Slider ballThreshold1;
+    public Slider ballDECircle;
     @FXML
     public Slider ballThreshold2;
     @FXML
@@ -86,17 +92,25 @@ public class Main {
     @FXML
     public ImageView imageBoard;
     @FXML
-    public Slider robotBlueMinH;
+    public Slider cornerMarginSlider;
     @FXML
-    public Slider robotBlueMinS;
+    public ImageView imageRobot;
     @FXML
-    public Slider robotBlueMinV;
+    public ImageView imageBallsHSV;
     @FXML
-    public Slider robotBlueMaxH;
+    public Slider ballMinH;
     @FXML
-    public Slider robotBlueMaxS;
+    public Slider ballMaxH;
     @FXML
-    public Slider robotBlueMaxV;
+    public Slider ballMinS;
+    @FXML
+    public Slider ballMaxS;
+    @FXML
+    public Slider ballMinV;
+    @FXML
+    public Slider ballMaxV;
+    @FXML
+    public ImageView imageRobotGreenHSV;
     @FXML
     public Slider robotGreenMinH;
     @FXML
@@ -110,15 +124,19 @@ public class Main {
     @FXML
     public Slider robotGreenMaxV;
     @FXML
-    public Slider cornerMarginSlider;
-    @FXML
-    public ImageView imageRobot;
-    @FXML
-    public ImageView imageThreshBalls;
-    @FXML
-    public ImageView imageRobotGreenHSV;
-    @FXML
     public ImageView imageRobotBlueHSV;
+    @FXML
+    public Slider robotBlueMinH;
+    @FXML
+    public Slider robotBlueMinS;
+    @FXML
+    public Slider robotBlueMinV;
+    @FXML
+    public Slider robotBlueMaxH;
+    @FXML
+    public Slider robotBlueMaxS;
+    @FXML
+    public Slider robotBlueMaxV;
     @FXML
     public ImageView imageThreshCorners;
     @FXML
@@ -163,7 +181,7 @@ public class Main {
         this.robotManager = robotManager;
 
         this.camera.setCalibrationPossibleListener(this::cameraCalibrationChanged);
-        this.camera.setCalibrationCustomHandler(this::customCalibration);
+        this.camera.setCalibrationCustomHandler(this.homeography);
     }
 
 
@@ -184,11 +202,17 @@ public class Main {
         this.plot.setCross(new Point2D(20, 10));
 
         var ballDetectorConfig = this.ballDetector.getConfig();
-        this.ballThreshold1.setValue(ballDetectorConfig.ballThreshold1.get());
+        this.ballMinH.setValue(ballDetectorConfig.ballMinH.get());
+        this.ballMinS.setValue(ballDetectorConfig.ballMinS.get());
+        this.ballMinV.setValue(ballDetectorConfig.ballMinV.get());
+        this.ballMaxH.setValue(ballDetectorConfig.ballMaxH.get());
+        this.ballMaxS.setValue(ballDetectorConfig.ballMaxS.get());
+        this.ballMaxV.setValue(ballDetectorConfig.ballMaxV.get());
+
+        this.ballDECircle.setValue(ballDetectorConfig.ballDECircle.get());
         this.ballThreshold2.setValue(ballDetectorConfig.ballThreshold2.get());
         this.ballGausBlurSize.setValue(ballDetectorConfig.ballGausBlurSize.get());
-
-        this.lowerThresholdSlider.setValue(ballDetectorConfig.lowerThreshold.get());
+        //this.lowerThresholdSlider.setValue(ballDetectorConfig.lowerThreshold.get());
         this.houghParam1.setValue(ballDetectorConfig.houghParam1.get());
         this.houghParam2.setValue(ballDetectorConfig.houghParam2.get());
 
@@ -217,7 +241,6 @@ public class Main {
         this.maxSBoardSliderCorners.setValue(boardDetectorConfig.maxSBoard.get());
         this.minVBoardSliderCorners.setValue(boardDetectorConfig.minVBoard.get());
         this.maxVBoardSliderCorners.setValue(boardDetectorConfig.maxVBoard.get());
-
 
         if (Application.openCvLoaded) {
             this.camera.start(this::cameraFrameUpdated);
@@ -289,38 +312,6 @@ public class Main {
 //        this.camera.updateWithImage(((FileSelectItem) this.testImages.getValue()).filePath);
     }
 
-    private void customCalibration(Mat frame, Mat outFrame) {
-        if (this.isHomo) {
-            Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, frame.size());
-        } else {
-            var boardDetectorResult = this.boardDetector.run(frame);
-
-            // todo fix check for null
-            if (boardDetectorResult.getCorners() != null && boardDetectorResult.getCorners().size() == 4) {
-                var size = frame.size();
-
-                var srcMat = Converters.vector_Point2f_to_Mat(boardDetectorResult.getCorners());
-                var margin = 100;
-                var dst = new MatOfPoint2f(
-                        new org.opencv.core.Point(margin, margin),
-                        new org.opencv.core.Point(size.width - margin, margin),
-                        new org.opencv.core.Point(size.width - margin, size.height - margin),
-                        new Point(margin, size.height - margin)
-                );
-
-                this.pixelsPrCm = ((size.width - margin) - margin) / LONG_LENGTH;
-                System.out.println("Pixel ratio: " + this.pixelsPrCm);
-
-                // Calculate Homo
-                this.homeographyMat = Imgproc.getPerspectiveTransform(srcMat, dst);
-
-                Imgproc.warpPerspective(frame, outFrame, this.homeographyMat, size);
-                this.isHomo = true;
-            } else {
-                frame.copyTo(outFrame);
-            }
-        }
-    }
 
     private void cameraFrameUpdated(Mat frame) {
         var image = ImageConverter.matToImageFX(frame);
@@ -335,7 +326,7 @@ public class Main {
         var imageRobot = ImageConverter.matToImageFX(resultRobot.getOutput());
         //var imageGreenRobot = ImageConverter.matToImageFX(resultRobot.getOutput());
 
-        var imageBallsThresh = ImageConverter.matToImageFX(resultBalls.getOutputThresh());
+        var imageBallsHSV = ImageConverter.matToImageFX(resultBalls.getOutputThresh());
 
         var imageRobotGreenHSV = ImageConverter.matToImageFX(resultRobot.getOutputThreshGreen());
         var imageRobotBlueHSV = ImageConverter.matToImageFX(resultRobot.getOutputThreshBlue());
@@ -348,41 +339,66 @@ public class Main {
             this.imageBalls.setImage(imageBalls);
             this.imageBoard.setImage(imageBoard);
             this.imageRobot.setImage(imageRobot);
-            this.imageThreshBalls.setImage(imageBallsThresh);
+            this.imageBallsHSV.setImage(imageBallsHSV);
             this.imageRobotGreenHSV.setImage(imageRobotGreenHSV);
             this.imageRobotBlueHSV.setImage(imageRobotBlueHSV);
             this.imageThreshCorners.setImage(imageThreshCorners);
 
         });
 
-        var balls = resultBalls.getBalls().stream()
-                .map(point -> new java.awt.Point((int)point.x, (int)point.y))
-                .collect(Collectors.toList());
+        if (this.camera.isCalibrated()) {
+            var robotFront = resultRobot.getPointFront();
+            var robotRear = resultRobot.getPointBack();
+            if (robotFront == null || robotRear == null) {
+                System.err.println("Robot position cannot be detected");
+                return;
+            }
 
-        var robotPosition = Stream.of(resultRobot.getPointFront(), resultRobot.getPointBack())
-                .map(point -> new java.awt.Point((int)point.x, (int)point.y))
-                .collect(Collectors.toList());
+            var corners = resultBoard.getCorners();
+            var cross = resultBoard.getCross();
 
-        if (!isInitialized) {
-            List<java.awt.Point> crossPoints = new ArrayList<>();
-            crossPoints.add(new java.awt.Point(1920/2-70, 1080/2));
-            crossPoints.add(new java.awt.Point(1920/2+70, 1080/2));
-            crossPoints.add(new java.awt.Point(1920/2, 1080/2+70));
-            crossPoints.add(new java.awt.Point(1920/2, 1080/2-70));
+            if (! this.isInitialized) {
+                if (corners.size() != 4) {
+                    System.err.println("No board detected");
+                    return;
+                }
 
-            this.roadController.initialize(
-                    resultBoard.getCorners().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
-                    balls,
-                    crossPoints,
-                    //resultBoard.getCross().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()),
-                    robotPosition
-            );
-            new SmartConverter().calculateBoard(resultBoard.getCorners().stream().map(point -> new java.awt.Point((int)point.x, (int)point.y)).collect(Collectors.toList()));
-            isInitialized = true;
+                if (cross == null) {
+                    System.err.println("No cross detected");
+                    return;
+                }
+
+                var boardPoints = Arrays.asList(corners.get(0), corners.get(3));
+                var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints, this.homeography.getPixelsPrCm()));
+
+                var crossCenter = Utils.toNavigatorRectangle(cross, this.homeography.getPixelsPrCm());
+
+                var board = new Board(boardRect, 2.5, crossCenter, 22);
+                var robot = new Robot(Utils.toNavigatorPoint(robotFront, this.homeography.getPixelsPrCm()), Utils.toNavigatorPoint(robotRear, this.homeography.getPixelsPrCm()));
+
+                System.out.println(board);
+
+                this.navigator = new Navigator(board, robot);
+                this.navigatorDrawing = new NavigatorDrawing(this.navigator, this.homeography.getPixelsPrCm());
+
+                this.isInitialized = true;
+            }
+
+            this.navigator.updateRobotPosition(Utils.toNavigatorPoint(robotFront, this.homeography.getPixelsPrCm()), Utils.toNavigatorPoint(robotRear, this.homeography.getPixelsPrCm()));
+            this.navigator.updateBallPositions(Utils.toNavigatorPoints(resultBalls.getBalls(), this.homeography.getPixelsPrCm()));
+
+            if (corners.size() == 4 && cross != null) {
+                var boardPoints = Arrays.asList(corners.get(0), corners.get(3));
+                var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints, this.homeography.getPixelsPrCm()));
+
+                var crossCenter = Utils.toNavigatorRectangle(cross, this.homeography.getPixelsPrCm());
+
+                this.navigator.updateBoard(boardRect, crossCenter);
+            }
+
+            var imageNavigator = ImageConverter.matToImageFX(this.navigatorDrawing.drawOn(frame));
+            Platform.runLater(() -> this.imageNavigator.setImage(imageNavigator));
         }
-
-        this.roadController.updateRobot(robotPosition);
-        this.roadController.setBalls(balls);
     }
 
     private void cameraCalibrationChanged(boolean canCalibrate) {
@@ -409,12 +425,18 @@ public class Main {
     @FXML
     public void ballDetectorConfigUpdated(MouseEvent mouseEvent) {
         var ballDetectorConfig = this.ballDetector.getConfig();
-        ballDetectorConfig.ballThreshold1.set((int) this.ballThreshold1.getValue());
+        ballDetectorConfig.ballDECircle.set((int) this.ballDECircle.getValue());
         ballDetectorConfig.ballGausBlurSize.set((int) this.ballGausBlurSize.getValue());
         ballDetectorConfig.ballThreshold2.set((int) this.ballThreshold2.getValue());
-        ballDetectorConfig.lowerThreshold.set((int) this.lowerThresholdSlider.getValue());
+        //ballDetectorConfig.lowerThreshold.set((int) this.lowerThresholdSlider.getValue());
         ballDetectorConfig.houghParam1.set((int) this.houghParam1.getValue());
         ballDetectorConfig.houghParam2.set((int) this.houghParam2.getValue());
+        ballDetectorConfig.ballMinH.set((int) this.ballMinH.getValue());
+        ballDetectorConfig.ballMinS.set((int) this.ballMinS.getValue());
+        ballDetectorConfig.ballMinV.set((int) this.ballMinV.getValue());
+        ballDetectorConfig.ballMaxH.set((int) this.ballMaxH.getValue());
+        ballDetectorConfig.ballMaxS.set((int) this.ballMaxS.getValue());
+        ballDetectorConfig.ballMaxV.set((int) this.ballMaxV.getValue());
 
         var boardDetectorConfig = this.boardDetector.getConfig();
         boardDetectorConfig.cornerMarginPercentage.set(this.cornerMarginSlider.getValue());
@@ -465,30 +487,78 @@ public class Main {
 
     @FXML
     private void startRobotRun() {
-        new Thread(() -> {
-            while(this.roadController.getBalls().size() > -1 ){
-                if (this.roadController.readyToDeposit) {
-                    try {
-                        this.robotManager.getController().fanOff();
-                        this.robotManager.getController().deposit();
-                        this.roadController.readyToDeposit = false;
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-                System.out.println("robot: " + this.roadController.getRobot().getRotationalPoint());
+        if (this.runThread != null) {
+            this.runThread.interrupt();
+            this.runThread = null;
+        }
 
-                System.out.println("lowerleft i kvadrant m robot: " + this.roadController.getCurrentQuadrant().getLowerLeft());
+        this.startTimer();
 
+        this.runThread = new Thread(() -> {
+            while (! this.navigator.isDone() && ! Thread.currentThread().isInterrupted()) {
                 try {
-                    Instruction temp = this.roadController.getNextInstruction();
-                    Instruction ins = new Instruction(temp.getAngle(), temp.getDistance()/(SmartConverter.getPixelsPerCm())) ;
-                    this.robotManager.getMovement().runInstruction(ins);
-                } catch (RemoteException e) {
+                    this.robotManager.getController().fanOn();
+
+                    var instructionSet = this.navigator.calculateInstructionSet();
+                    System.out.println(instructionSet);
+                    instructionSet.run(this.robotManager::runInstruction);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
 
+            try {
+                this.robotManager.getController().fanOff();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            this.stopTimer();
+
+            System.out.println("Robot done!");
+        });
+
+        this.runThread.start();
+    }
+
+    public void stopRobotRun(MouseEvent mouseEvent) {
+        if (this.runThread != null) {
+            this.runThread.interrupt();
+            this.runThread = null;
+        }
+
+        new Thread(() -> {
+            try {
+                this.robotManager.getController().fanOff();
+                this.robotManager.getController().deposit();
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
         }).start();
+    }
+
+    private void startTimer() {
+        this.stopTimer();
+        this.stopwatch = Stopwatch.createStarted();
+
+        this.currentFuture = this.exec.scheduleAtFixedRate(() -> {
+            var min = this.stopwatch.elapsed(TimeUnit.MINUTES);
+            var sec = this.stopwatch.elapsed(TimeUnit.SECONDS) % 60;
+            var milli = this.stopwatch.elapsed(TimeUnit.MILLISECONDS) % 1000;
+
+            Platform.runLater(() -> this.timer.setText(min + "." + sec + "." + milli));
+        }, 0, 100, TimeUnit.MILLISECONDS);
+    }
+
+    private void stopTimer() {
+        if (this.stopwatch != null) {
+            this.stopwatch.stop();
+            this.stopwatch = null;
+        }
+
+        if (this.currentFuture != null) {
+            this.currentFuture.cancel(true);
+            this.currentFuture = null;
+        }
     }
 }

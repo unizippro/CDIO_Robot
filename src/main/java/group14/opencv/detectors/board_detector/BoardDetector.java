@@ -1,6 +1,7 @@
 package group14.opencv.detectors.board_detector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -86,20 +87,24 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
             }
         }
         int boardArea = 900000;
-        for(MatOfPoint matCornerPoints: cornerPoints){
-            if(Imgproc.contourArea(matCornerPoints)<area && Imgproc.contourArea(matCornerPoints)>boardArea){
-                if(finalCornerPoints.size()==0){finalCornerPoints.clear();}
+        for (MatOfPoint matCornerPoints : cornerPoints) {
+            if (Imgproc.contourArea(matCornerPoints) < area && Imgproc.contourArea(matCornerPoints) > boardArea) {
+                if (finalCornerPoints.size() == 0) {
+                    finalCornerPoints.clear();
+                }
                 finalCornerPoints = matCornerPoints.toList();
             }
         }
         List<Point> finalCornerPointsSorted = new ArrayList<>();
-        for(Point point: finalCornerPoints){
+        for (Point point : finalCornerPoints) {
             //System.out.println(point);
             Imgproc.circle(out, point, 20, new Scalar(255), 3, 8, 0);
         }
-        if(finalCornerPoints.size()!=0){finalCornerPointsSorted = this.sortPoints(finalCornerPoints);}
-        System.out.println(finalCornerPointsSorted);
-        return new BoardDetectorResult(out, hsvThresh, finalCornerPoints, cross);
+        if (finalCornerPoints.size() != 0) {
+            finalCornerPointsSorted = this.sortPoints(finalCornerPoints, src.size());
+        }
+
+        return new BoardDetectorResult(out, hsvThresh, finalCornerPointsSorted, cross);
     }
 
     @Override
@@ -107,20 +112,27 @@ public class BoardDetector extends Detector<BoardDetectorResult, BoardDetector.C
         return new Config();
     }
 
-    private List<Point> sortPoints(List<Point> points){
-        Point upperLeft = new Point(2000,2000);
-        Point upperRight = new Point(0, 2000);
-        Point lowerRight = new Point(0, 0);
-        Point lowerLeft = new Point(2000, 0);
-        List<Point> soretedList = new ArrayList<>();
-        for(Point point: points){
-            if(point.x<upperLeft.x && point.y<upperLeft.y){upperLeft = point;}
-            if(point.x>upperRight.x && point.y<upperRight.y){upperRight = point;}
-            if(point.x>lowerRight.x && point.y>lowerRight.y){lowerRight = point;}
-            if(point.x<lowerLeft.x && point.y>lowerLeft.y){lowerLeft = point;}
+    private List<Point> sortPoints(List<Point> points, Size frameSize) {
+        Point center = new Point(frameSize.width / 2, frameSize.height / 2);
+
+        Point upperLeft = null;
+        Point upperRight = null;
+        Point lowerRight = null;
+        Point lowerLeft = null;
+
+        for (Point point : points) {
+            if (point.x < center.x && point.y < center.y) {
+                upperLeft = point;
+            } else if (point.x >= center.x && point.y < center.y) {
+                upperRight = point;
+            } else if (point.x < center.x && point.y >= center.y) {
+                lowerLeft = point;
+            } else if (point.x >= center.x && point.y >= center.y) {
+                lowerRight = point;
+            }
         }
-        soretedList.add(upperLeft);soretedList.add(upperRight);soretedList.add(lowerRight);soretedList.add(lowerLeft);
-        return  soretedList;
+
+        return Arrays.asList(upperLeft, upperRight, lowerLeft, lowerRight);
     }
 
     private Mat threshold(Mat src, Scalar lower, Scalar upper) {

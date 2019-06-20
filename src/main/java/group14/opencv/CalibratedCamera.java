@@ -2,11 +2,9 @@ package group14.opencv;
 
 import com.google.gson.*;
 import group14.opencv.utils.ImageConverter;
-import group14.opencv.detectors.board_detector.BoardDetector;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.utils.Converters;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -19,8 +17,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class CalibratedCamera extends Camera {
-
-    private BoardDetector boardDetector;
 
     private int numberOfCalibrations = 10;
     private int chessboardCornersHorizontal;
@@ -56,13 +52,11 @@ public class CalibratedCamera extends Camera {
     }
 
 
-    public CalibratedCamera(int cameraIndex, int chessboardCornersHorizontal, int chessboardCornersVertical, BoardDetector.Config boardDetectorConfig) {
+    public CalibratedCamera(int cameraIndex, int chessboardCornersHorizontal, int chessboardCornersVertical) {
         super(cameraIndex);
 
         this.chessboardCornersHorizontal = chessboardCornersHorizontal;
         this.chessboardCornersVertical = chessboardCornersVertical;
-
-        this.boardDetector = new BoardDetector(boardDetectorConfig);
 
         this.resetCalibration();
 
@@ -83,8 +77,8 @@ public class CalibratedCamera extends Camera {
         }
     }
 
-    public CalibratedCamera(int cameraIndex, int numberOfCalibrations, int chessboardCornersHorizontal, int chessboardCornersVertical, BoardDetector.Config boardDetectorConfig) {
-        this(cameraIndex, chessboardCornersHorizontal, chessboardCornersVertical, boardDetectorConfig);
+    public CalibratedCamera(int cameraIndex, int numberOfCalibrations, int chessboardCornersHorizontal, int chessboardCornersVertical) {
+        this(cameraIndex, chessboardCornersHorizontal, chessboardCornersVertical);
 
         this.numberOfCalibrations = numberOfCalibrations;
     }
@@ -171,6 +165,10 @@ public class CalibratedCamera extends Camera {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isCalibrated() {
+        return this.isCalibrated;
     }
 
     public void setCalibrationPossibleListener(CalibrationPossibleListener listener) {

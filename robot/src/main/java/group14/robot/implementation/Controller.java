@@ -14,7 +14,7 @@ public class Controller extends UnicastRemoteObject implements IController {
     private AtomicBoolean fanRunning = new AtomicBoolean(false);
     private AtomicBoolean vibRunning = new AtomicBoolean(false);
     private AtomicBoolean gateOpen = new AtomicBoolean(false);
-    private int openCloseAngle = 1080;
+    private int openCloseAngle = 1440;
 
     private EV3LargeRegulatedMotor controllerMotor;
     private EV3MediumRegulatedMotor gateMotor;
@@ -95,20 +95,12 @@ public class Controller extends UnicastRemoteObject implements IController {
      */
     @Override
     public void deposit() {
-
-
         try {
             this.fanOff();
             Thread.sleep(2000);
+
             this.gateOpen();
-            this.vibOn();
-            Thread.sleep(3500);
-            this.vibOff();
-            Thread.sleep(3500);
-            this.vibOn();
-            Thread.sleep(3000);
-            this.vibOff();
-            Thread.sleep(3000);
+
             this.vibOn();
             Thread.sleep(3500);
             this.vibOff();
@@ -122,6 +114,5 @@ public class Controller extends UnicastRemoteObject implements IController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 }

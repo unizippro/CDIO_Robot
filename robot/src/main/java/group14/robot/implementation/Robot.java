@@ -1,18 +1,17 @@
 package group14.robot.implementation;
 
-import lejos.hardware.Audio;
+import group14.robot.data.Instruction;
 import lejos.hardware.Sound;
-import lejos.hardware.ev3.EV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import group14.robot.interfaces.IRobot;
-import lejos.remote.ev3.RemoteAudio;
 
 import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,14 +26,12 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
         }
     };
 
+    private Controller controller = new Controller( new EV3LargeRegulatedMotor(MotorPort.C), new EV3MediumRegulatedMotor(MotorPort.D));
     private Movement movement = new Movement(new EV3LargeRegulatedMotor(MotorPort.A), new EV3LargeRegulatedMotor(MotorPort.B));
     //private Sensors sensors = new Sensors(new EV3IRSensor(SensorPort.S1));
-    private Controller controller = new Controller( new EV3LargeRegulatedMotor(MotorPort.C), new EV3MediumRegulatedMotor(MotorPort.D));
 
     private AtomicBoolean running = new AtomicBoolean(false);
     private Thread runningThread = null;
-    private Object soundSema = new Object();
-    private File soundFile;
 
 
     public Robot() throws RemoteException { }
@@ -69,6 +66,83 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
         this.shutdownTimer.schedule(this.shutdownApp, new Date(System.currentTimeMillis() + 1000 * SHUTDOWN_DELAY));
     }
 
+    @Override
+    public void runInstruction(Instruction instruction) {
+        switch (instruction.getType()) {
+            case FORWARD:
+                this.movement.forward(instruction.getAmount() * 10);
+                break;
+
+            case BACKWARD:
+                this.movement.backward(instruction.getAmount() * 10);
+                break;
+
+            case TURN:
+                this.movement.turn(instruction.getAmount());
+                break;
+
+            case DEPOSIT:
+                this.controller.deposit();
+                break;
+
+            case WAIT:
+                try {
+                    Thread.sleep((long) instruction.getAmount());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case DANCE:
+                this.controller.fanOff();
+
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Sound.setVolume(Sound.VOL_MAX);
+                        Sound.beep();
+                        try {
+                            playMarch();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                thread.start();
+
+                while (thread.getState() != Thread.State.TERMINATED) {
+                    this.makeMoves();
+                }
+
+                this.makeMoves();
+                break;
+
+            case SHORT_DANCE:
+                this.controller.fanOff();
+
+                try {
+                    Sound.setVolume(Sound.VOL_MAX);
+                    Sound.beep();
+                    Thread.sleep(100);
+                    Sound.beep();
+                    Thread.sleep(100);
+                    Sound.beep();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+    }
+
+    private void makeMoves() {
+        if (new Random().nextBoolean()) {
+            this.movement.backward(20);
+        } else {
+            this.movement.forward(20);
+        }
+    }
+
     /**
      * Method plays a sound from a wav file
      * Might hang.
@@ -78,11 +152,8 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
     synchronized public void playSound(String path) throws RemoteException {
             Sound.setVolume(Sound.VOL_MAX);
             try {
-                System.out.print(".");
-                soundFile = new File(path);
-                int i = Sound.playSample(soundFile, 100);
-                soundFile = null;
-                System.out.print(i);
+                File soundFile = new File(path);
+                Sound.playSample(soundFile, 100);
             } catch (Exception e) {
                 System.err.println("File not found; Sound not played.");
                 e.printStackTrace();

@@ -1,6 +1,7 @@
 package group14;
 
 import group14.opencv.ICameraController;
+import group14.robot.IRobotManager;
 import javafx.stage.Stage;
 import org.opencv.core.Core;
 
@@ -39,7 +40,7 @@ public class Application extends javafx.application.Application {
 
             primaryStage.setScene(SceneManager.getInstance().getScene());
             primaryStage.setTitle("CDIO Robot GUI");
-            primaryStage.setHeight(740);
+            primaryStage.setHeight(840);
             primaryStage.setWidth(968);
             primaryStage.setResizable(false);
             primaryStage.show();
@@ -53,6 +54,15 @@ public class Application extends javafx.application.Application {
     @Override
     public void stop() throws Exception {
         super.stop();
+
+        var controller = SceneManager.getInstance()
+                .getInjector()
+                .getInstance(IRobotManager.class)
+                .getController();
+
+        if (controller != null) {
+            controller.fanOff();
+        }
 
         SceneManager.getInstance()
                 .getInjector()

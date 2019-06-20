@@ -1,6 +1,6 @@
 package group14.robot.implementation;
 
-import group14.robot.data.Instruction;
+import group14.robot.data.InstructionOld;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.RegulatedMotor;
 import group14.robot.interfaces.IMovement;
@@ -15,7 +15,7 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     // All values below are in mm
     private static final double MARGIN_OF_ERROR = -0.05;
     private static final double MARGIN_OF_ERROR_TURN = 2;
-    private static final double ROBOT_DIAMETER = 114.3+22;
+    private static final double ROBOT_DIAMETER = 114.3 + 22;
     private static final double WHEEL_DIAMETER = 39;
 
 
@@ -49,9 +49,9 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     }
 
     @Override
-    public void runInstruction(Instruction instruction) {
+    public void runInstruction(InstructionOld instruction) {
         if (instruction.getAngle() != 0) {
-            this.turn((int) instruction.getAngle());
+            this.turn(instruction.getAngle());
         }
 
         this.forward(instruction.getDistance() * 10);
@@ -67,23 +67,24 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
     /**
      * calculates required degrees to rotate to move the required distance
+     *
      * @param distance as mm
      */
     @Override
-    public void forward(double distance){
+    public void forward(double distance) {
         distance = distance + (MARGIN_OF_ERROR * distance);
-        double deg = -(360*distance/(WHEEL_DIAMETER * Math.PI));
+        double deg = -(360 * distance / (WHEEL_DIAMETER * Math.PI));
 //        if (distance < 0){
 //            deg -= MARGIN_OF_ERROR;
 //        } else {
 //            deg += MARGIN_OF_ERROR;
 //        }
         this.motorLeft.endSynchronization();
-        this.motorLeft.rotate((int)deg, true);
-        this.motorRight.rotate((int)deg, true);
+        this.motorLeft.rotate((int) deg, true);
+        this.motorRight.rotate((int) deg, true);
         this.motorLeft.endSynchronization();
 
-        while (this.motorLeft.isMoving() || this.motorRight.isMoving()) {}
+        while (this.motorLeft.isMoving() || this.motorRight.isMoving()) { }
     }
 
     @Override
@@ -95,7 +96,6 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     }
 
     /**
-     *
      * @param distance as mm
      */
     @Override
@@ -112,16 +112,17 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     }
 
     @Override
-    public void turn(int degree) {
+    public void turn(double degree) {
         double deg = ((((ROBOT_DIAMETER * Math.PI)) / (WHEEL_DIAMETER * Math.PI)) * 360) * ((double) degree / 360);
-        deg += deg/360*MARGIN_OF_ERROR_TURN;
+        deg += deg / 360 * MARGIN_OF_ERROR_TURN;
+
         int tempSpeed = this.motorLeft.getSpeed();
         this.setSpeedPercentage(25);
 
         this.motorLeft.rotate((int) deg, true);
         this.motorRight.rotate((int) -deg, true);
 
-        while (this.motorLeft.isMoving() || this.motorRight.isMoving()) {}
+        while (this.motorLeft.isMoving() || this.motorRight.isMoving()) { }
 
         this.motorLeft.setSpeed(tempSpeed);
         this.motorRight.setSpeed(tempSpeed);

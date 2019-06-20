@@ -3,23 +3,68 @@ package group14.robot.data;
 import java.io.Serializable;
 
 public class Instruction implements Serializable {
-    private double angle;
-    private double distance;
 
-    public Instruction(double angle, double distance) {
-        this.angle = angle;
-        this.distance = distance;
+    private final InstructionType type;
+    private final double amount;
+
+    public enum InstructionType implements Serializable {
+        TURN,
+        FORWARD,
+        BACKWARD,
+        DEPOSIT,
+        WAIT,
+        DANCE,
+        SHORT_DANCE
     }
 
-    public double getAngle() {
-        return this.angle;
+    public static Instruction forward(double amount) {
+        return new Instruction(InstructionType.FORWARD, amount);
     }
 
-    public double getDistance() {
-        return this.distance;
+    public static Instruction turn(double amount) {
+        return new Instruction(InstructionType.TURN, amount);
     }
 
+    public static Instruction backward(double amount) {
+        return new Instruction(InstructionType.BACKWARD, amount);
+    }
+
+    public static Instruction sleep(double amount) {
+        return new Instruction(InstructionType.WAIT, amount);
+    }
+
+    public static Instruction deposit() {
+        return new Instruction(InstructionType.DEPOSIT);
+    }
+
+    public static Instruction dance(boolean shortDance) {
+        if (shortDance) {
+            return new Instruction(InstructionType.SHORT_DANCE);
+        }
+
+        return new Instruction(InstructionType.DANCE);
+    }
+
+    public Instruction(InstructionType type) {
+        this.type = type;
+        this.amount = 0;
+    }
+
+    public Instruction(InstructionType type, double amount) {
+        this.type = type;
+        this.amount = amount;
+    }
+
+    public InstructionType getType() {
+        return this.type;
+    }
+
+    public double getAmount() {
+        return this.amount;
+    }
+
+    @Override
     public String toString() {
-        return "Instruction:  \n\tTurn: " + String.format("%.2f", angle) + " deg.\n\tDrive: " + String.format("%.2f", distance) + " units.";
+        return "Instruction(" + this.type + ", " + String.format("%.2f", this.amount) + ")";
     }
 }
