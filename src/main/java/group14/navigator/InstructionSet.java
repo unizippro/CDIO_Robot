@@ -7,7 +7,8 @@ import java.util.*;
 
 public class InstructionSet extends LinkedList<Instruction> {
 
-    private Point2D destination;
+    private Point2D from;
+    private Point2D to;
     private String message;
 
     public interface InstructionRunner {
@@ -20,14 +21,15 @@ public class InstructionSet extends LinkedList<Instruction> {
         }
     }
 
-    void setDestination(Point2D destination, String message) {
-        this.destination = destination;
+    void setData(Point2D from, Point2D to, String message) {
+        this.from = from;
+        this.to = to;
         this.message = message;
     }
 
 
     @Override
     public String toString() {
-        return "InstructionSet" + super.toString() + " - " + this.destination + " " + this.message;
+        return "InstructionSet" + super.toString() + " - " + this.from + " ---> " + this.to + " " + this.message;
     }
 }

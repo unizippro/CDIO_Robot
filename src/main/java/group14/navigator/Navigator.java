@@ -107,7 +107,7 @@ public class Navigator {
     }
 
     private void goToBallInSafeArea(InstructionSet instructionSet, Point2D robotPosition, Point2D ball) {
-        instructionSet.setDestination(ball, "Navigator: Safe ball");
+        instructionSet.setData(this.robot.getRotatingPoint(), ball, "Navigator: Safe ball");
 
         this.addTurnIfNeeded(instructionSet, robotPosition, ball);
         instructionSet.add(Instruction.forward(this.robot.getDistanceTo(ball)));
@@ -119,7 +119,7 @@ public class Navigator {
 
         var safePointArea = Utils.rectangleWithCenter(safePoint, 5);
         if (safePointArea.contains(robotPosition)) {
-            instructionSet.setDestination(ball, "Navigator: Unsafe Ball in direction " + direction);
+            instructionSet.setData(this.robot.getRotatingPoint(), ball, "Navigator: Unsafe Ball in direction " + direction);
 
             this.addTurnIfNeeded(instructionSet, robotPosition, ball);
 
@@ -136,7 +136,7 @@ public class Navigator {
             instructionSet.add(Instruction.sleep(500));
             instructionSet.add(Instruction.backward(distance * 1.2));
         } else {
-            instructionSet.setDestination(safePoint, "Navigator: Unsafe ball with safe point");
+            instructionSet.setData(this.robot.getRotatingPoint(), safePoint, "Navigator: Unsafe ball with safe point");
 
             this.addTurnAndForward(instructionSet, robotPosition, safePoint);
         }
@@ -150,11 +150,11 @@ public class Navigator {
             var nextArea = this.board.getAreaAfter(currentBoard);
             var newSafePoint = nextArea.getNearestSafePoint(robotPosition);
 
-            instructionSet.setDestination(newSafePoint, "Navigator: Safe point next area");
+            instructionSet.setData(this.robot.getRotatingPoint(), newSafePoint, "Navigator: Safe point next area");
 
             this.addTurnAndForward(instructionSet, robotPosition, newSafePoint);
         } else {
-            instructionSet.setDestination(currentSafePoint, "Navigator: Safe point current area");
+            instructionSet.setData(this.robot.getRotatingPoint(), currentSafePoint, "Navigator: Safe point current area");
 
             this.addTurnAndForward(instructionSet, robotPosition, currentSafePoint);
         }
@@ -163,7 +163,7 @@ public class Navigator {
     private void handleDepositAction(InstructionSet instructionSet, Point2D robotPosition, double robotAngle) {
         var projectedDepositPoint = new Point2D(this.depositPoint.x - 30, this.depositPoint.y);
 
-        instructionSet.setDestination(projectedDepositPoint, "Navigator: Deposit plan started");
+        instructionSet.setData(this.robot.getRotatingPoint(), projectedDepositPoint, "Navigator: Deposit plan started");
 
         var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, projectedDepositPoint);
 
@@ -185,7 +185,7 @@ public class Navigator {
     }
 
     private void goToDepositPoint(InstructionSet instructionSet, Point2D robotPosition, Point2D depositPoint) {
-        instructionSet.setDestination(depositPoint, "Navigator: Deposit point current area");
+        instructionSet.setData(this.robot.getRotatingPoint(), depositPoint, "Navigator: Deposit point current area");
 
         this.addTurnAndForward(instructionSet, robotPosition, depositPoint);
     }
@@ -198,11 +198,11 @@ public class Navigator {
             var nextArea = this.board.getAreaAfter(currentBoard);
             var newSafePoint = nextArea.getNearestSafePoint(robotPosition);
 
-            instructionSet.setDestination(newSafePoint, "Navigator: Deposit point - safe point next area");
+            instructionSet.setData(this.robot.getRotatingPoint(), newSafePoint, "Navigator: Deposit point - safe point next area");
 
             this.addTurnAndForward(instructionSet, newSafePoint, robotPosition);
         } else {
-            instructionSet.setDestination(currentSafePoint, "Navigator: Deposit point - safe point current area");
+            instructionSet.setData(this.robot.getRotatingPoint(), currentSafePoint, "Navigator: Deposit point - safe point current area");
 
             // todo: check
             this.addTurnAndForward(instructionSet, robotPosition, currentSafePoint);
