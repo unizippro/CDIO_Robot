@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -46,7 +49,10 @@ public class Main {
     private NavigatorDrawing navigatorDrawing;
     private boolean isInitialized = false;
     private Thread runThread;
+
     private Stopwatch stopwatch;
+    private ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> currentFuture;
 
     private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
 
@@ -218,7 +224,6 @@ public class Main {
         this.minVBoardSliderCorners.setValue(boardDetectorConfig.minVBoard.get());
         this.maxVBoardSliderCorners.setValue(boardDetectorConfig.maxVBoard.get());
 
-        this.timer.setText(this.time());
         if (Application.openCvLoaded) {
             this.camera.start(this::cameraFrameUpdated);
         }
@@ -380,14 +385,6 @@ public class Main {
         return coordinates;
     }
 
-    private String time() {
-        try {
-            return String.valueOf(this.stopwatch.elapsed(TimeUnit.SECONDS));
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
     @FXML
     public void ballDetectorConfigUpdated(MouseEvent mouseEvent) {
         var ballDetectorConfig = this.ballDetector.getConfig();
@@ -447,11 +444,12 @@ public class Main {
 
     @FXML
     private void startRobotRun() {
-        this.stopwatch = Stopwatch.createStarted();
         if (this.runThread != null) {
             this.runThread.interrupt();
             this.runThread = null;
         }
+
+        this.startTimer();
 
         this.runThread = new Thread(() -> {
             try {
@@ -482,9 +480,10 @@ public class Main {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+
+            this.stopTimer();
         });
 
-        this.stopwatch.stop();
         this.runThread.start();
     }
 
@@ -502,5 +501,26 @@ public class Main {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void startTimer() {
+        this.stopTimer();
+        this.stopwatch = Stopwatch.createStarted();
+
+        this.currentFuture = this.exec.scheduleAtFixedRate(() -> {
+            Platform.runLater(() -> this.timer.setText(this.stopwatch.toString()));
+        }, 0, 100, TimeUnit.MILLISECONDS);
+    }
+
+    private void stopTimer() {
+        if (this.stopwatch != null) {
+            this.stopwatch.stop();
+            this.stopwatch = null;
+        }
+
+        if (this.currentFuture != null) {
+            this.currentFuture.cancel(true);
+            this.currentFuture = null;
+        }
     }
 }
