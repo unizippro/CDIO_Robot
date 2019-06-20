@@ -9,9 +9,10 @@ import java.util.List;
 public class Board {
 
     private Rectangle2D boundingRect;
+    private final double extraMargin;
     private final double safetyMargin;
 
-    private final Point2D depositPoint;
+    private Point2D depositPoint;
 
     private final List<Area> areas = new ArrayList<>();
 
@@ -20,14 +21,10 @@ public class Board {
     }
 
     public Board(Rectangle2D boundingRect, double extraMargin, Point2D splitAt, double safetyMargin) {
-        this.boundingRect = Utils.rectangleWithExpandedMargin(boundingRect, extraMargin);
+        this.extraMargin = extraMargin;
         this.safetyMargin = safetyMargin;
 
-        this.depositPoint = new Point2D(boundingRect.getMinX() + safetyMargin * 1.05, boundingRect.y + (boundingRect.getHeight() / 2));
-
-        var splitPoint = splitAt != null ? splitAt : new Point2D(this.boundingRect.width / 2, this.boundingRect.height / 2);
-
-        this.splitAt(splitPoint);
+        this.updateBoard(boundingRect, splitAt);
     }
 
     public List<Area> getAreas() {
@@ -36,6 +33,17 @@ public class Board {
 
     public Point2D getDepositPoint() {
         return this.depositPoint;
+    }
+
+    public void updateBoard(Rectangle2D boundingRect, Point2D splitAt) {
+        if (this.canUpdateToNewRect(boundingRect)) {
+            this.boundingRect = Utils.rectangleWithExpandedMargin(boundingRect, this.extraMargin);
+        }
+
+        this.depositPoint = new Point2D(boundingRect.getMinX() + this.safetyMargin * 1.05, boundingRect.y + (boundingRect.getHeight() / 2));
+
+        var splitPoint = splitAt != null ? splitAt : new Point2D(this.boundingRect.width / 2, this.boundingRect.height / 2);
+        this.splitAt(splitPoint);
     }
 
     public boolean contains(Point2D point) {
@@ -77,6 +85,14 @@ public class Board {
                 new Area(verticalSplit.get(0), this.safetyMargin),
                 new Area(verticalSplit.get(1), this.safetyMargin)
         ));
+    }
+
+    private boolean canUpdateToNewRect(Rectangle2D newRect) {
+        if (this.boundingRect == null) {
+            return true;
+        }
+
+        return Utils.rectangleWithExpandedMargin(this.boundingRect, 3).contains(newRect);
     }
 
     @Override

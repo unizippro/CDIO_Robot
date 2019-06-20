@@ -1,9 +1,6 @@
 package group14.navigator;
 
-import group14.navigator.data.Area;
-import group14.navigator.data.Board;
-import group14.navigator.data.Point2D;
-import group14.navigator.data.Robot;
+import group14.navigator.data.*;
 import group14.robot.data.Instruction;
 
 import java.util.ArrayList;
@@ -53,6 +50,10 @@ public class Navigator {
         ballPositions.stream()
                 .filter(this.board::contains)
                 .collect(Collectors.toCollection(() -> this.ballPositions));
+    }
+
+    public void updateBoard(Rectangle2D boundingRect, Point2D splitAt) {
+        this.board.updateBoard(boundingRect, splitAt);
     }
 
     public boolean isEmpty() {

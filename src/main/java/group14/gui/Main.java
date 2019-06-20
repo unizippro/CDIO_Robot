@@ -336,20 +336,23 @@ public class Main {
                 return;
             }
 
+            var corners = resultBoard.getCorners();
+            var cross = resultBoard.getCross();
+
             if (! this.isInitialized) {
-                var corners = resultBoard.getCorners();
                 if (corners.size() != 4) {
+                    System.err.println("No board detected");
+                    return;
+                }
+
+                if (cross == null) {
+                    System.err.println("No cross detected");
                     return;
                 }
 
                 var boardPoints = Arrays.asList(corners.get(0), corners.get(3));
                 var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints, this.homeography.getPixelsPrCm()));
 
-                var cross = resultBoard.getCross();
-                if (cross == null) {
-                    System.out.println("No cross detected");
-                    return;
-                }
                 var crossCenter = Utils.toNavigatorPoint(new Point(cross.x + cross.width / 2, cross.y + cross.height / 2), this.homeography.getPixelsPrCm());
 
                 var board = new Board(boardRect, 2.5, crossCenter, 22);
@@ -365,6 +368,15 @@ public class Main {
 
             this.navigator.updateRobotPosition(Utils.toNavigatorPoint(robotFront, this.homeography.getPixelsPrCm()), Utils.toNavigatorPoint(robotRear, this.homeography.getPixelsPrCm()));
             this.navigator.updateBallPositions(Utils.toNavigatorPoints(resultBalls.getBalls(), this.homeography.getPixelsPrCm()));
+
+            if (corners.size() == 4 && cross != null) {
+                var boardPoints = Arrays.asList(corners.get(0), corners.get(3));
+                var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints, this.homeography.getPixelsPrCm()));
+
+                var crossCenter = Utils.toNavigatorPoint(new Point(cross.x + cross.width / 2, cross.y + cross.height / 2), this.homeography.getPixelsPrCm());
+
+                this.navigator.updateBoard(boardRect, crossCenter);
+            }
 
             var imageNavigator = ImageConverter.matToImageFX(this.navigatorDrawing.drawOn(frame));
             Platform.runLater(() -> this.imageNavigator.setImage(imageNavigator));
