@@ -40,8 +40,7 @@ public class Navigator {
         this.board = board;
         this.robot = robot;
 
-        // todo: temp
-        this.depositPoint = this.board.getDepositPointLeft();
+        this.depositPoint = this.board.getDepositPoint();
     }
 
     public void updateRobotPosition(Point2D frontPoint, Point2D rearPoint) {
@@ -54,20 +53,6 @@ public class Navigator {
         ballPositions.stream()
                 .filter(this.board::contains)
                 .collect(Collectors.toCollection(() -> this.ballPositions));
-    }
-
-    public enum DepositSide { LEFT, RIGHT }
-
-    public void setDepositSide(DepositSide depositSide) {
-        switch (depositSide) {
-            case LEFT:
-                this.depositPoint = this.board.getDepositPointLeft();
-                break;
-
-            case RIGHT:
-                this.depositPoint = this.board.getDepositPointRight();
-                break;
-        }
     }
 
     public boolean isEmpty() {
@@ -191,23 +176,10 @@ public class Navigator {
                 }
             }
         } else {
-            if (this.depositPoint == null) {
-                System.err.println("Navigator: No deposit point");
-
-                return instructionSet;
-            }
-
-            System.out.println(this.depositPoint);
-            System.out.println(robotPosition);
-            System.out.println(currentBoard);
-            System.out.println(currentBoard.contains(this.depositPoint));
-
             var currentDepositPointSafe = Utils.rectangleWithCenter(this.depositPoint, 5);
             if (currentDepositPointSafe.contains(robotPosition)) {
                 System.out.println("Navigator: Deposit plan started");
 
-                // todo: project point against goal
-                // assuming left
                 var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, new Point2D(this.depositPoint.x - 30, this.depositPoint.y));
 
                 var turnAngle = Calculator.getTurnAngle(robotAngle, currentDepositPointAngle);
@@ -226,8 +198,7 @@ public class Navigator {
                     this.hasDeposit = true;
                 }
 
-                // todo: project point against goal
-                instructionSet.setDestination(new Point2D(this.depositPoint.x - 10, this.depositPoint.y));
+                instructionSet.setDestination(new Point2D(this.depositPoint.x - 30, this.depositPoint.y));
             } else if (currentBoard.contains(this.depositPoint)) {
                 System.out.println("Navigator: Deposit point current area");
 
