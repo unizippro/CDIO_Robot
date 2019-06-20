@@ -11,6 +11,9 @@ public class Board {
     private Rectangle2D boundingRect;
     private final double safetyMargin;
 
+    private final Point2D depositPointLeft;
+    private final Point2D depositPointRight;
+
     private final List<Area> areas = new ArrayList<>();
 
     public Board(Rectangle2D boundingRect) {
@@ -20,6 +23,11 @@ public class Board {
     public Board(Rectangle2D boundingRect, double extraMargin, Point2D splitAt, double safetyMargin) {
         this.boundingRect = Utils.rectangleWithExpandedMargin(boundingRect, extraMargin);
         this.safetyMargin = safetyMargin;
+        this.depositPointLeft = new Point2D(boundingRect.getMinX() + safetyMargin * 1.25, boundingRect.y + (boundingRect.getHeight() / 2));
+        this.depositPointRight = new Point2D(boundingRect.getMaxX() - safetyMargin * 1.25, boundingRect.y + (boundingRect.getHeight() / 2));
+
+        System.out.println(this.depositPointLeft);
+        System.out.println(this.depositPointRight);
 
         var splitPoint = splitAt != null ? splitAt : new Point2D(this.boundingRect.width / 2, this.boundingRect.height / 2);
 
@@ -28,6 +36,14 @@ public class Board {
 
     public List<Area> getAreas() {
         return this.areas;
+    }
+
+    public Point2D getDepositPointLeft() {
+        return this.depositPointLeft;
+    }
+
+    public Point2D getDepositPointRight() {
+        return this.depositPointRight;
     }
 
     public boolean contains(Point2D point) {

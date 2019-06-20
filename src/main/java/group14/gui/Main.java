@@ -319,16 +319,20 @@ public class Main {
         });
 
         if (this.camera.isCalibrated()) {
-            var corners = resultBoard.getCorners();
-            if (corners.size() != 4) {
-                return;
-            }
-
             if (! this.isInitialized) {
+                var corners = resultBoard.getCorners();
+                if (corners.size() != 4) {
+                    return;
+                }
+
                 var boardPoints = Arrays.asList(corners.get(0), corners.get(3));
                 var boardRect = Utils.createRectangleFromPoints(Utils.toNavigatorPoints(boardPoints, this.homeography.getPixelsPrCm()));
 
                 var cross = resultBoard.getCross();
+                if (cross == null) {
+                    System.out.println("No cross detected");
+                    return;
+                }
                 var crossCenter = Utils.toNavigatorPoint(new Point(cross.x + cross.width / 2, cross.y + cross.height / 2), this.homeography.getPixelsPrCm());
 
                 var board = new Board(boardRect, 2.5, crossCenter, 17);
@@ -461,18 +465,11 @@ public class Main {
                 }
             }
 
-            if (Thread.currentThread().isInterrupted()) {
-                return;
-            }
-
             try {
                 this.robotManager.getController().fanOff();
-                this.robotManager.getController().deposit();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-
-            // todo: handle deposit instructions here
         });
 
         this.runThread.start();

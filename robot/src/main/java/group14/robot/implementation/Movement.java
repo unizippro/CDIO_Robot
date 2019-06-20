@@ -22,14 +22,16 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
     private final EV3LargeRegulatedMotor motorLeft;
     private final EV3LargeRegulatedMotor motorRight;
+    private final Controller controller;
 
     private final float maxSpeedLeft;
     private final float maxSpeedRight;
 
 
-    Movement(EV3LargeRegulatedMotor motorLeft, EV3LargeRegulatedMotor motorRight) throws RemoteException {
+    Movement(EV3LargeRegulatedMotor motorLeft, EV3LargeRegulatedMotor motorRight, Controller controller) throws RemoteException {
         this.motorLeft = motorLeft;
         this.motorRight = motorRight;
+        this.controller = controller;
 
         this.motorLeft.synchronizeWith(new RegulatedMotor[]{this.motorRight});
 
@@ -62,6 +64,19 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
             case TURN:
                 this.turn((int) instruction.getAmount());
+                break;
+
+            case DEPOSIT:
+                this.controller.deposit();
+                break;
+
+            case WAIT:
+                try {
+                    Thread.sleep((long) instruction.getAmount());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 

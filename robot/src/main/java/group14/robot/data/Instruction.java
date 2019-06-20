@@ -11,7 +11,14 @@ public class Instruction implements Serializable {
         TURN,
         FORWARD,
         BACKWARD,
+        DEPOSIT,
+        WAIT,
         DANCE
+    }
+
+    public Instruction(InstructionType type) {
+        this.type = type;
+        this.amount = 0;
     }
 
     public Instruction(InstructionType type, double amount) {
