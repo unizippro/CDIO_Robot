@@ -78,7 +78,7 @@ public class RobotManagerDemo implements IRobotManager {
             }
 
             @Override
-            public void turn(int degree) throws RemoteException {
+            public void turn(double degree) throws RemoteException {
 
             }
 
