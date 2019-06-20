@@ -99,7 +99,7 @@ public class Navigator {
                 this.goToNextArea(instructionSet, robotPosition, currentBoard);
             }
         } else {
-            var currentDepositPointSafe = Utils.rectangleWithCenter(this.depositPoint, 1.5);
+            var currentDepositPointSafe = Utils.rectangleWithCenter(this.depositPoint, 3);
 
             if (currentDepositPointSafe.contains(robotPosition)) {
                 this.handleDepositAction(instructionSet, robotPosition, robotAngle);
