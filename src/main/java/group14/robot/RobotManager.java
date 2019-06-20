@@ -1,5 +1,6 @@
 package group14.robot;
 
+import group14.robot.data.Instruction;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.BrickInfo;
 import group14.robot.interfaces.IController;
@@ -70,6 +71,15 @@ public class RobotManager implements IRobotManager {
 
         try {
             this.robot.shutdown();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void runInstruction(Instruction instruction) {
+        try {
+            this.robot.runInstruction(instruction);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

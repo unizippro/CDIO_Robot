@@ -1,5 +1,6 @@
 package group14.robot.implementation;
 
+import group14.robot.data.Instruction;
 import lejos.hardware.Audio;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.EV3;
@@ -28,7 +29,7 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
     };
 
     private Controller controller = new Controller( new EV3LargeRegulatedMotor(MotorPort.C), new EV3MediumRegulatedMotor(MotorPort.D));
-    private Movement movement = new Movement(new EV3LargeRegulatedMotor(MotorPort.A), new EV3LargeRegulatedMotor(MotorPort.B), this.controller);
+    private Movement movement = new Movement(new EV3LargeRegulatedMotor(MotorPort.A), new EV3LargeRegulatedMotor(MotorPort.B));
     //private Sensors sensors = new Sensors(new EV3IRSensor(SensorPort.S1));
 
     private AtomicBoolean running = new AtomicBoolean(false);
@@ -67,6 +68,35 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
     @Override
     public void shutdown() {
         this.shutdownTimer.schedule(this.shutdownApp, new Date(System.currentTimeMillis() + 1000 * SHUTDOWN_DELAY));
+    }
+
+    @Override
+    public void runInstruction(Instruction instruction) {
+        switch (instruction.getType()) {
+            case FORWARD:
+                this.movement.forward(instruction.getAmount() * 10);
+                break;
+
+            case BACKWARD:
+                this.movement.backward(instruction.getAmount() * 10);
+                break;
+
+            case TURN:
+                this.movement.turn(instruction.getAmount());
+                break;
+
+            case DEPOSIT:
+                this.controller.deposit();
+                break;
+
+            case WAIT:
+                try {
+                    Thread.sleep((long) instruction.getAmount());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
     }
 
     /**

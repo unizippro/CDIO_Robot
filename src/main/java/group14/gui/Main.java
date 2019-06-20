@@ -462,14 +462,7 @@ public class Main {
                 try {
                     var instructionSet = this.navigator.calculateInstructionSet();
                     System.out.println(instructionSet);
-
-                    instructionSet.run(instruction -> {
-                        try {
-                            this.robotManager.getMovement().runInstruction(instruction);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    });
+                    instructionSet.run(this.robotManager::runInstruction);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

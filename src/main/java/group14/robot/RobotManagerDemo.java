@@ -40,13 +40,13 @@ public class RobotManagerDemo implements IRobotManager {
     }
 
     @Override
+    public void runInstruction(Instruction instruction) {
+
+    }
+
+    @Override
     public IMovement getMovement() {
         return new IMovement() {
-            @Override
-            public void runInstruction(Instruction instruction) throws RemoteException {
-
-            }
-
             @Override
             public void runInstruction(InstructionOld instruction) throws RemoteException {
 
