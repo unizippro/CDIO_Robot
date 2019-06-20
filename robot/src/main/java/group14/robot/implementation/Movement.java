@@ -13,9 +13,10 @@ public class Movement extends UnicastRemoteObject implements IMovement {
     private static final int DEFAULT_SPEED = 75;
 
     // All values below are in mm
-    private static final double MARGIN_OF_ERROR = 0;
-    private static final double ROBOT_DIAMETER = 130.8;
-    private static final double WHEEL_DIAMETER = 30.4;
+    private static final double MARGIN_OF_ERROR = -0.05;
+    private static final double MARGIN_OF_ERROR_TURN = 2;
+    private static final double ROBOT_DIAMETER = 114.3+22;
+    private static final double WHEEL_DIAMETER = 39;
 
 
     private final EV3LargeRegulatedMotor motorLeft;
@@ -34,8 +35,8 @@ public class Movement extends UnicastRemoteObject implements IMovement {
         this.maxSpeedLeft = this.motorLeft.getMaxSpeed();
         this.maxSpeedRight = this.motorRight.getMaxSpeed();
 
-        this.motorLeft.setAcceleration(5500);
-        this.motorRight.setAcceleration(5500);
+        this.motorLeft.setAcceleration(1000);
+        this.motorRight.setAcceleration(1000);
 
 
         this.setSpeedPercentage(DEFAULT_SPEED);
@@ -70,12 +71,13 @@ public class Movement extends UnicastRemoteObject implements IMovement {
      */
     @Override
     public void forward(double distance){
+        distance = distance + (MARGIN_OF_ERROR * distance);
         double deg = -(360*distance/(WHEEL_DIAMETER * Math.PI));
-        if (distance < 0){
-            deg -= MARGIN_OF_ERROR;
-        } else {
-            deg += MARGIN_OF_ERROR;
-        }
+//        if (distance < 0){
+//            deg -= MARGIN_OF_ERROR;
+//        } else {
+//            deg += MARGIN_OF_ERROR;
+//        }
         this.motorLeft.endSynchronization();
         this.motorLeft.rotate((int)deg, true);
         this.motorRight.rotate((int)deg, true);
@@ -111,7 +113,8 @@ public class Movement extends UnicastRemoteObject implements IMovement {
 
     @Override
     public void turn(int degree) {
-        double deg = ((((ROBOT_DIAMETER * Math.PI)+0.5*MARGIN_OF_ERROR) / (WHEEL_DIAMETER * Math.PI)) * 360) * ((double) degree / 360);
+        double deg = ((((ROBOT_DIAMETER * Math.PI)) / (WHEEL_DIAMETER * Math.PI)) * 360) * ((double) degree / 360);
+        deg += deg/360*MARGIN_OF_ERROR_TURN;
         int tempSpeed = this.motorLeft.getSpeed();
         this.setSpeedPercentage(25);
 
