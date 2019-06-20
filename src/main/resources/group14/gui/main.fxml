@@ -272,11 +272,11 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="303.0" prefWidth="578.0">
                     <children>
-                        <Label layoutX="45.0" layoutY="73.0" text="Collected balls">
+                        <Label layoutX="45.0" layoutY="73.0" text="Timer">
                      <font>
                         <Font size="15.0" fx:id="x12" />
                      </font></Label>
-                        <Label layoutX="180.0" layoutY="74.0" prefHeight="17.0" prefWidth="54.0" text="0 / 10" />
+                        <Label layoutX="180.0" layoutY="74.0" prefHeight="17.0" prefWidth="54.0" fx:id="timer"/>
                         <Label layoutX="26.0" layoutY="41.0" text="Distance (sensor)">
                      <font>
                         <Font size="15.0" fx:id="x14" />

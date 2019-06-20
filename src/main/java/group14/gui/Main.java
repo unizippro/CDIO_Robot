@@ -1,5 +1,6 @@
 package group14.gui;
 
+import com.google.common.base.Stopwatch;
 import com.google.inject.Inject;
 import group14.Application;
 import group14.gui.components.CoordinateSystem;
@@ -20,16 +21,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -44,10 +46,13 @@ public class Main {
     private NavigatorDrawing navigatorDrawing;
     private boolean isInitialized = false;
     private Thread runThread;
+    private Stopwatch stopwatch;
 
     private CalibratedCamera camera = new CalibratedCamera(1, 7, 9);
 
 
+    @FXML
+    private Label timer;
     @FXML
     private ChoiceBox testImages;
     @FXML
@@ -213,7 +218,7 @@ public class Main {
         this.minVBoardSliderCorners.setValue(boardDetectorConfig.minVBoard.get());
         this.maxVBoardSliderCorners.setValue(boardDetectorConfig.maxVBoard.get());
 
-
+        this.timer.setText(this.time());
         if (Application.openCvLoaded) {
             this.camera.start(this::cameraFrameUpdated);
         }
@@ -375,6 +380,14 @@ public class Main {
         return coordinates;
     }
 
+    private String time() {
+        try {
+            return String.valueOf(this.stopwatch.elapsed(TimeUnit.SECONDS));
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     @FXML
     public void ballDetectorConfigUpdated(MouseEvent mouseEvent) {
         var ballDetectorConfig = this.ballDetector.getConfig();
@@ -434,6 +447,7 @@ public class Main {
 
     @FXML
     private void startRobotRun() {
+        this.stopwatch = Stopwatch.createStarted();
         if (this.runThread != null) {
             this.runThread.interrupt();
             this.runThread = null;
@@ -470,6 +484,7 @@ public class Main {
             }
         });
 
+        this.stopwatch.stop();
         this.runThread.start();
     }
 
