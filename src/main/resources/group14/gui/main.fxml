@@ -289,7 +289,7 @@
                      <font>
                         <Font size="15.0" fx:id="x12" />
                      </font></Label>
-                        <Label layoutX="180.0" layoutY="74.0" prefHeight="17.0" prefWidth="54.0" fx:id="timer"/>
+                        <Label layoutX="180.0" layoutY="74.0" prefHeight="17.0" prefWidth="250" fx:id="timer"/>
                         <Label layoutX="26.0" layoutY="41.0" text="Distance (sensor)">
                      <font>
                         <Font size="15.0" fx:id="x14" />

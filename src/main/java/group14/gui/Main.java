@@ -16,6 +16,7 @@ import group14.opencv.detectors.robot_detector.RobotDetector;
 import group14.opencv.utils.ImageConverter;
 import group14.robot.IRobotManager;
 import group14.robot.Robot;
+import group14.robot.data.Instruction;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -541,7 +542,11 @@ public class Main {
         this.stopwatch = Stopwatch.createStarted();
 
         this.currentFuture = this.exec.scheduleAtFixedRate(() -> {
-            Platform.runLater(() -> this.timer.setText(this.stopwatch.toString()));
+            var min = this.stopwatch.elapsed(TimeUnit.MINUTES);
+            var sec = this.stopwatch.elapsed(TimeUnit.SECONDS) % 60;
+            var milli = this.stopwatch.elapsed(TimeUnit.MILLISECONDS) % 1000;
+
+            Platform.runLater(() -> this.timer.setText(min + "." + sec + "." + milli));
         }, 0, 100, TimeUnit.MILLISECONDS);
     }
 
