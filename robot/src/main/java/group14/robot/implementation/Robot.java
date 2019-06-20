@@ -11,6 +11,7 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -93,14 +94,33 @@ public class Robot extends UnicastRemoteObject implements IRobot, Runnable {
                 break;
 
             case DANCE:
-                Sound.setVolume(Sound.VOL_MAX);
-                Sound.beep();
-                try {
-                    this.playMarch();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+               Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Sound.setVolume(Sound.VOL_MAX);
+                        Sound.beep();
+                        try {
+                            playMarch();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+               thread.start();
+               while (thread.isAlive()) {
+                   this.makeMoves();
+               }
+
+                this.makeMoves();
                 break;
+        }
+    }
+
+    private void makeMoves() {
+        if (new Random().nextBoolean()) {
+            this.movement.backward(20);
+        } else {
+            this.movement.forward(20);
         }
     }
 
