@@ -72,7 +72,7 @@ public class BallDetector extends Detector<BallDetectorResult, BallDetector.Conf
         Imgproc.HoughCircles(work, circles, Imgproc.HOUGH_GRADIENT, config.houghDp.get(), config.houghMinDist.get(), config.houghParam1.get(), config.houghParam2.get(), config.houghMinRadius.get(), config.houghMaxRadius.get());
 
         //! [draw]
-        System.out.println("Fandt " + circles.cols() + " Bolde");
+//        System.out.println("Fandt " + circles.cols() + " Bolde");
         for (int x = 0; x < circles.cols(); x++) {
             double[] c = circles.get(0, x);
             Point center = new Point(Math.round(c[0]), Math.round(c[1]));

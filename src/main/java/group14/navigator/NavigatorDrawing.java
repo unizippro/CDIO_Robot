@@ -45,19 +45,19 @@ public class NavigatorDrawing {
         var point = new Point(robotPosition.x * this.pixelsPrCm, robotPosition.y * this.pixelsPrCm);
         Imgproc.circle(out, point, 8, new Scalar(0, 255, 255), 3);
 
-        this.robotPositions.add(point);
-
-        if (this.robotPositions.size() > 1) {
-            for (int i = 1; i < this.robotPositions.size(); i++) {
-                var pointPrev = this.robotPositions.get(i - 1);
-                var pointNow = this.robotPositions.get(i);
-
-                var pointPrevOpen = new Point(pointPrev.x * this.pixelsPrCm, pointPrev.y * this.pixelsPrCm);
-                var pointNowOpen = new Point(pointNow.x * this.pixelsPrCm, pointNow.y * this.pixelsPrCm);
-
-                Imgproc.arrowedLine(out, pointPrevOpen, pointNowOpen, new Scalar(0, 255, 255), 3);
-            }
-        }
+//        this.robotPositions.add(point);
+//
+//        if (this.robotPositions.size() > 1) {
+//            for (int i = 1; i < this.robotPositions.size(); i++) {
+//                var pointPrev = this.robotPositions.get(i - 1);
+//                var pointNow = this.robotPositions.get(i);
+//
+//                var pointPrevOpen = new Point(pointPrev.x * this.pixelsPrCm, pointPrev.y * this.pixelsPrCm);
+//                var pointNowOpen = new Point(pointNow.x * this.pixelsPrCm, pointNow.y * this.pixelsPrCm);
+//
+//                Imgproc.arrowedLine(out, pointPrevOpen, pointNowOpen, new Scalar(0, 255, 255), 3);
+//            }
+//        }
 
         var balls = this.navigator.getBallPositions();
         balls.forEach(p -> {
