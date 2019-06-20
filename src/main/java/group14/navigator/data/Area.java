@@ -123,22 +123,22 @@ public class Area {
             case TOP_LEFT:
                 var startPointTopLeft = new Point2D(this.boundingRect.getMinX(), this.boundingRect.getMinY());
 
-                return Calculator.getVectorEndPoint(startPointTopLeft, 45, safetyDistance);
+                return Calculator.getVectorEndPoint(startPointTopLeft, 45, safetyDistance * 1.25);
 
             case TOP_RIGHT:
                 var startPointTopRight = new Point2D(this.boundingRect.getMaxX(), this.boundingRect.getMinY());
 
-                return Calculator.getVectorEndPoint(startPointTopRight, 135, safetyDistance);
+                return Calculator.getVectorEndPoint(startPointTopRight, 135, safetyDistance * 1.25);
 
             case DOWN_LEFT:
                 var startPointDownLeft = new Point2D(this.boundingRect.getMinX(), this.boundingRect.getMaxY());
 
-                return Calculator.getVectorEndPoint(startPointDownLeft, 315, safetyDistance);
+                return Calculator.getVectorEndPoint(startPointDownLeft, 315, safetyDistance * 1.25);
 
             case DOWN_RIGHT:
                 var startPointDownRight = new Point2D(this.boundingRect.getMaxX(), this.boundingRect.getMaxY());
 
-                return Calculator.getVectorEndPoint(startPointDownRight, 225, safetyDistance);
+                return Calculator.getVectorEndPoint(startPointDownRight, 225, safetyDistance * 1.25);
         }
 
         throw new Exception("Direction cannot be null");

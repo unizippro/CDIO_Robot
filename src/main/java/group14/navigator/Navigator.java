@@ -35,7 +35,6 @@ public class Navigator {
 
     private final int turnThreshold = 1;
     private boolean hasDeposit = false;
-    private boolean depositCorrectionMode = false;
 
     public Navigator(Board board, Robot robot) {
         this.board = board;
@@ -99,7 +98,7 @@ public class Navigator {
                 this.goToNextArea(instructionSet, robotPosition, currentBoard);
             }
         } else {
-            var currentDepositPointSafe = Utils.rectangleWithCenter(this.depositPoint, 3);
+            var currentDepositPointSafe = Utils.rectangleWithCenter(this.depositPoint, 1.5);
 
             if (currentDepositPointSafe.contains(robotPosition)) {
                 this.handleDepositAction(instructionSet, robotPosition, robotAngle);
@@ -136,7 +135,7 @@ public class Navigator {
             if (direction == Area.DangerousAreaDirection.TOP || direction == Area.DangerousAreaDirection.BOTTOM) {
                 distance = robotPosition.distance(ball) * 0.75;
             } else if (Area.DangerousAreaDirection.isCorner(direction)) {
-                distance = robotPosition.distance(ball) * 0.62;
+                distance = robotPosition.distance(ball) * 0.67;
             } else {
                 distance = robotPosition.distance(ball) * 0.55;
             }
