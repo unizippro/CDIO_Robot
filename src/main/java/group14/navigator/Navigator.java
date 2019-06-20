@@ -29,6 +29,7 @@ public class Navigator {
     private final Board board;
     private final Robot robot;
 
+    private NavigationState state = new NavigationState();
     private final List<Point2D> ballPositions = new ArrayList<>();
     private Point2D depositPoint;
 
@@ -79,13 +80,19 @@ public class Navigator {
 
         var currentBoard = this.board.getAreaForPoint(robotPosition);
 
-        if (! this.ballPositions.isEmpty()) {
-            if (this.ballsWithinArea(currentBoard)) {
-                var ball = this.getClosestBall(robotPosition);
+        System.out.println(this.state);
+
+        if (! this.ballPositions.isEmpty() || this.state.hasState()) {
+            var statePointInCurrentArea = this.state.hasState() && currentBoard.contains(this.state.getPoint());
+
+            if (statePointInCurrentArea || this.ballsWithinArea(currentBoard)) {
+                var ball = this.state.hasState() ? this.state.getPoint() : this.getClosestBall(robotPosition);
 
                 if (currentBoard.isWithinSafetyArea(ball)) {
+                    this.state.setSafe(ball);
                     this.goToBallInSafeArea(instructionSet, robotPosition, ball);
                 } else {
+                    this.state.setNotSafe(ball);
                     this.goToBallOutsideSafeArea(instructionSet, robotPosition, currentBoard, ball);
                 }
             } else {
@@ -111,6 +118,8 @@ public class Navigator {
 
         this.addTurnIfNeeded(instructionSet, robotPosition, ball);
         instructionSet.add(Instruction.forward(this.robot.getDistanceTo(ball)));
+
+        this.state.resetState();
     }
 
     private void goToBallOutsideSafeArea(InstructionSet instructionSet, Point2D robotPosition, Area currentBoard, Point2D ball) throws Exception {
@@ -135,6 +144,8 @@ public class Navigator {
             instructionSet.add(Instruction.forward(distance));
             instructionSet.add(Instruction.sleep(500));
             instructionSet.add(Instruction.backward(distance * 1.2));
+
+            this.state.resetState();
         } else {
             instructionSet.setData(this.robot.getRotatingPoint(), safePoint, "Navigator: Unsafe ball with safe point");
 
