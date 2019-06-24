@@ -21,6 +21,10 @@ public abstract class Robot {
         this.rearPoint.setLocation(rearPoint);
     }
 
+    public boolean hasValidPosition() {
+        return this.rearPoint.distance(this.frontPoint) <= 20;
+    }
+
     public Point2D getFrontPosition() {
         return Calculator.getVectorEndPoint(this.rearPoint, this.getDirectionAngle(), this.getDistanceRearPointToFront());
     }

@@ -81,6 +81,10 @@ public class Navigator {
 
         System.out.println(this.state);
 
+        if (! this.robot.hasValidPosition()) {
+            return instructionSet;
+        }
+
         if (! this.ballPositions.isEmpty() || this.state.hasBallState()) {
             var statePointInCurrentArea = this.state.hasBallState() && currentBoard.contains(this.state.getPoint());
 
