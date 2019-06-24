@@ -495,6 +495,7 @@ public class Main {
         }
 
         this.startTimer();
+        this.camera.startRecording();
 
         this.runThread = new Thread(() -> {
             while (! this.navigator.isDone() && ! Thread.currentThread().isInterrupted()) {
@@ -516,6 +517,7 @@ public class Main {
             }
 
             this.stopTimer();
+            this.camera.stopRecording();
 
             System.out.println("Robot done!");
         });
@@ -528,6 +530,9 @@ public class Main {
             this.runThread.interrupt();
             this.runThread = null;
         }
+
+        this.stopTimer();
+        this.camera.stopRecording();
 
         new Thread(() -> {
             try {

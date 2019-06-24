@@ -1,15 +1,22 @@
 package group14.opencv;
 
+import com.google.common.base.Stopwatch;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.VideoWriter;
 import org.opencv.videoio.Videoio;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Camera {
 
@@ -21,6 +28,10 @@ public class Camera {
     private Thread calculationThread;
 
     private final VideoCapture camera = new VideoCapture();
+
+    private AtomicBoolean isRecording = new AtomicBoolean(false);
+    private AtomicReference<VideoWriter> videoWriter = new AtomicReference<>();
+    private AtomicReference<Stopwatch> stopwatch = new AtomicReference<>();
 
     private final int cameraIndex;
 
@@ -43,6 +54,12 @@ public class Camera {
                 System.err.println("Frame is empty");
 
                 return;
+            }
+
+            var videoWriter = this.videoWriter.get();
+            var stopwatch = this.stopwatch.get();
+            if (this.isRecording.get() && videoWriter != null && stopwatch != null) {
+                this.saveFrame(frame, videoWriter, stopwatch);
             }
 
             if (updatedHandler != null) {
@@ -70,6 +87,44 @@ public class Camera {
         if (this.camera.isOpened()) {
             this.camera.release();
         }
+    }
+
+    public void startRecording() {
+        this.stopRecording();
+
+        var filename = "video/output_" + System.currentTimeMillis() + ".mov";
+        var fourcc = VideoWriter.fourcc('m', 'p', '4', 'v');
+
+        this.stopwatch.set(Stopwatch.createStarted());
+
+        this.videoWriter.set(new VideoWriter(filename, fourcc, FPS, FRAME_SIZE, true));
+        this.isRecording.set(true);
+    }
+
+    public void stopRecording() {
+        this.isRecording.set(false);
+
+        this.videoWriter.set(null);
+
+        var stopwatch = this.stopwatch.getAndSet(null);
+        if (stopwatch != null) {
+            stopwatch.stop();
+        }
+    }
+
+    private void saveFrame(Mat frame, VideoWriter videoWriter, Stopwatch stopwatch) {
+        var min = stopwatch.elapsed(TimeUnit.MINUTES);
+        var sec = stopwatch.elapsed(TimeUnit.SECONDS) % 60;
+        var milli = stopwatch.elapsed(TimeUnit.MILLISECONDS) % 1000;
+
+
+        var saveFrame = new Mat();
+        frame.copyTo(saveFrame);
+
+        Imgproc.putText(saveFrame, min + "." + sec + "." + milli, new Point(20, FRAME_SIZE.height - 20), 1, 12, new Scalar(0, 255, 255));
+
+        videoWriter.write(saveFrame);
+        saveFrame.release();
     }
 
     private void openCamera() {

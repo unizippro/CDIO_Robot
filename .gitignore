@@ -1,5 +1,7 @@
 ### Project ###
 opencv.properties
+/video/*
+!/video/.gitkeep
 
 
 ### Intellij ###
