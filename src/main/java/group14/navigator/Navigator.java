@@ -140,16 +140,18 @@ public class Navigator {
 
             double distance;
             if (direction == Area.DangerousAreaDirection.TOP || direction == Area.DangerousAreaDirection.BOTTOM) {
-                distance = robotPosition.distance(ball) * 0.75;
+                distance = robotPosition.distance(ball) * 0.70;
             } else if (Area.DangerousAreaDirection.isCorner(direction)) {
-                distance = robotPosition.distance(ball) * 0.67;
+                distance = robotPosition.distance(ball) * 0.70;
+            } else if (this.board.isInsideCross(ball)) {
+                distance = robotPosition.distance(ball) * 0.50;
             } else {
-                distance = robotPosition.distance(ball) * 0.55;
+                distance = robotPosition.distance(ball) * 0.45;
             }
 
             instructionSet.add(Instruction.forward(distance));
-            instructionSet.add(Instruction.sleep(500));
-            instructionSet.add(Instruction.backward(distance * 1.2));
+            instructionSet.add(Instruction.sleep(100));
+            instructionSet.add(Instruction.backward(distance));
 
             this.state.resetState();
         } else {
@@ -182,15 +184,19 @@ public class Navigator {
 
         instructionSet.setData(this.robot.getRotatingPoint(), projectedDepositPoint, "Navigator: Deposit plan started");
 
-        if (Math.abs(robotAngle) >= 2.2) {
+        if (robotAngle >= 1.1 && robotAngle <= 358.9) {
             var currentDepositPointAngle = Calculator.getAngleBetweenPoint(robotPosition, projectedDepositPoint);
             var turnAngle = Calculator.getTurnAngle(robotAngle, currentDepositPointAngle);
 
-            if (Math.abs(turnAngle) <= 1) {
-                turnAngle *= 1.5;
+            var absTurn = Math.abs(turnAngle);
+            if (absTurn > 0.5 && absTurn <= 5) {
+                turnAngle = turnAngle < 0 ? -5 : 5;
+            } else if (absTurn <= 0.5) {
+                turnAngle = turnAngle < 0 ? -0.5 : 0.5;
             }
 
             instructionSet.add(Instruction.turn(turnAngle));
+            instructionSet.add(Instruction.sleep(50));
         } else {
             instructionSet.add(Instruction.deposit());
             this.state.setDepositRecheck();

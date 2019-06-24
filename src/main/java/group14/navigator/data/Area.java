@@ -81,10 +81,12 @@ public class Area {
     }
 
     public DangerousAreaDirection getDangerousAreaDirection(Point2D point) throws Exception {
-        var isTop = this.boundingRect.getMinY() <= point.y && point.y <= this.safetyArea.getMinY();
-        var isBottom = this.boundingRect.getMaxY() >= point.y && point.y >= this.safetyArea.getMaxY();
-        var isLeft = this.boundingRect.getMinX() <= point.x && point.x <= this.safetyArea.getMinX();
-        var isRight = this.boundingRect.getMaxX() >= point.x && point.x >= this.safetyArea.getMaxX();
+        var extraRect = Utils.rectangleWithExpandedMargin(this.boundingRect, 2);
+
+        var isTop = extraRect.getMinY() <= point.y && point.y <= this.safetyArea.getMinY();
+        var isBottom = extraRect.getMaxY() >= point.y && point.y >= this.safetyArea.getMaxY();
+        var isLeft = extraRect.getMinX() <= point.x && point.x <= this.safetyArea.getMinX();
+        var isRight = extraRect.getMaxX() >= point.x && point.x >= this.safetyArea.getMaxX();
 
         if (isTop) {
             if (isLeft) {

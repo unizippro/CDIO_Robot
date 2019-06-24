@@ -373,7 +373,7 @@ public class Main {
 
                 var crossCenter = Utils.toNavigatorRectangle(cross, this.homeography.getPixelsPrCm());
 
-                var board = new Board(boardRect, 2.5, crossCenter, 22);
+                var board = new Board(boardRect, 2, crossCenter, 22);
                 var robot = new Robot(Utils.toNavigatorPoint(robotFront, this.homeography.getPixelsPrCm()), Utils.toNavigatorPoint(robotRear, this.homeography.getPixelsPrCm()));
 
                 System.out.println(board);

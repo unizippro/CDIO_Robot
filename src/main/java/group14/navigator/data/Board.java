@@ -46,7 +46,7 @@ public class Board {
 
         this.cross = cross;
 
-        this.depositPoint = new Point2D(boundingRect.getMinX() + this.safetyMargin * 1.15, boundingRect.y + (boundingRect.getHeight() / 2));
+        this.depositPoint = new Point2D(boundingRect.getMinX() + this.safetyMargin * 1.20, boundingRect.y + (boundingRect.getHeight() / 2));
 
         var crossPoint = cross != null ? cross : new Rectangle2D((this.boundingRect.width / 2) - 100, (this.boundingRect.height / 2) - 100, 200, 200);
         this.setCrossPosition(crossPoint);
