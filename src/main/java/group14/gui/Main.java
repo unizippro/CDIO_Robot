@@ -316,6 +316,8 @@ public class Main {
     private void cameraFrameUpdated(Mat frame) {
         var image = ImageConverter.matToImageFX(frame);
 
+        this.robotDetector.setPixelsPrCm(this.homeography.getPixelsPrCm());
+
         var resultBalls = this.ballDetector.run(frame);
         var imageBalls = ImageConverter.matToImageFX(resultBalls.getOutput());
 

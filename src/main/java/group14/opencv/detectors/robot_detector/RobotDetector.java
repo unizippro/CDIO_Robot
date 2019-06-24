@@ -10,6 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.Config> {
 
+    private double pixelsPrCm = 9;
+
     public static class Config {
         // HSV Blue
         public AtomicInteger blueMinH = new AtomicInteger(100);
@@ -91,6 +93,10 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         return new RobotDetectorResult(out, blueMat, greenMat, front, back);
     }
 
+    public void setPixelsPrCm(double pixelsPrCm) {
+        this.pixelsPrCm = pixelsPrCm;
+    }
+
     @Override
     protected Config createConfig() {
         return new Config();
@@ -123,7 +129,7 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
     private Point projectPoint(double camHeight, double objectHeight, Point centerPoint, Point objectPoint) {
 
         // Beregn hypotynusen
-        var b = camHeight * 8.89;
+        var b = camHeight * this.pixelsPrCm;
         //var b = 165;
         //objectPoint = new Point(30, 0);
         //centerPoint = new Point(0,0);
@@ -138,7 +144,7 @@ public class RobotDetector extends Detector<RobotDetectorResult, RobotDetector.C
         //System.out.println("angle A = " + A + "Should be 10.3");
 
         var B = 180 - A - 90;
-        var realDistToPoint = (Math.sin(Math.toRadians(A)) * (b - objectHeight * 8.89)) / Math.sin(Math.toRadians(B));
+        var realDistToPoint = (Math.sin(Math.toRadians(A)) * (b - objectHeight * this.pixelsPrCm)) / Math.sin(Math.toRadians(B));
         //System.out.println("Dist = "  +realDistToPoint);
         var movingDist = a - realDistToPoint;
         var angle = getAngleBetweenPoint(centerPoint, objectPoint);
