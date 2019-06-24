@@ -10,7 +10,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Movement extends UnicastRemoteObject implements IMovement {
 
-    private static final int DEFAULT_SPEED = 75;
+    private static final int DEFAULT_SPEED = 100;
 
     // All values below are in mm
     private static final double MARGIN_OF_ERROR = -0.05;
@@ -117,7 +117,6 @@ public class Movement extends UnicastRemoteObject implements IMovement {
         deg += deg / 360 * MARGIN_OF_ERROR_TURN;
 
         int tempSpeed = this.motorLeft.getSpeed();
-        this.setSpeedPercentage(25);
 
         this.motorLeft.rotate((int) deg, true);
         this.motorRight.rotate((int) -deg, true);
